@@ -4,13 +4,13 @@
 #include <d3dcompiler.h>
 #include <directxcolors.h>
 
-
 class D3DRenderer
 {
 public:
 	D3DRenderer();
 	~D3DRenderer();
 	bool initD3D(HWND windowId, int width, int height);
+	void initScene();
 	void renderScene();
 	void cleanup();
 

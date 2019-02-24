@@ -1,5 +1,8 @@
 #include "D3DRenderer.h"
 #include <directxcolors.h>
+#include <vector>
+#include "Vertex.h"
+#include "Globalsys.h"
 using namespace DirectX::Colors;
 
 D3DRenderer::D3DRenderer()
@@ -120,10 +123,58 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 	return true;
 }
 
+void D3DRenderer::initScene()
+{
+	g_pGlobalSys->loadObjMesh("Data/Meshes/cow.obj");
+	g_pGlobalSys->reconNormals(g_pGlobalSys->objects[0]);
+	std::vector<Basic32> vertices;
+	const std::vector<float>& positions = g_pGlobalSys->objects[0].mesh.positions;
+	const std::vector<float>& normals = g_pGlobalSys->objects[0].mesh.normals;
+	const std::vector<float>& texs = g_pGlobalSys->objects[0].mesh.texcoords;
+	bool m_hasTex = false;
+	if (texs.size())
+		m_hasTex = true;
+
+	int num_vertex = positions.size() / 3;
+	for (int i = 0; i < num_vertex; i++)
+	{
+		Basic32 v(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
+			normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2], 0, 0);
+		if (m_hasTex)
+		{
+			v.tex.x = texs[i * 2];
+			v.tex.y = texs[i * 2 + 1];
+		}
+		vertices.push_back(v);
+	}
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(Basic32)* vertices.size();
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA vinitData;
+	vinitData.pSysMem = &vertices[0];
+	m_pd3dDevice->CreateBuffer(&vbd, &vinitData, &m_pVertexBuffer);
+
+	const std::vector<unsigned int>& indices = g_pGlobalSys->objects[0].mesh.indices;
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer);
+}
+
 void D3DRenderer::renderScene()
 {
 	//Clear our backbuffer
-	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
+	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::LightSkyBlue);
 
 	//Refresh the Depth/Stencil view
 	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
