@@ -169,18 +169,68 @@ void D3DRenderer::initScene()
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &indices[0];
 	m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer);
+
+	createRulerLlinesVertexBuffer();
 }
 
 void D3DRenderer::renderScene()
 {
 	//Clear our backbuffer
-	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::LightSkyBlue);
+	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
 
 	//Refresh the Depth/Stencil view
 	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	renderRulerLlines();
+
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
+}
+
+void D3DRenderer::renderRulerLlines()
+{
+	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+}
+
+void D3DRenderer::createRulerLlinesVertexBuffer()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+
+	std::vector<SimpleVertex> line_pts;
+	for(int i=-50;i<=50;i+=2)
+	{
+		SimpleVertex vertex = SimpleVertex();
+		vertex.Pos = XMFLOAT3(i,0.0,-50.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		line_pts.push_back(vertex);
+
+		vertex = SimpleVertex();
+		vertex.Pos = XMFLOAT3(i, 0.0, 50.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		line_pts.push_back(vertex);
+
+		vertex = SimpleVertex();
+		vertex.Pos = XMFLOAT3(-50.0, 0.0, i);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		line_pts.push_back(vertex);
+
+		vertex = SimpleVertex();
+		vertex.Pos = XMFLOAT3(50.0, 0.0, i);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		line_pts.push_back(vertex);
+	}
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(SimpleVertex) * line_pts.size();
+
+	initData.pSysMem = line_pts.data();
+
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pVertexBuffer)))
+		return;
 }
 
 void D3DRenderer::cleanup()
