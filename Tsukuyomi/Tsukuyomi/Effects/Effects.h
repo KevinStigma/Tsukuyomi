@@ -50,6 +50,7 @@ public:
 	ID3DX11EffectTechnique* Light1TexTech;
 	ID3DX11EffectTechnique*	Light2TexTech;
 	ID3DX11EffectTechnique*	Light3TexTech;
+	ID3DX11EffectTechnique* SimpleColorTech;
 	ID3DX11EffectTechnique* Light1TexAlphaClipFogTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;

@@ -1,5 +1,6 @@
 #include "Effects.h"
 #include "../common.h"
+#include <windows.h>
 #include <iostream>
 
 #pragma region Effect
@@ -8,7 +9,16 @@
 Effect::Effect(ID3D11Device* device, const std::wstring& filename)
 	: mFX(0)
 {
-	auto hr=D3DX11CompileEffectFromFile(filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, D3DCOMPILE_ENABLE_STRICTNESS, 0, device, &mFX, nullptr);
+	ID3D10Blob * compilationMsgs = 0;
+	auto hr=D3DX11CompileEffectFromFile(filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, D3DCOMPILE_ENABLE_STRICTNESS, 0, device, &mFX, &compilationMsgs);
+	
+	/*if (compilationMsgs)
+	{
+		MessageBoxA(0, (char*)compilationMsgs->GetBufferPointer(), 0, 0);
+		SAFE_RELEASE(compilationMsgs);
+	}
+	*/
+
 	if (FAILED(hr))
 		std::cout << "compile effect file failed!" << std::endl;
 }
@@ -31,6 +41,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	Light1TexTech	  = mFX->GetTechniqueByName("Light1Tex");
 	Light2TexTech     = mFX->GetTechniqueByName("Light2Tex");
 	Light3TexTech     = mFX->GetTechniqueByName("Light3Tex");
+	SimpleColorTech	  = mFX->GetTechniqueByName("SimpleColor");
 
 	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 

@@ -33,7 +33,37 @@ SamplerState samLinear
 	AddressU = WRAP;
 	AddressV = WRAP;
 };
- 
+
+struct SimpleVertexIn
+{
+	float3 PosL    : POSITION;
+	float4 Color   : COLOR;
+};
+
+struct VertexOut
+{
+	float4 PosH       : SV_POSITION;
+	float3 PosW       : POSITION;
+	float3 NormalW    : NORMAL;
+	float2 Tex        : TEXCOORD0;
+	float4 Color      : COLOR;
+};
+
+VertexOut SimpleColorVS(SimpleVertexIn vin)
+{
+	VertexOut vout;
+
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.Color = vin.Color;
+
+	return vout;
+}
+
+float4 SimpleColorPS(VertexOut vout) : SV_Target
+{
+	return vout.Color;
+}
+
 struct VertexIn
 {
 	float3 PosL    : POSITION;
@@ -41,13 +71,6 @@ struct VertexIn
 	float2 Tex     : TEXCOORD;
 };
 
-struct VertexOut
-{
-	float4 PosH       : SV_POSITION;
-    float3 PosW       : POSITION;
-    float3 NormalW    : NORMAL;
-	float2 Tex        : TEXCOORD0;
-};
 
 VertexOut VS(VertexIn vin)
 {
@@ -368,3 +391,13 @@ technique11 Light3TexAlphaClipFog
     }
 }
 
+
+technique11 SimpleColor
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, SimpleColorVS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, SimpleColorPS()));
+	}
+}

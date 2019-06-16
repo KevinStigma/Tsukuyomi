@@ -3,6 +3,7 @@
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <directxcolors.h>
+#include "Camera.h"
 
 class D3DRenderer
 {
@@ -36,5 +37,5 @@ protected:
 	ID3D11VertexShader*		m_pVertexShader = nullptr;
 	ID3D11PixelShader*      m_pPixelShader = nullptr;
 	ID3D11Buffer*			m_pRulerLineVertexBuffer = nullptr;
-
+	Camera m_camera;
 };

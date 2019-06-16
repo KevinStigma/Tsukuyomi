@@ -27,6 +27,7 @@ class InputLayoutDesc
 {
 public:
 	static const D3D11_INPUT_ELEMENT_DESC Basic32[3];
+	static const D3D11_INPUT_ELEMENT_DESC SimpleColor[2];
 };
 
 
@@ -35,6 +36,6 @@ class InputLayouts
 public:
 	static void initAll(ID3D11Device* device);
 	static void destroyAll();
-	static ID3D11InputLayout* Pos;
+	static ID3D11InputLayout* PosColor;
 	static ID3D11InputLayout* PosNorTex;
 };
