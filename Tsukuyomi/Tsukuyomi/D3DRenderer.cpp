@@ -201,9 +201,8 @@ void D3DRenderer::renderRulerLlines()
 	ID3D11DeviceContext * context = m_pImmediateContext;
 	context->IASetVertexBuffers(0, 1, &m_pRulerLineVertexBuffer, &stride, &offset);
 	context->IASetInputLayout(InputLayouts::PosColor);
-	// context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// context->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	
 	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
@@ -216,7 +215,7 @@ void D3DRenderer::renderRulerLlines()
 		basicEffect->SetWorldViewProj(WVP);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
-		context->Draw(3, 0);
+		context->Draw(204, 0);
 	}
 	context->OMSetDepthStencilState(0, 0);
 }
@@ -228,44 +227,29 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 
 	ZeroMemory(&buffDesc, sizeof(buffDesc));
 	std::vector<SimpleVertex> line_pts;
-	/*
+
 	for(int i=-50;i<=50;i+=2)
 	{
 		SimpleVertex vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(i,0.0,-50.0);
-		vertex.Color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(i, 0.0, 50.0);
-		vertex.Color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(-50.0, 0.0, i);
-		vertex.Color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(50.0, 0.0, i);
-		vertex.Color = XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
 		line_pts.push_back(vertex);
 	}
-	*/
-	SimpleVertex vertex = SimpleVertex();
-	vertex.Pos = XMFLOAT3(1.0, 0.0, 0.0);
-	vertex.Color = XMFLOAT4(1.0, 0.0, 0.0, 1.0);
-	line_pts.push_back(vertex);
-
-	SimpleVertex vertex2 = SimpleVertex();
-	vertex2.Pos = XMFLOAT3(0.0, 0.0, 0.0);
-	vertex2.Color = XMFLOAT4(0.0, 1.0, 0.0, 1.0);
-	line_pts.push_back(vertex2);
-
-	SimpleVertex vertex3 = SimpleVertex();
-	vertex3.Pos = XMFLOAT3(0.0, 1.0, 0.0);
-	vertex3.Color = XMFLOAT4(0.0, 0.0, 1.0, 1.0);
-	line_pts.push_back(vertex3);
 
 	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
 	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;

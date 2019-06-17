@@ -3,22 +3,17 @@
 
 void Camera::init()
 {
-	ZeroMemory(&mView, sizeof(XMFLOAT4X4));
-	ZeroMemory(&mProj, sizeof(XMFLOAT4X4));
-	ZeroMemory(&mViewProj, sizeof(XMFLOAT4X4));
-
-	fov = 0.5f* XM_PI;
+	fov = 0.5f * XM_PI;
 	zNear = 0.01f;
 	zFar = 1000.0f;
 	position = XMFLOAT3(0.0f, 0.0f, -2.5f);
 	up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	updateRight();
-
+	ZeroMemory(&mProj, sizeof(XMFLOAT4X4));
 	setLens(fov, aspectRatio, zNear, zFar);
 
 	updateViewMatrix();
-	onBox = false;
 }
 
 XMMATRIX Camera::getViewMatrix()const
@@ -66,6 +61,29 @@ void Camera::lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&up, U);
 }
 
+void Camera::normalizeMousePos(XMFLOAT2& pos, float sw, float sh)
+{
+	pos.x = (pos.x - sw * 0.5f) / (sw * 0.5f);
+	pos.y = (pos.y - sh * 0.5f) / (sh * 0.5f);
+	float length = sqrt(pos.x * pos.x + pos.y * pos.y);
+	if (length > 0.5f)
+	{
+		float ratio = length / 0.5f;
+		pos.x /= ratio;
+		pos.y /= ratio;
+	}
+}
+
+void Camera::computeArcballRotation(float last_pos_x, float last_pos_y, float cur_pos_x, float cur_pos_y, float sw, float sh)
+{
+	XMFLOAT2 last_pos(last_pos_x, last_pos_y);
+	XMFLOAT2 cur_pos(cur_pos_x, cur_pos_y);
+	if (last_pos.x == cur_pos.x && last_pos.y == cur_pos.y)
+		return;
+	normalizeMousePos(last_pos, sw, sh);
+	normalizeMousePos(cur_pos, sw, sh);
+}
+
 void Camera::updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u)
 {
 	position = pos;
@@ -80,6 +98,9 @@ void Camera::updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u)
 
 void Camera::updateViewMatrix()
 {
+	ZeroMemory(&mView, sizeof(XMFLOAT4X4));
+	ZeroMemory(&mViewProj, sizeof(XMFLOAT4X4));
+
 	mView(0, 0) = right.x;
 	mView(1, 0) = right.y;
 	mView(2, 0) = right.z;
@@ -126,6 +147,7 @@ void Camera::walkForward(float d)
 	position.z += d * look.z;
 	updateViewMatrix();
 }
+
 void Camera::walkRight(float d)
 {
 	position.x += d * right.x;

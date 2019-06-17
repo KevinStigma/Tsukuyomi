@@ -16,6 +16,7 @@ public:
 	void setLens(float fovY, float aspect, float zn, float zf);
 	void updateViewMatrix();
 	void updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u);
+	void computeArcballRotation(float last_pos_x, float last_pos_y, float cur_pos_x, float cur_pos_y, float screen_width, float screen_height);
 	void updateRight();
 	void rotateY(float angle);
 	void rotateRight(float angle);
@@ -32,5 +33,6 @@ public:
 	float zNear;
 	float zFar;
 	float aspectRatio=800.0f/600.0f;
-	bool onBox;
+private:
+	void normalizeMousePos(XMFLOAT2& pos, float sw, float sh);
 };

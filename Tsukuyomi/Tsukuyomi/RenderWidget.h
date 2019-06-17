@@ -13,18 +13,18 @@ public:
 		return NULL;
 	}
 
-	virtual void resizeEvent(QResizeEvent *event);
-	virtual void paintEvent(QPaintEvent *event);
+	void resizeEvent(QResizeEvent *event);
+	void paintEvent(QPaintEvent *event);
 
-	/*
-	virtual void keyPressEvent(QKeyEvent *event);
-	virtual void keyReleaseEvent(QKeyEvent *event);
-	virtual void mousePressEvent(QMouseEvent *event);
-	virtual void mouseReleaseEvent(QMouseEvent *event);
-	virtual void mouseMoveEvent(QMouseEvent *event);
-	virtual void wheelEvent(QWheelEvent *event);
-	*/
+	void keyPressEvent(QKeyEvent *event);
+	void keyReleaseEvent(QKeyEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void wheelEvent(QWheelEvent *event);
 private:
 
 	D3DRenderer * renderer = nullptr;
+	QPoint lastMousePos;
+	int touchType = -1;
 };

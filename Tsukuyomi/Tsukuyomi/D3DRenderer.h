@@ -14,6 +14,7 @@ public:
 	void initScene();
 	void renderScene();
 	void cleanup();
+	Camera& getCamera() { return m_camera; }
 
 protected:
 	void renderRulerLlines();
