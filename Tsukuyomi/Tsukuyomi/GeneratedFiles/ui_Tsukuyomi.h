@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -26,9 +27,12 @@ QT_BEGIN_NAMESPACE
 class Ui_TsukuyomiClass
 {
 public:
+    QAction *actionLoad_Mesh;
+    QAction *actionLoad_Project;
     QWidget *centralWidget;
     RenderWidget *render_widget;
     QMenuBar *menuBar;
+    QMenu *menu;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -40,6 +44,10 @@ public:
         QIcon icon;
         icon.addFile(QStringLiteral("logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
+        actionLoad_Mesh = new QAction(TsukuyomiClass);
+        actionLoad_Mesh->setObjectName(QStringLiteral("actionLoad_Mesh"));
+        actionLoad_Project = new QAction(TsukuyomiClass);
+        actionLoad_Project->setObjectName(QStringLiteral("actionLoad_Project"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
@@ -49,6 +57,8 @@ public:
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1051, 23));
+        menu = new QMenu(menuBar);
+        menu->setObjectName(QStringLiteral("menu"));
         TsukuyomiClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TsukuyomiClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -56,6 +66,10 @@ public:
         statusBar = new QStatusBar(TsukuyomiClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         TsukuyomiClass->setStatusBar(statusBar);
+
+        menuBar->addAction(menu->menuAction());
+        menu->addAction(actionLoad_Mesh);
+        menu->addAction(actionLoad_Project);
 
         retranslateUi(TsukuyomiClass);
 
@@ -65,6 +79,9 @@ public:
     void retranslateUi(QMainWindow *TsukuyomiClass)
     {
         TsukuyomiClass->setWindowTitle(QApplication::translate("TsukuyomiClass", "Tsukuyomi", Q_NULLPTR));
+        actionLoad_Mesh->setText(QApplication::translate("TsukuyomiClass", "Load Mesh", Q_NULLPTR));
+        actionLoad_Project->setText(QApplication::translate("TsukuyomiClass", "Load Project", Q_NULLPTR));
+        menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
     } // retranslateUi
 
 };
