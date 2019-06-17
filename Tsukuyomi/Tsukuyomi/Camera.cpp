@@ -61,29 +61,6 @@ void Camera::lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&up, U);
 }
 
-void Camera::normalizeMousePos(XMFLOAT2& pos, float sw, float sh)
-{
-	pos.x = (pos.x - sw * 0.5f) / (sw * 0.5f);
-	pos.y = (pos.y - sh * 0.5f) / (sh * 0.5f);
-	float length = sqrt(pos.x * pos.x + pos.y * pos.y);
-	if (length > 0.5f)
-	{
-		float ratio = length / 0.5f;
-		pos.x /= ratio;
-		pos.y /= ratio;
-	}
-}
-
-void Camera::computeArcballRotation(float last_pos_x, float last_pos_y, float cur_pos_x, float cur_pos_y, float sw, float sh)
-{
-	XMFLOAT2 last_pos(last_pos_x, last_pos_y);
-	XMFLOAT2 cur_pos(cur_pos_x, cur_pos_y);
-	if (last_pos.x == cur_pos.x && last_pos.y == cur_pos.y)
-		return;
-	normalizeMousePos(last_pos, sw, sh);
-	normalizeMousePos(cur_pos, sw, sh);
-}
-
 void Camera::updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u)
 {
 	position = pos;
@@ -163,20 +140,23 @@ void Camera::walkUp(float d)
 	updateViewMatrix();
 }
 
-void Camera::rotateY(float angle)//angle is radian
+void Camera::rotate(XMFLOAT3 axis, float radian)
 {
-	XMMATRIX R = XMMatrixRotationAxis(XMVectorSet(0, 1, 0, 0), angle);
+	XMMATRIX R = XMMatrixRotationAxis(XMVectorSet(axis.x, axis.y, axis.z, 0.0), radian);
 	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 	XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), R));
 	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 	updateViewMatrix();
 }
-void Camera::rotateRight(float angle)//angle is radian
+
+void Camera::rotateY(float radian)
 {
-	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&right), angle);
-	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-	XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), R));
-	updateViewMatrix();
+	rotate(XMFLOAT3(0.0, 1.0, 0.0), radian);
+}
+
+void Camera::rotateRight(float radian)
+{
+	rotate(right, radian);
 }
 
 void Camera::updateAspectRatio(float ratio)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <qkeyevent.h>
 #include "ui_Tsukuyomi.h"
 
 class Tsukuyomi : public QMainWindow
@@ -9,6 +10,7 @@ class Tsukuyomi : public QMainWindow
 
 public:
 	Tsukuyomi(QWidget *parent = Q_NULLPTR);
+	void keyReleaseEvent(QKeyEvent *event);
 
 private:
 	Ui::TsukuyomiClass ui;

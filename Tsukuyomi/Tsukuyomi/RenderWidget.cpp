@@ -45,7 +45,11 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
 
 void RenderWidget::keyReleaseEvent(QKeyEvent *event)
 {
-
+	Camera& camera = renderer->getCamera();
+	if (event->key() == Qt::Key::Key_R)
+	{
+		camera.init();
+	}
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent *mouse_event)
@@ -58,7 +62,7 @@ void RenderWidget::mousePressEvent(QMouseEvent *mouse_event)
 		lastMousePos = pos;
 		touchType = 0;
 	}
-	else if (mouse_event->button == Qt::RightButton)
+	else if (mouse_event->button() == Qt::RightButton)
 	{
 		lastMousePos = pos;
 		touchType = 1;
@@ -76,16 +80,24 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 	Camera& camera = renderer->getCamera();
 	if (touchType == 0)
 	{
-		camera.computeArcballRotation(lastMousePos.x(), height() - lastMousePos.y(), cur_pos.x(), height() - cur_pos.y(), width(), height());
+		float diff_x = (cur_pos.x() - lastMousePos.x()) * 0.001;
+		float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
+		camera.rotateRight(-diff_y);
+		camera.rotateY(diff_x);
 	}
 	else if (touchType == 1)
 	{
-
+		float diff_x = (cur_pos.x() - lastMousePos.x()) * 0.001;
+		float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
+		camera.walkRight(diff_x);
+		camera.walkUp(diff_y);
 	}
 	lastMousePos = cur_pos;
 }
 
 void RenderWidget::wheelEvent(QWheelEvent *event)
 {
-
+	float delta = event->delta();
+	Camera& camera = renderer->getCamera();
+	camera.walkForward(delta * 0.001);
 }
