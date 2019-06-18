@@ -184,7 +184,7 @@ void D3DRenderer::initScene()
 	m_camera.init();
 	initLights();
 	initMaterials();
-	g_pGlobalSys->createNewObjectOfMesh("cow", "./Data/Meshes/cow.obj", true);
+	g_pGlobalSys->createNewObjectOfMesh("cow", "./Data/Meshes/cow.obj", true, XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(0.01, 0.01, 0.01));
 	Mesh * mesh = (Mesh*)g_pGlobalSys->getObjectFromName("cow");
 	mesh->generateBuffers(m_pd3dDevice);
 

@@ -45,14 +45,15 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
+	XMVECTOR v;
+	XMMATRIX worldMat = genereateWorldMatrix();
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		XMMATRIX WVP;
-		XMMATRIX worldMat = XMMatrixIdentity();
-		WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
+	{	
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetTexTransform(worldMat);
+		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(mats[0]);
 

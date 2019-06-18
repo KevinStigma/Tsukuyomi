@@ -44,3 +44,11 @@ void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r)
 	setRotation(r);
 	setScale(s);
 }
+
+XMMATRIX Object::genereateWorldMatrix()
+{
+	XMMATRIX world_mat = XMMatrixTranslation(translation.x, translation.y, translation.z);
+	XMMATRIX rot_mat = XMMatrixIdentity();
+	XMMATRIX scale_mat = XMMatrixScaling(scale.x, scale.y, scale.z);
+	return world_mat * rot_mat * scale_mat;
+}
