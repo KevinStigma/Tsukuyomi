@@ -6,6 +6,8 @@
 #include "Globalsys.h"
 #include "Effects/Effects.h"
 #include "tiny_obj_loader.h"
+#include "Objects/Mesh.h"
+
 using namespace DirectX::Colors;
 
 D3DRenderer::D3DRenderer()
@@ -135,7 +137,6 @@ void D3DRenderer::initLights()
 	m_dirLights[0].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_dirLights[0].Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_dirLights[0].Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	// m_dirLights[0].Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_dirLights[0].Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 
 	m_dirLights[1].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -183,54 +184,10 @@ void D3DRenderer::initScene()
 	m_camera.init();
 	initLights();
 	initMaterials();
-	g_pGlobalSys->createNewObject("cow", "./Data/Meshes/cow.obj", true);
-	Object * obj = g_pGlobalSys->getObjectFromName("cow");
-	cowObject = obj;
-	tinyobj::mesh_t* mesh = obj->getMesh();
-	
-	std::vector<Basic32> vertices;
-	const std::vector<float>& positions = mesh->positions;
-	const std::vector<float>& normals = mesh->normals;
-	const std::vector<float>& texs = mesh->texcoords;
-	bool m_hasTex = false;
-	if (texs.size())
-		m_hasTex = true;
+	g_pGlobalSys->createNewObjectOfMesh("cow", "./Data/Meshes/cow.obj", true);
+	Mesh * mesh = (Mesh*)g_pGlobalSys->getObjectFromName("cow");
+	mesh->generateBuffers(m_pd3dDevice);
 
-	int num_vertex = positions.size() / 3;
-	for (int i = 0; i < num_vertex; i++)
-	{
-		Basic32 v(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
-			normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2], 0, 0);
-		if (m_hasTex)
-		{
-			v.tex.x = texs[i * 2];
-			v.tex.y = texs[i * 2 + 1];
-		}
-		vertices.push_back(v);
-	}
-
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(Basic32)* vertices.size();
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	vbd.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &vertices[0];
-	m_pd3dDevice->CreateBuffer(&vbd, &vinitData, &m_pVertexBuffer);
-
-	const std::vector<unsigned int>& indices = mesh->indices;
-
-	D3D11_BUFFER_DESC ibd;
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0;
-	ibd.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA iinitData;
-	iinitData.pSysMem = &indices[0];
-	m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer);
-	
 	createRulerLlinesVertexBuffer();
 }
 
@@ -278,38 +235,10 @@ void D3DRenderer::renderRulerLlines()
 
 void D3DRenderer::renderObjects()
 {
-	BasicEffect*basicEffect = Effects::BasicFX;
-
-	UINT stride = sizeof(Basic32);
-	UINT offset = 0;
-	ID3D11DeviceContext * context = m_pImmediateContext;
-	m_pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-	m_pImmediateContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	context->IASetInputLayout(InputLayouts::PosNorTex);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
-	basicEffect->SetDirLights(&m_dirLights[0]);
-	basicEffect->SetEyePosW(eyePosW);
-
-	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
-	D3DX11_TECHNIQUE_DESC techDesc;
-	activeTech->GetDesc(&techDesc);
-
-	tinyobj::mesh_t* mesh = cowObject->getMesh();
-	for (UINT p = 0; p < techDesc.Passes; ++p)
+	for (int i = 0; i < g_pGlobalSys->objects.size(); i++)
 	{
-		XMMATRIX WVP;
-		XMMATRIX worldMat = XMMatrixIdentity();
-		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
-		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetTexTransform(worldMat);
-		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[0]);
-
-		activeTech->GetPassByIndex(p)->Apply(0, context);
-		m_pImmediateContext->DrawIndexed(mesh->indices.size(), 0, 0);
+		Object * obj = g_pGlobalSys->objects[i];
+		obj->render(m_pImmediateContext, this);
 	}
 }
 

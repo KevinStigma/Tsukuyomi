@@ -5,7 +5,6 @@
 #include <d3dcompiler.h>
 #include <directxcolors.h>
 #include "Camera.h"
-#include "Object.h"
 
 class D3DRenderer
 {
@@ -17,6 +16,8 @@ public:
 	void renderScene();
 	void cleanup();
 	Camera& getCamera() { return m_camera; }
+	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
+	std::vector<Material> & getMaterials() { return m_materials; }
 
 protected:
 	void initLights();
@@ -44,7 +45,6 @@ protected:
 	ID3D11VertexShader*		m_pVertexShader = nullptr;
 	ID3D11PixelShader*      m_pPixelShader = nullptr;
 	ID3D11Buffer*			m_pRulerLineVertexBuffer = nullptr;
-	Object*					cowObject;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
 };
