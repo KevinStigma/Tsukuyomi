@@ -1,9 +1,11 @@
 #include "D3DRenderer.h"
 #include <directxcolors.h>
 #include <vector>
+#include "common.h"
 #include "Vertex.h"
 #include "Globalsys.h"
 #include "Effects/Effects.h"
+#include "tiny_obj_loader.h"
 using namespace DirectX::Colors;
 
 D3DRenderer::D3DRenderer()
@@ -13,7 +15,7 @@ D3DRenderer::D3DRenderer()
 
 D3DRenderer::~D3DRenderer()
 {
-
+	cleanup();
 }
 
 bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height)
@@ -127,15 +129,69 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 	return true;
 }
 
+void D3DRenderer::initLights()
+{
+	m_dirLights.resize(3);
+	m_dirLights[0].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	m_dirLights[0].Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_dirLights[0].Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	// m_dirLights[0].Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_dirLights[0].Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+
+	m_dirLights[1].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_dirLights[1].Diffuse = XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
+	m_dirLights[1].Specular = XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	m_dirLights[1].Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+
+	m_dirLights[2].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_dirLights[2].Diffuse = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	m_dirLights[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_dirLights[2].Direction = XMFLOAT3(0.0f, -0.707f, -0.707f);
+}
+
+void D3DRenderer::initMaterials()
+{
+	float r = 0.73725f, g = 0.741176f, b = 0.74902f;
+	m_materials.resize(6);
+	m_materials[0].Ambient = XMFLOAT4(r*0.2f, g*0.2f, b*0.2f, 1.0f);
+	m_materials[0].Diffuse = XMFLOAT4(r*0.6f, g*0.6f, b*0.6f, 1.0f);
+	m_materials[0].Specular = XMFLOAT4(r*0.5f, g*0.5f, b*0.5f, 16.0f);
+
+	m_materials[1].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_materials[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials[1].Specular = XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
+
+	m_materials[2].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_materials[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f);
+	m_materials[2].Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+
+	m_materials[3].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_materials[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_materials[3].Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+
+	m_materials[4].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_materials[4].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	m_materials[4].Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+
+	m_materials[5].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_materials[5].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	m_materials[5].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
+}
+
 void D3DRenderer::initScene()
 {
 	m_camera.init();
-	g_pGlobalSys->loadObjMesh("Data/Meshes/cow.obj");
-	g_pGlobalSys->reconNormals(g_pGlobalSys->objects[0]);
+	initLights();
+	initMaterials();
+	g_pGlobalSys->createNewObject("cow", "./Data/Meshes/cow.obj", true);
+	Object * obj = g_pGlobalSys->getObjectFromName("cow");
+	cowObject = obj;
+	tinyobj::mesh_t* mesh = obj->getMesh();
+	
 	std::vector<Basic32> vertices;
-	const std::vector<float>& positions = g_pGlobalSys->objects[0].mesh.positions;
-	const std::vector<float>& normals = g_pGlobalSys->objects[0].mesh.normals;
-	const std::vector<float>& texs = g_pGlobalSys->objects[0].mesh.texcoords;
+	const std::vector<float>& positions = mesh->positions;
+	const std::vector<float>& normals = mesh->normals;
+	const std::vector<float>& texs = mesh->texcoords;
 	bool m_hasTex = false;
 	if (texs.size())
 		m_hasTex = true;
@@ -163,7 +219,7 @@ void D3DRenderer::initScene()
 	vinitData.pSysMem = &vertices[0];
 	m_pd3dDevice->CreateBuffer(&vbd, &vinitData, &m_pVertexBuffer);
 
-	const std::vector<unsigned int>& indices = g_pGlobalSys->objects[0].mesh.indices;
+	const std::vector<unsigned int>& indices = mesh->indices;
 
 	D3D11_BUFFER_DESC ibd;
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -174,7 +230,7 @@ void D3DRenderer::initScene()
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &indices[0];
 	m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pIndexBuffer);
-
+	
 	createRulerLlinesVertexBuffer();
 }
 
@@ -188,6 +244,7 @@ void D3DRenderer::renderScene()
 
 	renderRulerLlines();
 
+	renderObjects();
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
 }
@@ -217,7 +274,43 @@ void D3DRenderer::renderRulerLlines()
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->Draw(204, 0);
 	}
-	context->OMSetDepthStencilState(0, 0);
+}
+
+void D3DRenderer::renderObjects()
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	m_pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	m_pImmediateContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
+	basicEffect->SetDirLights(&m_dirLights[0]);
+	basicEffect->SetEyePosW(eyePosW);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	tinyobj::mesh_t* mesh = cowObject->getMesh();
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		XMMATRIX worldMat = XMMatrixIdentity();
+		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetTexTransform(worldMat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[0]);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		m_pImmediateContext->DrawIndexed(mesh->indices.size(), 0, 0);
+	}
 }
 
 void D3DRenderer::createRulerLlinesVertexBuffer()
@@ -264,5 +357,7 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 
 void D3DRenderer::cleanup()
 {
-
+	SAFE_RELEASE(m_pIndexBuffer);
+	SAFE_RELEASE(m_pVertexBuffer);
+	SAFE_RELEASE(m_pRulerLineVertexBuffer);
 }

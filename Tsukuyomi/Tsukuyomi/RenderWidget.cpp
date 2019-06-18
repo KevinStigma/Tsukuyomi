@@ -16,7 +16,6 @@ RenderWidget::~RenderWidget()
 {
 	if (renderer)
 	{
-		renderer->cleanup();
 		SAFE_DELETE(renderer);
 	}
 	SAFE_DELETE(g_pGlobalSys);

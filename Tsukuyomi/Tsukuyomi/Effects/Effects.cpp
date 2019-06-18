@@ -42,6 +42,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	Light2TexTech     = mFX->GetTechniqueByName("Light2Tex");
 	Light3TexTech     = mFX->GetTechniqueByName("Light3Tex");
 	SimpleColorTech	  = mFX->GetTechniqueByName("SimpleColor");
+	DebugNormalTech	  = mFX->GetTechniqueByName("DebugNormal");
 
 	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 

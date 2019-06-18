@@ -89,13 +89,18 @@ VertexOut VS(VertexIn vin)
 	return vout;
 }
  
+float4 NormalPS(VertexOut pin) : SV_Target
+{
+	pin.NormalW = normalize(pin.NormalW);
+	return float4(pin.NormalW, 1.0);
+}
+
 float4 PS(VertexOut pin, 
           uniform int gLightCount, 
 		  uniform bool gUseTexure, 
 		  uniform bool gAlphaClip, 
 		  uniform bool gFogEnabled) : SV_Target
 {
-	//return float4(1.0,0.0,0.0,1.0);
 	
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
@@ -169,6 +174,16 @@ float4 PS(VertexOut pin,
 	litColor.a = gMaterial.Diffuse.a * texColor.a;
 
 	return litColor;
+}
+
+technique11 DebugNormal
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, NormalPS()));
+	}
 }
 
 technique11 Light1

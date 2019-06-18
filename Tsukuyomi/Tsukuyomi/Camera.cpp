@@ -6,7 +6,7 @@ void Camera::init()
 	fov = 0.5f * XM_PI;
 	zNear = 0.01f;
 	zFar = 1000.0f;
-	position = XMFLOAT3(0.0f, 0.0f, -2.5f);
+	position = XMFLOAT3(0.0f, 0.0f, -250.0f);
 	up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	updateRight();

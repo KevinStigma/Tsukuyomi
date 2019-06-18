@@ -1,9 +1,11 @@
 #pragma once
+#include <vector>
 #include <windows.h>
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <directxcolors.h>
 #include "Camera.h"
+#include "Object.h"
 
 class D3DRenderer
 {
@@ -17,9 +19,13 @@ public:
 	Camera& getCamera() { return m_camera; }
 
 protected:
+	void initLights();
+	void initMaterials();
+	void renderObjects();
 	void renderRulerLlines();
 	void createRulerLlinesVertexBuffer();
 
+	Camera m_camera;
 	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
 	D3D_FEATURE_LEVEL       m_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	ID3D11Device*           m_pd3dDevice = nullptr;
@@ -38,5 +44,7 @@ protected:
 	ID3D11VertexShader*		m_pVertexShader = nullptr;
 	ID3D11PixelShader*      m_pPixelShader = nullptr;
 	ID3D11Buffer*			m_pRulerLineVertexBuffer = nullptr;
-	Camera m_camera;
+	Object*					cowObject;
+	std::vector<DirectionalLight> m_dirLights;
+	std::vector<Material> m_materials;
 };
