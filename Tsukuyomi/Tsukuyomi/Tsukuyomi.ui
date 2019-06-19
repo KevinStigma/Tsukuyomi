@@ -28,6 +28,16 @@
      </rect>
     </property>
    </widget>
+   <widget class="QListView" name="objectsListView">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>60</y>
+      <width>161</width>
+      <height>501</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

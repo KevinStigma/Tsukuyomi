@@ -184,8 +184,8 @@ void D3DRenderer::initScene()
 	m_camera.init();
 	initLights();
 	initMaterials();
-	g_pGlobalSys->createNewObjectOfMesh("cow", "./Data/Meshes/cow.obj", true, XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(0.01, 0.01, 0.01));
-	Mesh * mesh = (Mesh*)g_pGlobalSys->getObjectFromName("cow");
+	g_pGlobalSys->objectManager.createNewObjectOfMesh("cow", "./Data/Meshes/cow.obj", true, XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(0.01, 0.01, 0.01));
+	Mesh * mesh = (Mesh*)g_pGlobalSys->objectManager.getObjectFromName("cow");
 	mesh->generateBuffers(m_pd3dDevice);
 
 	createRulerLlinesVertexBuffer();
@@ -201,7 +201,7 @@ void D3DRenderer::renderScene()
 
 	renderRulerLlines();
 
-	renderObjects();
+	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
 }
@@ -230,15 +230,6 @@ void D3DRenderer::renderRulerLlines()
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->Draw(204, 0);
-	}
-}
-
-void D3DRenderer::renderObjects()
-{
-	for (int i = 0; i < g_pGlobalSys->objects.size(); i++)
-	{
-		Object * obj = g_pGlobalSys->objects[i];
-		obj->render(m_pImmediateContext, this);
 	}
 }
 

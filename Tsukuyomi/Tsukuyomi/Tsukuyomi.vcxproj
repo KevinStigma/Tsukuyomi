@@ -120,6 +120,7 @@
     <ClCompile Include="Effects\Effects.cpp" />
     <ClCompile Include="GlobalSys.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjectsManager.cpp" />
     <ClCompile Include="Objects\Mesh.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="D3DRenderer.h" />
     <ClInclude Include="Effects\Effects.h" />
     <ClInclude Include="GlobalSys.h" />
+    <ClInclude Include="ObjectsManager.h" />
     <ClInclude Include="Objects\Mesh.h" />
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Vertex.h" />

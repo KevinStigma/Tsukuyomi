@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -31,6 +32,7 @@ public:
     QAction *actionLoad_Project;
     QWidget *centralWidget;
     RenderWidget *render_widget;
+    QListView *objectsListView;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -53,6 +55,9 @@ public:
         render_widget = new RenderWidget(centralWidget);
         render_widget->setObjectName(QStringLiteral("render_widget"));
         render_widget->setGeometry(QRect(30, 50, 640, 480));
+        objectsListView = new QListView(centralWidget);
+        objectsListView->setObjectName(QStringLiteral("objectsListView"));
+        objectsListView->setGeometry(QRect(830, 60, 161, 501));
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
