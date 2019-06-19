@@ -30,6 +30,7 @@ void ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path
 	if (recon_normals)
 		mesh->constructNormals();
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
+	listview->addItem(QString(obj_name.c_str()));
 }
 
 Object* ObjectManager::getObjectFromName(std::string name)
@@ -37,6 +38,20 @@ Object* ObjectManager::getObjectFromName(std::string name)
 	if (objects.find(name) == objects.end())
 		return nullptr;
 	return objects[name];
+}
+
+bool ObjectManager::removeObject(std::string name)
+{
+	if (objects.find(name) == objects.end())
+		return false;
+	auto iter = getObjectFromName(name);
+	SAFE_DELETE(iter);
+	objects.erase(name);
+	listview->clear();
+	for each (auto iter in objects)
+		listview->addItem(QString(iter.first.c_str()));
+
+	return true;
 }
 
 void ObjectManager::renderAllObjects(ID3D11DeviceContext * context, D3DRenderer* renderer)

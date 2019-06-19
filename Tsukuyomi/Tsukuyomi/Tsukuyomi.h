@@ -12,6 +12,10 @@ public:
 	Tsukuyomi(QWidget *parent = Q_NULLPTR);
 	void keyReleaseEvent(QKeyEvent *event);
 
+public slots:
+	void on_objectsListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+	void on_actionLoad_Mesh_triggered();
+
 private:
 	Ui::TsukuyomiClass ui;
 };

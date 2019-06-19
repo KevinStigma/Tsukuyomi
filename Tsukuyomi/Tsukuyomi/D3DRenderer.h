@@ -22,7 +22,6 @@ public:
 protected:
 	void initLights();
 	void initMaterials();
-	void renderObjects();
 	void renderRulerLlines();
 	void createRulerLlinesVertexBuffer();
 

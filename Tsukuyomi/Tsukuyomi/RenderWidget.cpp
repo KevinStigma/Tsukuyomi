@@ -7,7 +7,6 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QWidget(parent)
 {
-	g_pGlobalSys = new GlobalSys;
 	setAttribute(Qt::WA_PaintOnScreen, true);
 	setAttribute(Qt::WA_NativeWindow, true);
 };

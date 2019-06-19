@@ -72,12 +72,18 @@
     <ClCompile Include="ObjectsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectsListWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="RenderWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ObjectsListWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
