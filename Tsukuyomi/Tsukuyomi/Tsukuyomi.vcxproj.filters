@@ -75,6 +75,9 @@
     <ClCompile Include="ObjectsListWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectPropertyWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ObjectsListWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ObjectPropertyWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -38,3 +38,8 @@ void Tsukuyomi::on_actionLoad_Mesh_triggered()
 	if (obj->getType() == MESH)
 		((Mesh*)obj)->generateBuffers(ui.render_widget->getRenderer()->getDevice());
 }
+
+void Tsukuyomi::on_sx_lineEdit_editingFinished()
+{
+	std::cout << "666666666" << std::endl;
+}

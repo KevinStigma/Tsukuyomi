@@ -38,7 +38,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="propertyWidget" native="true">
+   <widget class="ObjectPropertyWidget" name="propertyWidget" native="true">
     <property name="geometry">
      <rect>
       <x>840</x>
@@ -256,6 +256,12 @@
    <class>ObjectsListWidget</class>
    <extends>QListWidget</extends>
    <header>objectslistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ObjectPropertyWidget</class>
+   <extends>QWidget</extends>
+   <header>objectpropertywidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

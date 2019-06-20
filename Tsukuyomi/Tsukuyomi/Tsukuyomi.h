@@ -15,6 +15,7 @@ public:
 public slots:
 	void on_objectsListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 	void on_actionLoad_Mesh_triggered();
+	void on_sx_lineEdit_editingFinished();
 
 private:
 	Ui::TsukuyomiClass ui;

@@ -22,6 +22,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
+#include "objectpropertywidget.h"
 #include "objectslistwidget.h"
 #include "renderwidget.h"
 
@@ -35,7 +36,7 @@ public:
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
-    QWidget *propertyWidget;
+    ObjectPropertyWidget *propertyWidget;
     QLabel *label;
     QLineEdit *sx_lineEdit;
     QLabel *label_2;
@@ -74,7 +75,7 @@ public:
         objectsListView = new ObjectsListWidget(centralWidget);
         objectsListView->setObjectName(QStringLiteral("objectsListView"));
         objectsListView->setGeometry(QRect(10, 30, 161, 471));
-        propertyWidget = new QWidget(centralWidget);
+        propertyWidget = new ObjectPropertyWidget(centralWidget);
         propertyWidget->setObjectName(QStringLiteral("propertyWidget"));
         propertyWidget->setGeometry(QRect(840, 30, 321, 481));
         label = new QLabel(propertyWidget);
