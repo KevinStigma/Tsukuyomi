@@ -1,5 +1,6 @@
 #include "Tsukuyomi.h"
 #include "Globalsys.h"
+#include <QFileDialog>
 #include <iostream>
 
 Tsukuyomi::Tsukuyomi(QWidget *parent)
@@ -27,5 +28,13 @@ void Tsukuyomi::on_objectsListView_currentItemChanged(QListWidgetItem *current, 
 
 void Tsukuyomi::on_actionLoad_Mesh_triggered()
 {
-	std::cout << "77777777" << std::endl;
+	QString filename = QFileDialog::getOpenFileName(this, tr("Load Mesh"), "./Data/Meshes", "obj files(*.obj)", 0);
+	if (!filename.size())
+		return;
+	ObjectManager& objectMgr = g_pGlobalSys->objectManager;
+	Object* obj = objectMgr.createNewObjectOfMesh("", filename.toStdString());
+	if (!obj)
+		return;
+	if (obj->getType() == MESH)
+		((Mesh*)obj)->generateBuffers(ui.render_widget->getRenderer()->getDevice());
 }

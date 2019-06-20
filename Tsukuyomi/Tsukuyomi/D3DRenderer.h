@@ -18,6 +18,7 @@ public:
 	Camera& getCamera() { return m_camera; }
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
+	ID3D11Device* getDevice() { return m_pd3dDevice; }
 
 protected:
 	void initLights();

@@ -22,6 +22,7 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent *event);
+	D3DRenderer * getRenderer() { return renderer; }
 private:
 
 	D3DRenderer * renderer = nullptr;

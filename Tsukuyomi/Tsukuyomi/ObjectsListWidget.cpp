@@ -1,9 +1,21 @@
 #include "ObjectsListWidget.h"
 #include "GlobalSys.h"
+#include <iostream>
+
+ObjectListWidgetItem::ObjectListWidgetItem(std::string content):QListWidgetItem(QString(content.c_str()))
+{
+	curText = text();
+}
+
+ObjectListWidgetItem::~ObjectListWidgetItem()
+{
+
+}
+
 
 ObjectsListWidget::ObjectsListWidget(QWidget *parent): QListWidget(parent)
 {
-
+	connect(this, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(updateItemName(QListWidgetItem *)));
 }
 
 ObjectsListWidget::~ObjectsListWidget()
@@ -54,4 +66,27 @@ void ObjectsListWidget::showCurItemProperty(QListWidgetItem*item)
 	rotWLineEdit->setText(QString(std::to_string(object->rotation.w).c_str()));
 }
 
+void ObjectsListWidget::updateItemName(QListWidgetItem * item)
+{
+	std::string new_name = item->text().toStdString();
+	std::string cur_name = (((ObjectListWidgetItem*)item)->curText).toStdString();
+	if (new_name == cur_name)
+		return;
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	if (object_mgr.changeObjectName(cur_name, new_name))
+		((ObjectListWidgetItem*)item)->curText = new_name.c_str();
+	else
+		item->setText(cur_name.c_str());
+}
 
+void ObjectsListWidget::addItem(const QString &label)
+{
+	ObjectListWidgetItem* item = new ObjectListWidgetItem(label.toStdString());
+	addItem(item);
+}
+
+void ObjectsListWidget::addItem(QListWidgetItem *item)
+{
+	QListWidget::addItem(item);
+	item->setFlags(item->flags() | Qt::ItemIsEditable);
+}
