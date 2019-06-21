@@ -13,9 +13,9 @@ public:
 	void keyReleaseEvent(QKeyEvent *event);
 
 public slots:
-	void on_objectsListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 	void on_actionLoad_Mesh_triggered();
-	void on_sx_lineEdit_editingFinished();
+	void on_actionLoad_Project_triggered();
+	void on_actionSave_Project_triggered();
 
 private:
 	Ui::TsukuyomiClass ui;

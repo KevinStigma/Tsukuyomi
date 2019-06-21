@@ -4,9 +4,10 @@
 #include <QLineEdit>
 #include <unordered_map>
 
+class ObjectPropertyWidget;
+
 class ObjectListWidgetItem : public QListWidgetItem
 {
-	//Q_OBJECT
 public:
 	ObjectListWidgetItem(std::string content);
 	~ObjectListWidgetItem();
@@ -24,14 +25,12 @@ public:
 	void addItem(QListWidgetItem *item);
 	void updateObjects(std::unordered_map<std::string, Object*>& objects);
 	void showCurItemProperty(QListWidgetItem*item);
-	void setPropertyWidget(QWidget* widget);
+	void setPropertyWidget(ObjectPropertyWidget* widget);
 
 public slots:
 	void updateItemName(QListWidgetItem * item);
+	void changeCurrentItem(QListWidgetItem *current, QListWidgetItem *previous);
 
 protected:
-	QWidget* propertyWidget = nullptr;
-	QLineEdit * scaleXLineEdit = nullptr, *scaleYLineEdit = nullptr, *scaleZLineEdit = nullptr;
-	QLineEdit * transXLineEdit = nullptr, *transYLineEdit = nullptr, *transZLineEdit = nullptr;
-	QLineEdit * rotXLineEdit = nullptr, *rotYLineEdit = nullptr, *rotZLineEdit = nullptr, *rotWLineEdit = nullptr;
+	ObjectPropertyWidget* propertyWidget = nullptr;
 };

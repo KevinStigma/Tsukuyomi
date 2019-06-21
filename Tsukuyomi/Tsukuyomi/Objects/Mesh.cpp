@@ -78,7 +78,7 @@ void Mesh::loadObjMesh(const std::string& obj_path)
 	if (!ret)
 		return;
 	shape = obj_list[0];
-
+	mesh_path = obj_path;
 	std::cout << "load " << obj_path << " successfully!" << std::endl;
 }
 

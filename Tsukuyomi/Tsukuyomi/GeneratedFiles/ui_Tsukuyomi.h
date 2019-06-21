@@ -33,6 +33,7 @@ class Ui_TsukuyomiClass
 public:
     QAction *actionLoad_Mesh;
     QAction *actionLoad_Project;
+    QAction *actionSave_Project;
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
@@ -67,6 +68,8 @@ public:
         actionLoad_Mesh->setObjectName(QStringLiteral("actionLoad_Mesh"));
         actionLoad_Project = new QAction(TsukuyomiClass);
         actionLoad_Project->setObjectName(QStringLiteral("actionLoad_Project"));
+        actionSave_Project = new QAction(TsukuyomiClass);
+        actionSave_Project->setObjectName(QStringLiteral("actionSave_Project"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
@@ -140,6 +143,7 @@ public:
         menuBar->addAction(menu->menuAction());
         menu->addAction(actionLoad_Mesh);
         menu->addAction(actionLoad_Project);
+        menu->addAction(actionSave_Project);
 
         retranslateUi(TsukuyomiClass);
 
@@ -151,6 +155,7 @@ public:
         TsukuyomiClass->setWindowTitle(QApplication::translate("TsukuyomiClass", "Tsukuyomi", Q_NULLPTR));
         actionLoad_Mesh->setText(QApplication::translate("TsukuyomiClass", "Load Mesh", Q_NULLPTR));
         actionLoad_Project->setText(QApplication::translate("TsukuyomiClass", "Load Project", Q_NULLPTR));
+        actionSave_Project->setText(QApplication::translate("TsukuyomiClass", "Save Project", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         label_2->setText(QApplication::translate("TsukuyomiClass", "Translation", Q_NULLPTR));
         label_3->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));

@@ -1,6 +1,7 @@
 #pragma once
 #include <QWidget>
 #include <QLineEdit>
+#include "GlobalSys.h"
 
 class ObjectPropertyWidget :public QWidget
 {
@@ -8,6 +9,16 @@ class ObjectPropertyWidget :public QWidget
 public:
 	ObjectPropertyWidget(QWidget *parent = 0);
 	~ObjectPropertyWidget();
+	void updateObjectProperty(Object* object);
+	void init();
+public slots:
+	void scaleXLineEditingFinished();
+	void scaleYLineEditingFinished();
+	void scaleZLineEditingFinished();
+	void transXLineEditingFinished();
+	void transYLineEditingFinished();
+	void transZLineEditingFinished();
+
 protected:
 	QLineEdit * scaleXLineEdit = nullptr, *scaleYLineEdit = nullptr, *scaleZLineEdit = nullptr;
 	QLineEdit * transXLineEdit = nullptr, *transYLineEdit = nullptr, *transZLineEdit = nullptr;

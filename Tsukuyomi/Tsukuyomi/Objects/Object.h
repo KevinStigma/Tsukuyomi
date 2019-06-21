@@ -23,6 +23,9 @@ public:
 	std::string getName() { return name; }
 	void setName(std::string obj_name) { name = obj_name; }
 	ObjectType getType() { return type; }
+	std::string getTranslationText();
+	std::string getScaleText();
+	std::string getRotationText();
 	XMMATRIX genereateWorldMatrix();
 	XMFLOAT3 translation;
 	XMFLOAT3 scale;

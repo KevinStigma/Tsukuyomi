@@ -31,6 +31,21 @@ void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r)
 	rotation = r;
 }
 
+std::string Object::getTranslationText()
+{
+	return std::to_string(translation.x) + "," + std::to_string(translation.y) + "," + std::to_string(translation.z);
+}
+
+std::string Object::getScaleText()
+{
+	return std::to_string(scale.x) + "," + std::to_string(scale.y) + "," + std::to_string(scale.z);
+}
+
+std::string Object::getRotationText()
+{
+	return std::to_string(rotation.x) + "," + std::to_string(rotation.y) + "," + std::to_string(rotation.z)+"," + std::to_string(rotation.w);
+}
+
 XMMATRIX Object::genereateWorldMatrix()
 {
 	XMMATRIX world_mat = XMMatrixTranslation(translation.x, translation.y, translation.z);
