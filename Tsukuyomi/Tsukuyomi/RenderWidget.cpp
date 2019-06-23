@@ -27,6 +27,7 @@ void RenderWidget::resizeEvent(QResizeEvent *event)
 		renderer = new D3DRenderer;
 		renderer->initD3D((HWND)winId(), width(), height());
 		renderer->initScene();
+		g_pGlobalSys->renderer = renderer;
 	}
 }
 

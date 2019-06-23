@@ -37,8 +37,6 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 		obj_name = base_name + std::to_string(i);
 	}
 	Mesh* mesh = new Mesh(obj_name, obj_path, t, s, r);
-	if (mesh->getMesh()->normals.size() == 0)
-		mesh->constructNormals();
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count()-1);
@@ -79,6 +77,7 @@ bool ObjectManager::changeObjectName(std::string old_name, std::string new_name)
 		Object* obj = objects[old_name];
 		objects.erase(old_name);
 		objects.insert(std::pair<std::string, Object*>(new_name, obj));
+		obj->setName(new_name);
 		return true;
 	}
 }

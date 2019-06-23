@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Tsukuyomi.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.2
+** Created by: Qt User Interface Compiler version 5.12.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,10 +10,9 @@
 #define UI_TSUKUYOMI_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
@@ -59,85 +58,85 @@ public:
     void setupUi(QMainWindow *TsukuyomiClass)
     {
         if (TsukuyomiClass->objectName().isEmpty())
-            TsukuyomiClass->setObjectName(QStringLiteral("TsukuyomiClass"));
+            TsukuyomiClass->setObjectName(QString::fromUtf8("TsukuyomiClass"));
         TsukuyomiClass->resize(1192, 754);
         QIcon icon;
-        icon.addFile(QStringLiteral("logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8("logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
         actionLoad_Mesh = new QAction(TsukuyomiClass);
-        actionLoad_Mesh->setObjectName(QStringLiteral("actionLoad_Mesh"));
+        actionLoad_Mesh->setObjectName(QString::fromUtf8("actionLoad_Mesh"));
         actionLoad_Project = new QAction(TsukuyomiClass);
-        actionLoad_Project->setObjectName(QStringLiteral("actionLoad_Project"));
+        actionLoad_Project->setObjectName(QString::fromUtf8("actionLoad_Project"));
         actionSave_Project = new QAction(TsukuyomiClass);
-        actionSave_Project->setObjectName(QStringLiteral("actionSave_Project"));
+        actionSave_Project->setObjectName(QString::fromUtf8("actionSave_Project"));
         centralWidget = new QWidget(TsukuyomiClass);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
-        render_widget->setObjectName(QStringLiteral("render_widget"));
+        render_widget->setObjectName(QString::fromUtf8("render_widget"));
         render_widget->setGeometry(QRect(180, 30, 640, 480));
         objectsListView = new ObjectsListWidget(centralWidget);
-        objectsListView->setObjectName(QStringLiteral("objectsListView"));
+        objectsListView->setObjectName(QString::fromUtf8("objectsListView"));
         objectsListView->setGeometry(QRect(10, 30, 161, 471));
         propertyWidget = new ObjectPropertyWidget(centralWidget);
-        propertyWidget->setObjectName(QStringLiteral("propertyWidget"));
+        propertyWidget->setObjectName(QString::fromUtf8("propertyWidget"));
         propertyWidget->setGeometry(QRect(840, 30, 321, 481));
         label = new QLabel(propertyWidget);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(20, 10, 61, 16));
         QFont font;
-        font.setFamily(QStringLiteral("Consolas"));
+        font.setFamily(QString::fromUtf8("Consolas"));
         font.setPointSize(12);
         label->setFont(font);
         sx_lineEdit = new QLineEdit(propertyWidget);
-        sx_lineEdit->setObjectName(QStringLiteral("sx_lineEdit"));
+        sx_lineEdit->setObjectName(QString::fromUtf8("sx_lineEdit"));
         sx_lineEdit->setGeometry(QRect(110, 10, 41, 20));
         label_2 = new QLabel(propertyWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setGeometry(QRect(0, 40, 111, 16));
         label_2->setFont(font);
         label_3 = new QLabel(propertyWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setGeometry(QRect(20, 70, 54, 11));
         label_3->setFont(font);
         sy_lineEdit = new QLineEdit(propertyWidget);
-        sy_lineEdit->setObjectName(QStringLiteral("sy_lineEdit"));
+        sy_lineEdit->setObjectName(QString::fromUtf8("sy_lineEdit"));
         sy_lineEdit->setGeometry(QRect(160, 10, 41, 20));
         sz_lineEdit = new QLineEdit(propertyWidget);
-        sz_lineEdit->setObjectName(QStringLiteral("sz_lineEdit"));
+        sz_lineEdit->setObjectName(QString::fromUtf8("sz_lineEdit"));
         sz_lineEdit->setGeometry(QRect(210, 10, 41, 20));
         ty_lineEdit = new QLineEdit(propertyWidget);
-        ty_lineEdit->setObjectName(QStringLiteral("ty_lineEdit"));
+        ty_lineEdit->setObjectName(QString::fromUtf8("ty_lineEdit"));
         ty_lineEdit->setGeometry(QRect(160, 40, 41, 20));
         tx_lineEdit = new QLineEdit(propertyWidget);
-        tx_lineEdit->setObjectName(QStringLiteral("tx_lineEdit"));
+        tx_lineEdit->setObjectName(QString::fromUtf8("tx_lineEdit"));
         tx_lineEdit->setGeometry(QRect(110, 40, 41, 20));
         tz_lineEdit = new QLineEdit(propertyWidget);
-        tz_lineEdit->setObjectName(QStringLiteral("tz_lineEdit"));
+        tz_lineEdit->setObjectName(QString::fromUtf8("tz_lineEdit"));
         tz_lineEdit->setGeometry(QRect(210, 40, 41, 20));
         rz_lineEdit = new QLineEdit(propertyWidget);
-        rz_lineEdit->setObjectName(QStringLiteral("rz_lineEdit"));
+        rz_lineEdit->setObjectName(QString::fromUtf8("rz_lineEdit"));
         rz_lineEdit->setGeometry(QRect(200, 70, 41, 20));
         ry_lineEdit = new QLineEdit(propertyWidget);
-        ry_lineEdit->setObjectName(QStringLiteral("ry_lineEdit"));
+        ry_lineEdit->setObjectName(QString::fromUtf8("ry_lineEdit"));
         ry_lineEdit->setGeometry(QRect(140, 70, 41, 20));
         rx_lineEdit = new QLineEdit(propertyWidget);
-        rx_lineEdit->setObjectName(QStringLiteral("rx_lineEdit"));
+        rx_lineEdit->setObjectName(QString::fromUtf8("rx_lineEdit"));
         rx_lineEdit->setGeometry(QRect(90, 70, 41, 20));
         rw_lineEdit = new QLineEdit(propertyWidget);
-        rw_lineEdit->setObjectName(QStringLiteral("rw_lineEdit"));
+        rw_lineEdit->setObjectName(QString::fromUtf8("rw_lineEdit"));
         rw_lineEdit->setGeometry(QRect(250, 70, 41, 20));
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setObjectName(QString::fromUtf8("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 1192, 23));
         menu = new QMenu(menuBar);
-        menu->setObjectName(QStringLiteral("menu"));
+        menu->setObjectName(QString::fromUtf8("menu"));
         TsukuyomiClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TsukuyomiClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
         TsukuyomiClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(TsukuyomiClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
+        statusBar->setObjectName(QString::fromUtf8("statusBar"));
         TsukuyomiClass->setStatusBar(statusBar);
 
         menuBar->addAction(menu->menuAction());
@@ -152,14 +151,14 @@ public:
 
     void retranslateUi(QMainWindow *TsukuyomiClass)
     {
-        TsukuyomiClass->setWindowTitle(QApplication::translate("TsukuyomiClass", "Tsukuyomi", Q_NULLPTR));
-        actionLoad_Mesh->setText(QApplication::translate("TsukuyomiClass", "Load Mesh", Q_NULLPTR));
-        actionLoad_Project->setText(QApplication::translate("TsukuyomiClass", "Load Project", Q_NULLPTR));
-        actionSave_Project->setText(QApplication::translate("TsukuyomiClass", "Save Project", Q_NULLPTR));
-        label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
-        label_2->setText(QApplication::translate("TsukuyomiClass", "Translation", Q_NULLPTR));
-        label_3->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
-        menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
+        TsukuyomiClass->setWindowTitle(QApplication::translate("TsukuyomiClass", "Tsukuyomi", nullptr));
+        actionLoad_Mesh->setText(QApplication::translate("TsukuyomiClass", "Load Mesh", nullptr));
+        actionLoad_Project->setText(QApplication::translate("TsukuyomiClass", "Load Project", nullptr));
+        actionSave_Project->setText(QApplication::translate("TsukuyomiClass", "Save Project", nullptr));
+        label->setText(QApplication::translate("TsukuyomiClass", "Scale", nullptr));
+        label_2->setText(QApplication::translate("TsukuyomiClass", "Translation", nullptr));
+        label_3->setText(QApplication::translate("TsukuyomiClass", "Rot", nullptr));
+        menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", nullptr));
     } // retranslateUi
 
 };

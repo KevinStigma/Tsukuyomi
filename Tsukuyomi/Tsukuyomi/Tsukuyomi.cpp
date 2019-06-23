@@ -27,11 +27,10 @@ void Tsukuyomi::on_actionLoad_Mesh_triggered()
 	if (!filename.size())
 		return;
 	ObjectManager& objectMgr = g_pGlobalSys->objectManager;
-	Object* obj = objectMgr.createNewObjectOfMesh("", filename.toStdString());
-	if (!obj)
-		return;
-	if (obj->getType() == MESH)
-		((Mesh*)obj)->generateBuffers(ui.render_widget->getRenderer()->getDevice());
+
+	QString curPath = QDir::currentPath(); 
+	QString relPath = filename.mid(curPath.length() + 1);
+	objectMgr.createNewObjectOfMesh("", relPath.toStdString());
 }
 
 void Tsukuyomi::on_actionLoad_Project_triggered()

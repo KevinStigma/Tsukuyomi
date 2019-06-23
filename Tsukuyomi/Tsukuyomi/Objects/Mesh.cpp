@@ -3,12 +3,15 @@
 #include "../Effects/Effects.h"
 #include "../Vertex.h"
 #include "../D3DRenderer.h"
+#include "GlobalSys.h"
 #include <iostream>
 
 Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r):Object(name, t, s, r)
 {
 	loadObjMesh(file_path);
 	type = MESH;
+	if (!isEmpty())
+		generateBuffers(g_pGlobalSys->renderer->getDevice());
 }
 
 Mesh::~Mesh()
@@ -79,6 +82,8 @@ void Mesh::loadObjMesh(const std::string& obj_path)
 		return;
 	shape = obj_list[0];
 	mesh_path = obj_path;
+	if (shape.mesh.normals.size() == 0)
+		constructNormals();
 	std::cout << "load " << obj_path << " successfully!" << std::endl;
 }
 

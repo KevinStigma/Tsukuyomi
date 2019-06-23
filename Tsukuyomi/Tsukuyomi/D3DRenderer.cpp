@@ -184,9 +184,6 @@ void D3DRenderer::initScene()
 	m_camera.init();
 	initLights();
 	initMaterials();
-	// g_pGlobalSys->objectManager.createNewObjectOfMesh("cow", "./Data/Meshes/sphere.obj", XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(0.5, 0.5, 0.5));
-	// Mesh * mesh = (Mesh*)g_pGlobalSys->objectManager.getObjectFromName("cow");
-	// mesh->generateBuffers(m_pd3dDevice);
 	createRulerLlinesVertexBuffer();
 }
 
