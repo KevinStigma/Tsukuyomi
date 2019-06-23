@@ -23,7 +23,7 @@ void ObjectManager::clear()
 	curSelObject = nullptr;
 }
 
-Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r)
+Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)
 {
 	if (obj_path == "")
 		return nullptr;
@@ -166,7 +166,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 		SplitString(scale_str, strs, ",");
 		XMFLOAT3 scale(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		SplitString(rot_str, strs, ",");
-		XMFLOAT4 rotation(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]), stringToNum<float>(strs[3]));
+		XMFLOAT3 rotation(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		if (type == "mesh")
 		{
 			std::string mesh_path = express->Attribute("MeshPath");

@@ -6,7 +6,7 @@
 #include "GlobalSys.h"
 #include <iostream>
 
-Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r):Object(name, t, s, r)
+Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
 {
 	loadObjMesh(file_path);
 	type = MESH;

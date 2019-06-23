@@ -25,7 +25,6 @@ void ObjectPropertyWidget::init()
 	rotXLineEdit = findChild<QLineEdit*>(QString("rx_lineEdit"));
 	rotYLineEdit = findChild<QLineEdit*>(QString("ry_lineEdit"));
 	rotZLineEdit = findChild<QLineEdit*>(QString("rz_lineEdit"));
-	rotWLineEdit = findChild<QLineEdit*>(QString("rw_lineEdit"));
 
 	connect(scaleXLineEdit, SIGNAL(editingFinished()), this, SLOT(scaleXLineEditingFinished()));
 	connect(scaleYLineEdit, SIGNAL(editingFinished()), this, SLOT(scaleYLineEditingFinished()));
@@ -34,6 +33,20 @@ void ObjectPropertyWidget::init()
 	connect(transXLineEdit, SIGNAL(editingFinished()), this, SLOT(transXLineEditingFinished()));
 	connect(transYLineEdit, SIGNAL(editingFinished()), this, SLOT(transYLineEditingFinished()));
 	connect(transZLineEdit, SIGNAL(editingFinished()), this, SLOT(transZLineEditingFinished()));
+
+	QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
+	QRegExpValidator *pReg =new QRegExpValidator(rx, this);
+	scaleXLineEdit->setValidator(pReg);
+	scaleYLineEdit->setValidator(pReg);
+	scaleZLineEdit->setValidator(pReg);
+
+	transXLineEdit->setValidator(pReg);
+	transYLineEdit->setValidator(pReg);
+	transZLineEdit->setValidator(pReg);
+
+	rotXLineEdit->setValidator(pReg);
+	rotYLineEdit->setValidator(pReg);
+	rotZLineEdit->setValidator(pReg);
 }
 
 void ObjectPropertyWidget::updateObjectProperty(Object* object)
@@ -49,7 +62,6 @@ void ObjectPropertyWidget::updateObjectProperty(Object* object)
 	rotXLineEdit->setText(QString(std::to_string(object->rotation.x).c_str()));
 	rotYLineEdit->setText(QString(std::to_string(object->rotation.y).c_str()));
 	rotZLineEdit->setText(QString(std::to_string(object->rotation.z).c_str()));
-	rotWLineEdit->setText(QString(std::to_string(object->rotation.w).c_str()));
 }
 
 void ObjectPropertyWidget::scaleXLineEditingFinished()

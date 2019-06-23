@@ -26,10 +26,12 @@ public:
 	void updateObjects(std::unordered_map<std::string, Object*>& objects);
 	void showCurItemProperty(QListWidgetItem*item);
 	void setPropertyWidget(ObjectPropertyWidget* widget);
+	bool isEditing = false;
 
 public slots:
 	void updateItemName(QListWidgetItem * item);
 	void changeCurrentItem(QListWidgetItem *current, QListWidgetItem *previous);
+	void doubleClickItem(QListWidgetItem * item);
 
 protected:
 	ObjectPropertyWidget* propertyWidget = nullptr;

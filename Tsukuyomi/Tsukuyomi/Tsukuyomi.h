@@ -10,6 +10,8 @@ class Tsukuyomi : public QMainWindow
 
 public:
 	Tsukuyomi(QWidget *parent = Q_NULLPTR);
+
+protected:
 	void keyReleaseEvent(QKeyEvent *event);
 
 public slots:

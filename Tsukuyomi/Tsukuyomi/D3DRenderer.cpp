@@ -12,7 +12,7 @@ using namespace DirectX::Colors;
 
 D3DRenderer::D3DRenderer()
 {
-
+	g_pGlobalSys->renderer = this;
 }
 
 D3DRenderer::~D3DRenderer()

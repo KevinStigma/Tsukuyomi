@@ -13,7 +13,7 @@ public:
 	~ObjectManager();
 	void clear();
 	void renderAllObjects(ID3D11DeviceContext * context, D3DRenderer* renderer);
-	Object* createNewObjectOfMesh(std::string name, std::string obj_path = "", XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT4 r = XMFLOAT4(0.0, 0.0, 0.0, 1.0));
+	Object* createNewObjectOfMesh(std::string name, std::string obj_path = "", XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0));
 	Object* getObjectFromName(std::string name);
 	bool removeObject(std::string name);
 	bool changeObjectName(std::string old_name, std::string new_name);

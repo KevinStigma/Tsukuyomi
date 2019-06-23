@@ -11,14 +11,8 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys->objectManager.setListView(ui.objectsListView);
 	ui.propertyWidget->init();
 	ui.objectsListView->setPropertyWidget(ui.propertyWidget);
-}
-
-void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
-{
-	if (event->key() == Qt::Key::Key_R)
-	{
-		ui.render_widget->keyReleaseEvent(event);
-	}
+	g_pGlobalSys->objectsList = ui.objectsListView;
+	g_pGlobalSys->renderWidget = ui.render_widget;
 }
 
 void Tsukuyomi::on_actionLoad_Mesh_triggered()
@@ -50,4 +44,24 @@ void Tsukuyomi::on_actionSave_Project_triggered()
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
 	object_mgr.exportProject(name.toStdString());
 
+}
+
+void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key::Key_R)
+	{
+		if (ui.objectsListView->isEditing)
+			return;
+		Camera& camera = ui.render_widget->getRenderer()->getCamera();
+		camera.init();
+	}
+	else if (event->key() == Qt::Key::Key_Delete)
+	{
+		QListWidget* object_list = g_pGlobalSys->objectsList;
+		QListWidgetItem* item = object_list->currentItem();
+		if (!item)
+			return;
+		ObjectManager& obj_mgr = g_pGlobalSys->objectManager;
+		obj_mgr.removeObject(item->text().toStdString());
+	}
 }

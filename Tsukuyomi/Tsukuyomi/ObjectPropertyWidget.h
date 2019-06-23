@@ -11,6 +11,7 @@ public:
 	~ObjectPropertyWidget();
 	void updateObjectProperty(Object* object);
 	void init();
+
 public slots:
 	void scaleXLineEditingFinished();
 	void scaleYLineEditingFinished();
@@ -22,5 +23,5 @@ public slots:
 protected:
 	QLineEdit * scaleXLineEdit = nullptr, *scaleYLineEdit = nullptr, *scaleZLineEdit = nullptr;
 	QLineEdit * transXLineEdit = nullptr, *transYLineEdit = nullptr, *transZLineEdit = nullptr;
-	QLineEdit * rotXLineEdit = nullptr, *rotYLineEdit = nullptr, *rotZLineEdit = nullptr, *rotWLineEdit = nullptr;
+	QLineEdit * rotXLineEdit = nullptr, *rotYLineEdit = nullptr, *rotZLineEdit = nullptr;
 };

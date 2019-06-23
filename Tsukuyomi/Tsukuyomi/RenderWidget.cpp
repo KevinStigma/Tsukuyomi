@@ -3,7 +3,7 @@
 #include "common.h"
 #include <iostream>
 #include <QMouseEvent>
-
+#include <QListWidget>
 
 RenderWidget::RenderWidget(QWidget* parent) : QWidget(parent)
 {
@@ -27,7 +27,6 @@ void RenderWidget::resizeEvent(QResizeEvent *event)
 		renderer = new D3DRenderer;
 		renderer->initD3D((HWND)winId(), width(), height());
 		renderer->initScene();
-		g_pGlobalSys->renderer = renderer;
 	}
 }
 
@@ -42,14 +41,6 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
 
 }
 
-void RenderWidget::keyReleaseEvent(QKeyEvent *event)
-{
-	Camera& camera = renderer->getCamera();
-	if (event->key() == Qt::Key::Key_R)
-	{
-		camera.init();
-	}
-}
 
 void RenderWidget::mousePressEvent(QMouseEvent *mouse_event)
 {

@@ -2,7 +2,7 @@
 #include "Object.h"
 #include <iostream>
 
-Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r):translation(t), scale(s), rotation(r)
+Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)
 {
 	name = obj_name;
 	type = ObjectType::EMPTY;
@@ -24,7 +24,7 @@ void Object::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 }
 
-void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT4 r)
+void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)
 {
 	translation = t;
 	scale = s;
@@ -43,7 +43,7 @@ std::string Object::getScaleText()
 
 std::string Object::getRotationText()
 {
-	return std::to_string(rotation.x) + "," + std::to_string(rotation.y) + "," + std::to_string(rotation.z)+"," + std::to_string(rotation.w);
+	return std::to_string(rotation.x) + "," + std::to_string(rotation.y) + "," + std::to_string(rotation.z);
 }
 
 XMMATRIX Object::genereateWorldMatrix()
