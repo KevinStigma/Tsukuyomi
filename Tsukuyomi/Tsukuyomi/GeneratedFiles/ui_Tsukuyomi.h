@@ -79,7 +79,7 @@ public:
         objectsListView->setGeometry(QRect(10, 30, 161, 471));
         propertyWidget = new ObjectPropertyWidget(centralWidget);
         propertyWidget->setObjectName(QStringLiteral("propertyWidget"));
-        propertyWidget->setGeometry(QRect(840, 30, 321, 481));
+        propertyWidget->setGeometry(QRect(840, 30, 261, 101));
         label = new QLabel(propertyWidget);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(20, 10, 61, 16));

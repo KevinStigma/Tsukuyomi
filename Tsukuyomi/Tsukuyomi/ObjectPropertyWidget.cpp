@@ -157,3 +157,18 @@ void ObjectPropertyWidget::rotZLineEditingFinished()
 	auto & rotation = object->rotation;
 	rotation.z = XMConvertToRadians(rotZLineEdit->text().toFloat());
 }
+
+void ObjectPropertyWidget::leaveEvent(QEvent * e)
+{
+	scaleXLineEdit->clearFocus();
+	scaleYLineEdit->clearFocus();
+	scaleZLineEdit->clearFocus();
+
+	transXLineEdit->clearFocus();
+	transYLineEdit->clearFocus();
+	transZLineEdit->clearFocus();
+
+	rotXLineEdit->clearFocus();
+	rotYLineEdit->clearFocus();
+	rotZLineEdit->clearFocus();
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include <QWidget>
 #include <QLineEdit>
+#include <QEvent>
 #include "GlobalSys.h"
 
 class ObjectPropertyWidget :public QWidget
@@ -24,6 +25,7 @@ public slots:
 	void rotZLineEditingFinished();
 
 protected:
+	void leaveEvent(QEvent *);
 	QLineEdit * scaleXLineEdit = nullptr, *scaleYLineEdit = nullptr, *scaleZLineEdit = nullptr;
 	QLineEdit * transXLineEdit = nullptr, *transYLineEdit = nullptr, *transZLineEdit = nullptr;
 	QLineEdit * rotXLineEdit = nullptr, *rotYLineEdit = nullptr, *rotZLineEdit = nullptr;
