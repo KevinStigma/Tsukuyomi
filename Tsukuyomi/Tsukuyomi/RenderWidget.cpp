@@ -89,5 +89,5 @@ void RenderWidget::wheelEvent(QWheelEvent *event)
 {
 	float delta = event->delta();
 	Camera& camera = renderer->getCamera();
-	camera.walkForward(delta * 0.001);
+	camera.walkForward(delta * g_pGlobalSys->getMoveSpeed());
 }

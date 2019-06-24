@@ -9,9 +9,13 @@ GlobalSys *g_pGlobalSys = NULL;
 
 GlobalSys::GlobalSys()
 {
-
 }
 
 GlobalSys::~GlobalSys()
 {
+}
+
+float GlobalSys::getMoveSpeed()
+{
+	return 0.001 / 20.0 * moveSpeedSlider->value();
 }

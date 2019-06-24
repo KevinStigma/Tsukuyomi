@@ -19,6 +19,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -52,6 +53,8 @@ public:
     QLineEdit *rz_lineEdit;
     QLineEdit *ry_lineEdit;
     QLineEdit *rx_lineEdit;
+    QSlider *moveSpeedSlider;
+    QLabel *label_4;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -137,6 +140,17 @@ public:
         rx_lineEdit->setObjectName(QStringLiteral("rx_lineEdit"));
         rx_lineEdit->setGeometry(QRect(110, 70, 41, 20));
         rx_lineEdit->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        moveSpeedSlider = new QSlider(centralWidget);
+        moveSpeedSlider->setObjectName(QStringLiteral("moveSpeedSlider"));
+        moveSpeedSlider->setGeometry(QRect(940, 140, 160, 22));
+        moveSpeedSlider->setMinimum(0);
+        moveSpeedSlider->setMaximum(100);
+        moveSpeedSlider->setValue(20);
+        moveSpeedSlider->setOrientation(Qt::Horizontal);
+        label_4 = new QLabel(centralWidget);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(840, 140, 91, 16));
+        label_4->setFont(font);
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -192,6 +206,7 @@ public:
         ry_lineEdit->setText(QString());
         rx_lineEdit->setInputMask(QString());
         rx_lineEdit->setText(QString());
+        label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
     } // retranslateUi
 
