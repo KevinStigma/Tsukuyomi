@@ -185,6 +185,7 @@ void D3DRenderer::initScene()
 	initLights();
 	initMaterials();
 	createRulerLlinesVertexBuffer();
+	createBoundingBoxBuffers();
 }
 
 void D3DRenderer::renderScene()
@@ -241,22 +242,22 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 	{
 		SimpleVertex vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(i,0.0,-50.0);
-		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		vertex.Color = XMFLOAT4(0.4, 0.4, 0.4, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(i, 0.0, 50.0);
-		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		vertex.Color = XMFLOAT4(0.4, 0.4, 0.4, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(-50.0, 0.0, i);
-		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		vertex.Color = XMFLOAT4(0.4, 0.4, 0.4, 1.0);
 		line_pts.push_back(vertex);
 
 		vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(50.0, 0.0, i);
-		vertex.Color = XMFLOAT4(0.75, 0.75, 0.75, 1.0);
+		vertex.Color = XMFLOAT4(0.4, 0.4, 0.4, 1.0);
 		line_pts.push_back(vertex);
 	}
 
@@ -271,9 +272,141 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 		return;
 }
 
+void D3DRenderer::createBoundingBoxBuffers()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+	std::vector<SimpleVertex> line_pts;
+
+	SimpleVertex vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.5, 0.5, -0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.5, -0.5, -0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(-0.5, -0.5, -0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(-0.5, 0.5, -0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.5, 0.5, 0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.5, -0.5, 0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(-0.5, -0.5, 0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(-0.5, 0.5, 0.5);
+	vertex.Color = XMFLOAT4(0.96, 0.906, 0.62, 1.0);
+	line_pts.push_back(vertex);
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(SimpleVertex) * line_pts.size();
+
+	initData.pSysMem = line_pts.data();
+
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pBoundingBoxVertexBuffer)))
+		return;
+
+	std::vector<unsigned int> indices(24);
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 1;
+	indices[3] = 2;
+	indices[4] = 2;
+	indices[5] = 3;
+	indices[6] = 3;
+	indices[7] = 0;
+
+	indices[8] = 0;
+	indices[9] = 4;
+	indices[10] = 1;
+	indices[11] = 5;
+	indices[12] = 2;
+	indices[13] = 6;
+	indices[14] = 3;
+	indices[15] = 7;
+
+	indices[16] = 4;
+	indices[17] = 5;
+	indices[18] = 5;
+	indices[19] = 6;
+	indices[20] = 6;
+	indices[21] = 7;
+	indices[22] = 7;
+	indices[23] = 4;
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pBoundingBoxIndexBuffer)))
+		return;
+}
+
+void D3DRenderer::renderBoundingBox(Object* object)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pBoundingBoxVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pBoundingBoxIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosColor);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	const BoundingBox &bb = object->getBoundingBox();
+	float xl = bb.top.x - bb.bottom.x;
+	float yl = bb.top.y - bb.bottom.y;
+	float zl = bb.top.z - bb.bottom.z;
+	XMFLOAT3 c = bb.center;
+	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->genereateWorldMatrix();
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(24, 0, 0);
+	}
+}
+
 void D3DRenderer::cleanup()
 {
-	SAFE_RELEASE(m_pIndexBuffer);
-	SAFE_RELEASE(m_pVertexBuffer);
 	SAFE_RELEASE(m_pRulerLineVertexBuffer);
+	SAFE_RELEASE(m_pBoundingBoxVertexBuffer);
+	SAFE_RELEASE(m_pBoundingBoxIndexBuffer);
 }

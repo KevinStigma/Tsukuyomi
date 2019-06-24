@@ -41,7 +41,6 @@ void RenderWidget::keyPressEvent(QKeyEvent *event)
 
 }
 
-
 void RenderWidget::mousePressEvent(QMouseEvent *mouse_event)
 {
 	QPoint pos = mouse_event->pos();

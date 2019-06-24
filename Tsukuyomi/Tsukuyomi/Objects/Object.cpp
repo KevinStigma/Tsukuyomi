@@ -1,5 +1,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Object.h"
+#include "../D3DRenderer.h"
 #include <iostream>
 
 Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)
@@ -22,6 +23,11 @@ bool Object::isEmpty()
 void Object::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
 
+}
+
+void Object::renderBoundingBox(D3DRenderer* renderer)
+{
+	renderer->renderBoundingBox(this);
 }
 
 void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)

@@ -6,6 +6,8 @@
 #include <directxcolors.h>
 #include "Camera.h"
 
+class Object;
+
 class D3DRenderer
 {
 public:
@@ -15,6 +17,7 @@ public:
 	void initScene();
 	void renderScene();
 	void cleanup();
+	void renderBoundingBox(Object* object);
 	Camera& getCamera() { return m_camera; }
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
@@ -25,6 +28,7 @@ protected:
 	void initMaterials();
 	void renderRulerLlines();
 	void createRulerLlinesVertexBuffer();
+	void createBoundingBoxBuffers();
 
 	Camera m_camera;
 	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
@@ -39,12 +43,12 @@ protected:
 	ID3D11RenderTargetView* m_pRenderTargetView = nullptr;
 	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;
 	ID3D11InputLayout*      m_pVertexLayout = nullptr;
-	ID3D11Buffer*           m_pVertexBuffer = nullptr;
-	ID3D11Buffer*           m_pIndexBuffer = nullptr;
 	ID3D11Buffer*           m_pConstantBuffer = nullptr;
 	ID3D11VertexShader*		m_pVertexShader = nullptr;
 	ID3D11PixelShader*      m_pPixelShader = nullptr;
 	ID3D11Buffer*			m_pRulerLineVertexBuffer = nullptr;
+	ID3D11Buffer*			m_pBoundingBoxVertexBuffer = nullptr;
+	ID3D11Buffer*           m_pBoundingBoxIndexBuffer = nullptr;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
 };

@@ -63,6 +63,11 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
 	}
+
+	if (g_pGlobalSys->objectManager.getCurSelObject() == this)
+	{
+		renderBoundingBox(renderer);
+	}
 }
 
 void Mesh::loadObjMesh(const std::string& obj_path)
@@ -84,7 +89,39 @@ void Mesh::loadObjMesh(const std::string& obj_path)
 	mesh_path = obj_path;
 	if (shape.mesh.normals.size() == 0)
 		constructNormals();
+	computeBoundingBox();
 	std::cout << "load " << obj_path << " successfully!" << std::endl;
+}
+
+void Mesh::computeBoundingBox()
+{
+	int num_vertices = shape.mesh.positions.size() / 3;
+	boundingBox.top.x = boundingBox.bottom.x = shape.mesh.positions[0];
+	boundingBox.top.y = boundingBox.bottom.y = shape.mesh.positions[1];
+	boundingBox.top.z = boundingBox.bottom.z = shape.mesh.positions[2];
+	XMFLOAT3 center(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < num_vertices; i++)
+	{
+		float x = shape.mesh.positions[i * 3];
+		float y = shape.mesh.positions[i * 3 + 1];
+		float z = shape.mesh.positions[i * 3 + 2];
+
+		center.x += x;
+		center.y += y;
+		center.z += z;
+
+		boundingBox.top.x = max(boundingBox.top.x, x);
+		boundingBox.top.y = max(boundingBox.top.y, y);
+		boundingBox.top.z = max(boundingBox.top.z, z);
+
+		boundingBox.bottom.x = min(boundingBox.bottom.x, x);
+		boundingBox.bottom.y = min(boundingBox.bottom.y, y);
+		boundingBox.bottom.z = min(boundingBox.bottom.z, z);
+	}
+	center.x /= num_vertices;
+	center.y /= num_vertices;
+	center.z /= num_vertices;
+	boundingBox.center = center;
 }
 
 void Mesh::generateBuffers(ID3D11Device* device)

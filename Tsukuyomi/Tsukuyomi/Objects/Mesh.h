@@ -2,6 +2,7 @@
 #include <string>
 #include "Object.h"
 
+
 class Mesh :public Object
 {
 public:
@@ -14,8 +15,8 @@ public:
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	std::string getMeshPath() { return mesh_path; }
-
 protected:
+	void computeBoundingBox();
 	tinyobj::shape_t shape;
 	std::string mesh_path = "";
 	ID3D11Buffer* vertexBuffer = nullptr;
