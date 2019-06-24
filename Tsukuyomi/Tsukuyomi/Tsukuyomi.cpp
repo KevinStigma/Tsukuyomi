@@ -46,6 +46,17 @@ void Tsukuyomi::on_actionSave_Project_triggered()
 
 }
 
+void Tsukuyomi::on_actionClear_Scene_triggered()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.clear();
+}
+
+void Tsukuyomi::on_actionExit_triggered()
+{
+	qApp->quit();
+}
+
 void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key::Key_R)

@@ -18,6 +18,8 @@ public slots:
 	void on_actionLoad_Mesh_triggered();
 	void on_actionLoad_Project_triggered();
 	void on_actionSave_Project_triggered();
+	void on_actionClear_Scene_triggered();
+	void on_actionExit_triggered();
 
 private:
 	Ui::TsukuyomiClass ui;

@@ -34,6 +34,8 @@ public:
     QAction *actionLoad_Mesh;
     QAction *actionLoad_Project;
     QAction *actionSave_Project;
+    QAction *actionClear_Scene;
+    QAction *actionExit;
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
@@ -69,6 +71,10 @@ public:
         actionLoad_Project->setObjectName(QStringLiteral("actionLoad_Project"));
         actionSave_Project = new QAction(TsukuyomiClass);
         actionSave_Project->setObjectName(QStringLiteral("actionSave_Project"));
+        actionClear_Scene = new QAction(TsukuyomiClass);
+        actionClear_Scene->setObjectName(QStringLiteral("actionClear_Scene"));
+        actionExit = new QAction(TsukuyomiClass);
+        actionExit->setObjectName(QStringLiteral("actionExit"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
@@ -149,6 +155,8 @@ public:
         menu->addAction(actionLoad_Mesh);
         menu->addAction(actionLoad_Project);
         menu->addAction(actionSave_Project);
+        menu->addAction(actionClear_Scene);
+        menu->addAction(actionExit);
 
         retranslateUi(TsukuyomiClass);
 
@@ -161,6 +169,8 @@ public:
         actionLoad_Mesh->setText(QApplication::translate("TsukuyomiClass", "Load Mesh", Q_NULLPTR));
         actionLoad_Project->setText(QApplication::translate("TsukuyomiClass", "Load Project", Q_NULLPTR));
         actionSave_Project->setText(QApplication::translate("TsukuyomiClass", "Save Project", Q_NULLPTR));
+        actionClear_Scene->setText(QApplication::translate("TsukuyomiClass", "Clear Scene", Q_NULLPTR));
+        actionExit->setText(QApplication::translate("TsukuyomiClass", "Exit", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());
         sx_lineEdit->setText(QString());
