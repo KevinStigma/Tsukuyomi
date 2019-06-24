@@ -34,6 +34,10 @@ void ObjectPropertyWidget::init()
 	connect(transYLineEdit, SIGNAL(editingFinished()), this, SLOT(transYLineEditingFinished()));
 	connect(transZLineEdit, SIGNAL(editingFinished()), this, SLOT(transZLineEditingFinished()));
 
+	connect(rotXLineEdit, SIGNAL(editingFinished()), this, SLOT(rotXLineEditingFinished()));
+	connect(rotYLineEdit, SIGNAL(editingFinished()), this, SLOT(rotYLineEditingFinished()));
+	connect(rotZLineEdit, SIGNAL(editingFinished()), this, SLOT(rotZLineEditingFinished()));
+
 	QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
 	QRegExpValidator *pReg =new QRegExpValidator(rx, this);
 	scaleXLineEdit->setValidator(pReg);
@@ -59,9 +63,9 @@ void ObjectPropertyWidget::updateObjectProperty(Object* object)
 	transYLineEdit->setText(QString(std::to_string(object->translation.y).c_str()));
 	transZLineEdit->setText(QString(std::to_string(object->translation.z).c_str()));
 
-	rotXLineEdit->setText(QString(std::to_string(object->rotation.x).c_str()));
-	rotYLineEdit->setText(QString(std::to_string(object->rotation.y).c_str()));
-	rotZLineEdit->setText(QString(std::to_string(object->rotation.z).c_str()));
+	rotXLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.x)).c_str()));
+	rotYLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.y)).c_str()));
+	rotZLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.z)).c_str()));
 }
 
 void ObjectPropertyWidget::scaleXLineEditingFinished()
@@ -122,4 +126,34 @@ void ObjectPropertyWidget::transZLineEditingFinished()
 		return;
 	auto & translation = object->translation;
 	translation.z = transZLineEdit->text().toFloat();
+}
+
+void ObjectPropertyWidget::rotXLineEditingFinished()
+{
+	ObjectManager & obj_mgr = g_pGlobalSys->objectManager;
+	Object* object = obj_mgr.getCurSelObject();
+	if (!object)
+		return;
+	auto & rotation = object->rotation;
+	rotation.x = XMConvertToRadians(rotXLineEdit->text().toFloat());
+}
+
+void ObjectPropertyWidget::rotYLineEditingFinished()
+{
+	ObjectManager & obj_mgr = g_pGlobalSys->objectManager;
+	Object* object = obj_mgr.getCurSelObject();
+	if (!object)
+		return;
+	auto & rotation = object->rotation;
+	rotation.y = XMConvertToRadians(rotYLineEdit->text().toFloat());
+}
+
+void ObjectPropertyWidget::rotZLineEditingFinished()
+{
+	ObjectManager & obj_mgr = g_pGlobalSys->objectManager;
+	Object* object = obj_mgr.getCurSelObject();
+	if (!object)
+		return;
+	auto & rotation = object->rotation;
+	rotation.z = XMConvertToRadians(rotZLineEdit->text().toFloat());
 }

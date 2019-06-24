@@ -49,7 +49,7 @@ std::string Object::getRotationText()
 XMMATRIX Object::genereateWorldMatrix()
 {
 	XMMATRIX world_mat = XMMatrixTranslation(translation.x, translation.y, translation.z);
-	XMMATRIX rot_mat = XMMatrixIdentity();
+	XMMATRIX rot_mat = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 	XMMATRIX scale_mat = XMMatrixScaling(scale.x, scale.y, scale.z);
 	return world_mat * rot_mat * scale_mat;
 }

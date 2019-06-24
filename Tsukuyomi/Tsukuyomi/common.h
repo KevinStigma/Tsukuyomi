@@ -7,8 +7,13 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <DirectXMath.h>
+
+using namespace DirectX;
 
 extern void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
+extern XMFLOAT4 transEulerAnglesToQuaternions(XMFLOAT3 angles);
+extern XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat);
 
 template <class Type>
 Type stringToNum(const std::string& str)
@@ -18,3 +23,4 @@ Type stringToNum(const std::string& str)
 	iss >> num;
 	return num;
 }
+

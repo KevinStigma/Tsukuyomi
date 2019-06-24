@@ -19,6 +19,9 @@ public slots:
 	void transXLineEditingFinished();
 	void transYLineEditingFinished();
 	void transZLineEditingFinished();
+	void rotXLineEditingFinished();
+	void rotYLineEditingFinished();
+	void rotZLineEditingFinished();
 
 protected:
 	QLineEdit * scaleXLineEdit = nullptr, *scaleYLineEdit = nullptr, *scaleZLineEdit = nullptr;
