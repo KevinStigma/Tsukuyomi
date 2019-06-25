@@ -7,6 +7,7 @@
 #include "Camera.h"
 
 class Object;
+enum  RenderSelObjMode { NONE, COORD_AXIS, ROT_AXIS};
 
 class D3DRenderer
 {
@@ -22,13 +23,16 @@ public:
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
 	ID3D11Device* getDevice() { return m_pd3dDevice; }
+	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
 
 protected:
 	void initLights();
 	void initMaterials();
 	void renderRulerLlines();
+	void renderAxis(Object* obj);
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
+	void createSelObjAxisBuffers();
 
 	Camera m_camera;
 	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
@@ -49,6 +53,10 @@ protected:
 	ID3D11Buffer*			m_pRulerLineVertexBuffer = nullptr;
 	ID3D11Buffer*			m_pBoundingBoxVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pBoundingBoxIndexBuffer = nullptr;
+	ID3D11Buffer*			m_pAxisVertexBuffer = nullptr;
+	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
+	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
+	int						axisIndexCount;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
 };

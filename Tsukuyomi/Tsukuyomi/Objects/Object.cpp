@@ -1,6 +1,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Object.h"
 #include "../D3DRenderer.h"
+#include "../GlobalSys.h"
 #include <iostream>
 
 Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)
@@ -22,7 +23,10 @@ bool Object::isEmpty()
 
 void Object::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
-
+	if (g_pGlobalSys->objectManager.getCurSelObject() == this)
+	{
+		renderBoundingBox(renderer);
+	}
 }
 
 void Object::renderBoundingBox(D3DRenderer* renderer)
@@ -35,6 +39,21 @@ void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)
 	translation = t;
 	scale = s;
 	rotation = r;
+}
+
+void Object::setScale(XMFLOAT3 s)
+{
+	scale = s;
+}
+
+void Object::setRotation(XMFLOAT3 r)
+{
+	rotation = r;
+}
+
+void Object::setTranslation(XMFLOAT3 t)
+{
+	translation = t;
 }
 
 std::string Object::getTranslationText()

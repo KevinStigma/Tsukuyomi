@@ -20,7 +20,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include "MathHelper.h"
+#include "./MathHelper/MathHelper.h"
 #include "LightHelper.h"
 
 //---------------------------------------------------------------------------------------

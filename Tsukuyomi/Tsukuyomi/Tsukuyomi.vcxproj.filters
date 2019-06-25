@@ -40,6 +40,12 @@
     <Filter Include="tinyxml2">
       <UniqueIdentifier>{9a64d9ba-b56c-4fcb-ad15-d087413bc18a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GeometryGenerator">
+      <UniqueIdentifier>{07756e2e-395e-4b91-95fa-7e7da2d9c0e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MathHelper">
+      <UniqueIdentifier>{6806110d-fcec-46c2-9daf-22805249078c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator\GeometryGenerator.cpp">
+      <Filter>GeometryGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper\MathHelper.cpp">
+      <Filter>MathHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="tinyxml2\tinyxml2.h">
       <Filter>tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator\GeometryGenerator.h">
+      <Filter>GeometryGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper\MathHelper.h">
+      <Filter>MathHelper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

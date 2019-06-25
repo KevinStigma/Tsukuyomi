@@ -7,6 +7,7 @@
 #include "Effects/Effects.h"
 #include "tiny_obj_loader.h"
 #include "Objects/Mesh.h"
+#include "./GeometryGenerator/GeometryGenerator.h"
 
 using namespace DirectX::Colors;
 
@@ -162,9 +163,9 @@ void D3DRenderer::initMaterials()
 	m_materials[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_materials[1].Specular = XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
 
-	m_materials[2].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_materials[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f);
-	m_materials[2].Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+	m_materials[2].Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+	m_materials[2].Diffuse = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
+	m_materials[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
 
 	m_materials[3].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	m_materials[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -186,6 +187,7 @@ void D3DRenderer::initScene()
 	initMaterials();
 	createRulerLlinesVertexBuffer();
 	createBoundingBoxBuffers();
+	createSelObjAxisBuffers();
 }
 
 void D3DRenderer::renderScene()
@@ -227,6 +229,43 @@ void D3DRenderer::renderRulerLlines()
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->Draw(204, 0);
+	}
+}
+
+void D3DRenderer::renderAxis(Object* obj)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	ID3D11DeviceContext*  context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pAxisVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pAxisIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
+	basicEffect->SetDirLights(&m_dirLights[0]);
+	basicEffect->SetEyePosW(eyePosW);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX worldMat = XMMatrixIdentity();
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetTexTransform(inv_world_mat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[2]);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(axisIndexCount, 0, 0);
 	}
 }
 
@@ -370,6 +409,68 @@ void D3DRenderer::createBoundingBoxBuffers()
 		return;
 }
 
+void D3DRenderer::createSelObjAxisBuffers()
+{
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData cylinder_data;
+	geoGen.CreateCylinder(0.025, 0.025, 0.8, 4, 4, cylinder_data);
+
+	GeometryGenerator::MeshData cone_data;
+	geoGen.CreateCylinder(0.05, 0.0, 0.2, 4, 4, cone_data);
+
+	for (int i = 0; i < cylinder_data.Vertices.size(); i++)
+		cylinder_data.Vertices[i].Position.y += 0.4;
+	
+	for (int i = 0; i < cone_data.Vertices.size(); i++)
+		cone_data.Vertices[i].Position.y += 0.8;
+
+	std::vector<GeometryGenerator::Vertex> axis_verts(cylinder_data.Vertices);
+	axis_verts.insert(axis_verts.end(), cone_data.Vertices.begin(), cone_data.Vertices.end());
+
+	std::vector<UINT> axis_inds(cylinder_data.Indices);
+	int count = cylinder_data.Vertices.size();
+	for (int i = 0; i < cone_data.Indices.size(); i++)
+		axis_inds.push_back(count + cone_data.Indices[i]);
+
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+
+	std::vector<Basic32> vertices;
+	std::vector<unsigned int> indices(axis_inds);
+	XMMATRIX rot_mat_x = XMMatrixRotationX(1.5707963);
+	XMMATRIX rot_mat_z = XMMatrixRotationZ(-1.5707963);
+	for (int i = 0; i < axis_verts.size(); i++)
+	{
+		auto vertex = axis_verts[i];
+		Basic32 vert(vertex.Position.x, vertex.Position.y, vertex.Position.z, vertex.Normal.x, vertex.Normal.y, vertex.Normal.z,
+			vertex.TexC.x, vertex.TexC.y);
+		vertices.push_back(vert);
+	}
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(Basic32) * vertices.size();
+
+	initData.pSysMem = vertices.data();
+
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pAxisVertexBuffer)))
+		return;
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pAxisIndexBuffer)))
+		return;
+	axisIndexCount = indices.size();
+}
+
 void D3DRenderer::renderBoundingBox(Object* object)
 {
 	BasicEffect*basicEffect = Effects::BasicFX;
@@ -402,6 +503,12 @@ void D3DRenderer::renderBoundingBox(Object* object)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(24, 0, 0);
 	}
+	/*
+	if (renderSelObjMode == RenderSelObjMode::COORD_AXIS)
+	{
+		renderAxis(object);
+	}
+	*/
 }
 
 void D3DRenderer::cleanup()
@@ -409,4 +516,6 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pRulerLineVertexBuffer);
 	SAFE_RELEASE(m_pBoundingBoxVertexBuffer);
 	SAFE_RELEASE(m_pBoundingBoxIndexBuffer);
+	SAFE_RELEASE(m_pAxisVertexBuffer);
+	SAFE_RELEASE(m_pAxisIndexBuffer);
 }

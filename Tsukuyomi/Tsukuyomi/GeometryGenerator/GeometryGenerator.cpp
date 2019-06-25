@@ -3,7 +3,7 @@
 //***************************************************************************************
 
 #include "GeometryGenerator.h"
-#include "MathHelper.h"
+#include "./MathHelper/MathHelper.h"
 
 void GeometryGenerator::CreateBox(float width, float height, float depth, MeshData& meshData)
 {

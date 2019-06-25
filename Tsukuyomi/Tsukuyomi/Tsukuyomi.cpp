@@ -1,5 +1,6 @@
 #include "Tsukuyomi.h"
 #include "Globalsys.h"
+#include "D3DRenderer.h"
 #include <QFileDialog>
 #include <iostream>
 
@@ -75,5 +76,33 @@ void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 			return;
 		ObjectManager& obj_mgr = g_pGlobalSys->objectManager;
 		obj_mgr.removeObject(item->text().toStdString());
+	}
+}
+
+void Tsukuyomi::on_transButton_clicked(bool checked)
+{
+	if (checked)
+	{
+		ui.rotButton->setChecked(false);
+		g_pGlobalSys->renderer->setRenderSelObjMode(RenderSelObjMode::COORD_AXIS);
+	}
+	else
+	{
+		if(!ui.rotButton->isChecked())
+			g_pGlobalSys->renderer->setRenderSelObjMode(RenderSelObjMode::NONE);
+	}
+}
+
+void Tsukuyomi::on_rotButton_clicked(bool checked)
+{
+	if (checked)
+	{
+		ui.transButton->setChecked(false);
+		g_pGlobalSys->renderer->setRenderSelObjMode(RenderSelObjMode::ROT_AXIS);
+	}
+	else
+	{
+		if (!ui.transButton->isChecked())
+			g_pGlobalSys->renderer->setRenderSelObjMode(RenderSelObjMode::NONE);
 	}
 }

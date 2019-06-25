@@ -34,13 +34,18 @@ public:
 	std::string getRotationText();
 	const BoundingBox & getBoundingBox() { return boundingBox; }
 	XMMATRIX genereateWorldMatrix();
-	XMFLOAT3 translation;
-	XMFLOAT3 scale;
-	XMFLOAT3 rotation;
-
+	XMFLOAT3 getTranslation() { return translation; }
+	XMFLOAT3 getRotation() { return rotation; }
+	XMFLOAT3 getScale() { return scale; }
+	void setScale(XMFLOAT3 s);
+	void setRotation(XMFLOAT3 r);
+	void setTranslation(XMFLOAT3 t);
 protected:
 	void renderBoundingBox(D3DRenderer* renderer);
 	std::string name;
 	ObjectType type;
 	BoundingBox boundingBox;
+	XMFLOAT3 translation;
+	XMFLOAT3 scale;
+	XMFLOAT3 rotation;
 };

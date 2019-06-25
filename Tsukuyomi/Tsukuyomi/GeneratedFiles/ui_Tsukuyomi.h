@@ -19,6 +19,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -55,6 +56,9 @@ public:
     QLineEdit *rx_lineEdit;
     QSlider *moveSpeedSlider;
     QLabel *label_4;
+    QWidget *widget;
+    QPushButton *transButton;
+    QPushButton *rotButton;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -64,7 +68,7 @@ public:
     {
         if (TsukuyomiClass->objectName().isEmpty())
             TsukuyomiClass->setObjectName(QStringLiteral("TsukuyomiClass"));
-        TsukuyomiClass->resize(1192, 754);
+        TsukuyomiClass->resize(1170, 754);
         QIcon icon;
         icon.addFile(QStringLiteral("logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
@@ -151,10 +155,23 @@ public:
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setGeometry(QRect(840, 140, 91, 16));
         label_4->setFont(font);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(840, 180, 151, 61));
+        transButton = new QPushButton(widget);
+        transButton->setObjectName(QStringLiteral("transButton"));
+        transButton->setGeometry(QRect(10, 10, 51, 41));
+        transButton->setCheckable(true);
+        transButton->setChecked(true);
+        rotButton = new QPushButton(widget);
+        rotButton->setObjectName(QStringLiteral("rotButton"));
+        rotButton->setGeometry(QRect(80, 10, 51, 41));
+        rotButton->setIconSize(QSize(16, 16));
+        rotButton->setCheckable(true);
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1192, 23));
+        menuBar->setGeometry(QRect(0, 0, 1170, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         TsukuyomiClass->setMenuBar(menuBar);
@@ -207,6 +224,8 @@ public:
         rx_lineEdit->setInputMask(QString());
         rx_lineEdit->setText(QString());
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
+        transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
+        rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
     } // retranslateUi
 

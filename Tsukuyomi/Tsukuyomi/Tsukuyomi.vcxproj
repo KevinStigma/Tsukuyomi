@@ -119,8 +119,10 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
     <ClCompile Include="Effects\Effects.cpp" />
+    <ClCompile Include="GeometryGenerator\GeometryGenerator.cpp" />
     <ClCompile Include="GlobalSys.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathHelper\MathHelper.cpp" />
     <ClCompile Include="ObjectPropertyWidget.cpp" />
     <ClCompile Include="ObjectsListWidget.cpp" />
     <ClCompile Include="ObjectsManager.cpp" />
@@ -145,6 +147,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="D3DRenderer.h" />
     <ClInclude Include="Effects\Effects.h" />
+    <ClInclude Include="GeometryGenerator\GeometryGenerator.h" />
     <ClInclude Include="GlobalSys.h" />
     <QtMoc Include="ObjectsListWidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
@@ -154,6 +157,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
+    <ClInclude Include="MathHelper\MathHelper.h" />
     <ClInclude Include="ObjectsManager.h" />
     <ClInclude Include="Objects\Mesh.h" />
     <ClInclude Include="Objects\Object.h" />

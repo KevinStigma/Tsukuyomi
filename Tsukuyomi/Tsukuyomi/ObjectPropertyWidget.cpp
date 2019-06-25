@@ -55,17 +55,20 @@ void ObjectPropertyWidget::init()
 
 void ObjectPropertyWidget::updateObjectProperty(Object* object)
 {
-	scaleXLineEdit->setText(QString(std::to_string(object->scale.x).c_str()));
-	scaleYLineEdit->setText(QString(std::to_string(object->scale.y).c_str()));
-	scaleZLineEdit->setText(QString(std::to_string(object->scale.z).c_str()));
+	XMFLOAT3 scale = object->getScale();
+	scaleXLineEdit->setText(QString(std::to_string(scale.x).c_str()));
+	scaleYLineEdit->setText(QString(std::to_string(scale.y).c_str()));
+	scaleZLineEdit->setText(QString(std::to_string(scale.z).c_str()));
 
-	transXLineEdit->setText(QString(std::to_string(object->translation.x).c_str()));
-	transYLineEdit->setText(QString(std::to_string(object->translation.y).c_str()));
-	transZLineEdit->setText(QString(std::to_string(object->translation.z).c_str()));
+	XMFLOAT3 translation = object->getTranslation();
+	transXLineEdit->setText(QString(std::to_string(translation.x).c_str()));
+	transYLineEdit->setText(QString(std::to_string(translation.y).c_str()));
+	transZLineEdit->setText(QString(std::to_string(translation.z).c_str()));
 
-	rotXLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.x)).c_str()));
-	rotYLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.y)).c_str()));
-	rotZLineEdit->setText(QString(std::to_string(XMConvertToDegrees(object->rotation.z)).c_str()));
+	XMFLOAT3 rotation = object->getRotation();
+	rotXLineEdit->setText(QString(std::to_string(XMConvertToDegrees(rotation.x)).c_str()));
+	rotYLineEdit->setText(QString(std::to_string(XMConvertToDegrees(rotation.y)).c_str()));
+	rotZLineEdit->setText(QString(std::to_string(XMConvertToDegrees(rotation.z)).c_str()));
 }
 
 void ObjectPropertyWidget::scaleXLineEditingFinished()
@@ -74,8 +77,8 @@ void ObjectPropertyWidget::scaleXLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & scale = object->scale;
-	scale.x = scaleXLineEdit->text().toFloat();
+	auto scale = object->getScale();
+	object->setScale(XMFLOAT3(scaleXLineEdit->text().toFloat(), scale.y, scale.z));
 }
 
 void ObjectPropertyWidget::scaleYLineEditingFinished()
@@ -84,8 +87,8 @@ void ObjectPropertyWidget::scaleYLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & scale = object->scale;
-	scale.y = scaleYLineEdit->text().toFloat();
+	auto scale = object->getScale();
+	object->setScale(XMFLOAT3(scale.x, scaleYLineEdit->text().toFloat(), scale.z));
 }
 
 void ObjectPropertyWidget::scaleZLineEditingFinished()
@@ -94,8 +97,9 @@ void ObjectPropertyWidget::scaleZLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & scale = object->scale;
-	scale.z = scaleZLineEdit->text().toFloat();
+
+	auto scale = object->getScale();
+	object->setScale(XMFLOAT3(scale.x, scale.y, scaleZLineEdit->text().toFloat()));
 }
 
 void ObjectPropertyWidget::transXLineEditingFinished()
@@ -104,8 +108,8 @@ void ObjectPropertyWidget::transXLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & translation = object->translation;
-	translation.x = transXLineEdit->text().toFloat();
+	auto & translation = object->getTranslation();
+	object->setTranslation(XMFLOAT3(transXLineEdit->text().toFloat(), translation.y, translation.z));
 }
 
 void ObjectPropertyWidget::transYLineEditingFinished()
@@ -114,8 +118,8 @@ void ObjectPropertyWidget::transYLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & translation = object->translation;
-	translation.y = transYLineEdit->text().toFloat();
+	auto & translation = object->getTranslation();
+	object->setTranslation(XMFLOAT3(translation.x, transYLineEdit->text().toFloat(), translation.z));
 }
 
 void ObjectPropertyWidget::transZLineEditingFinished()
@@ -124,8 +128,9 @@ void ObjectPropertyWidget::transZLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & translation = object->translation;
-	translation.z = transZLineEdit->text().toFloat();
+
+	auto & translation = object->getTranslation();
+	object->setTranslation(XMFLOAT3(translation.x, translation.y, transZLineEdit->text().toFloat()));
 }
 
 void ObjectPropertyWidget::rotXLineEditingFinished()
@@ -134,8 +139,8 @@ void ObjectPropertyWidget::rotXLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & rotation = object->rotation;
-	rotation.x = XMConvertToRadians(rotXLineEdit->text().toFloat());
+	auto & rotation = object->getRotation();
+	object->setRotation(XMFLOAT3(XMConvertToRadians(rotXLineEdit->text().toFloat()), rotation.y, rotation.z));
 }
 
 void ObjectPropertyWidget::rotYLineEditingFinished()
@@ -144,8 +149,8 @@ void ObjectPropertyWidget::rotYLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & rotation = object->rotation;
-	rotation.y = XMConvertToRadians(rotYLineEdit->text().toFloat());
+	auto & rotation = object->getRotation();
+	object->setRotation(XMFLOAT3(rotation.x, XMConvertToRadians(rotYLineEdit->text().toFloat()), rotation.z));
 }
 
 void ObjectPropertyWidget::rotZLineEditingFinished()
@@ -154,8 +159,8 @@ void ObjectPropertyWidget::rotZLineEditingFinished()
 	Object* object = obj_mgr.getCurSelObject();
 	if (!object)
 		return;
-	auto & rotation = object->rotation;
-	rotation.z = XMConvertToRadians(rotZLineEdit->text().toFloat());
+	auto & rotation = object->getRotation();
+	object->setRotation(XMFLOAT3(rotation.x, rotation.y, XMConvertToRadians(rotZLineEdit->text().toFloat())));
 }
 
 void ObjectPropertyWidget::leaveEvent(QEvent * e)
