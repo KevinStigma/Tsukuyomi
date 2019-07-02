@@ -167,13 +167,13 @@ void D3DRenderer::initMaterials()
 	m_materials[2].Diffuse = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
 	m_materials[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
 
-	m_materials[3].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_materials[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials[3].Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+	m_materials[3].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_materials[3].Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
+	m_materials[3].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
 
-	m_materials[4].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_materials[4].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	m_materials[4].Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+	m_materials[4].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_materials[4].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.8f, 1.0f);
+	m_materials[4].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
 
 	m_materials[5].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	m_materials[5].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
@@ -228,7 +228,7 @@ void D3DRenderer::renderRulerLlines()
 		basicEffect->SetWorldViewProj(WVP);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
-		context->Draw(204, 0);
+		context->Draw(214, 0);
 	}
 }
 
@@ -253,16 +253,41 @@ void D3DRenderer::renderAxis(Object* obj)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = XMMatrixIdentity();
+	XMFLOAT3 center = obj->getBoundingBox().center;
+	XMMATRIX center_mat = XMMatrixTranslation(center.x, center.y, center.z);
+	XMMATRIX axisTrans = XMMatrixIdentity();
+	XMMATRIX objWorldMat = obj->getWorldMatrix();
+	XMMATRIX worldMat = axisTrans * center_mat * objWorldMat;
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(m_materials[2]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(axisIndexCount, 0, 0);
+
+		axisTrans = XMMatrixRotationZ(-MathHelper::Pi * 0.5f);
+		worldMat = axisTrans * center_mat * objWorldMat;
+		inv_world_mat = XMMatrixInverse(&v, worldMat);
+		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[3]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(axisIndexCount, 0, 0);
+
+		axisTrans = XMMatrixRotationX(MathHelper::Pi * 0.5f);
+		worldMat = axisTrans * center_mat * objWorldMat;
+		inv_world_mat = XMMatrixInverse(&v, worldMat);
+		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[4]);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(axisIndexCount, 0, 0);
@@ -277,7 +302,7 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 	ZeroMemory(&buffDesc, sizeof(buffDesc));
 	std::vector<SimpleVertex> line_pts;
 
-	for(int i=-50;i<=50;i+=2)
+	for(int i=-51;i<=51;i+=2)
 	{
 		SimpleVertex vertex = SimpleVertex();
 		vertex.Pos = XMFLOAT3(i,0.0,-50.0);
@@ -299,6 +324,36 @@ void D3DRenderer::createRulerLlinesVertexBuffer()
 		vertex.Color = XMFLOAT4(0.4, 0.4, 0.4, 1.0);
 		line_pts.push_back(vertex);
 	}
+
+	SimpleVertex vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.0, 0.0, 0.0);
+	vertex.Color = XMFLOAT4(1.0, 0.0, 0.0, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(1000.0, 0.0, 0.0);
+	vertex.Color = XMFLOAT4(1.0, 0.0, 0.0, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.0, 0.0, 0.0);
+	vertex.Color = XMFLOAT4(0.0, 1.0, 0.0, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.0, 1000.0, 0.0);
+	vertex.Color = XMFLOAT4(0.0, 1.0, 0.0, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.0, 0.0, 0.0);
+	vertex.Color = XMFLOAT4(0.0, 0.0, 1.0, 1.0);
+	line_pts.push_back(vertex);
+
+	vertex = SimpleVertex();
+	vertex.Pos = XMFLOAT3(0.0, 0.0, 1000.0);
+	vertex.Color = XMFLOAT4(0.0, 0.0, 1.0, 1.0);
+	line_pts.push_back(vertex);
 
 	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
 	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
@@ -491,7 +546,7 @@ void D3DRenderer::renderBoundingBox(Object* object)
 	float yl = bb.top.y - bb.bottom.y;
 	float zl = bb.top.z - bb.bottom.z;
 	XMFLOAT3 c = bb.center;
-	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->genereateWorldMatrix();
+	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->getWorldMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
@@ -503,12 +558,6 @@ void D3DRenderer::renderBoundingBox(Object* object)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(24, 0, 0);
 	}
-	/*
-	if (renderSelObjMode == RenderSelObjMode::COORD_AXIS)
-	{
-		renderAxis(object);
-	}
-	*/
 }
 
 void D3DRenderer::cleanup()

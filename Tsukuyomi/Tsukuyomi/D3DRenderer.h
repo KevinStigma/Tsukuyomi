@@ -19,6 +19,7 @@ public:
 	void renderScene();
 	void cleanup();
 	void renderBoundingBox(Object* object);
+	void renderAxis(Object* obj);
 	Camera& getCamera() { return m_camera; }
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
@@ -29,7 +30,6 @@ protected:
 	void initLights();
 	void initMaterials();
 	void renderRulerLlines();
-	void renderAxis(Object* obj);
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
 	void createSelObjAxisBuffers();

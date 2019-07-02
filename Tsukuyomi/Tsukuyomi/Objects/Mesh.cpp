@@ -49,7 +49,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = genereateWorldMatrix();
+	XMMATRIX worldMat = getWorldMatrix();
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
@@ -64,10 +64,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
 	}
 
-	if (g_pGlobalSys->objectManager.getCurSelObject() == this)
-	{
-		renderBoundingBox(renderer);
-	}
+	Object::render(context, renderer);
 }
 
 void Mesh::loadObjMesh(const std::string& obj_path)
