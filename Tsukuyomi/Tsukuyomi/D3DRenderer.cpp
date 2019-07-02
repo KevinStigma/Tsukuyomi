@@ -201,8 +201,20 @@ void D3DRenderer::renderScene()
 	renderRulerLlines();
 
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
+
+	renderSelObjFlag();
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
+}
+
+void D3DRenderer::renderSelObjFlag()
+{
+	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
+	if (sel_obj)
+	{
+		renderBoundingBox(sel_obj);
+		renderAxis(sel_obj);
+	}
 }
 
 void D3DRenderer::renderRulerLlines()
@@ -235,10 +247,10 @@ void D3DRenderer::renderRulerLlines()
 void D3DRenderer::renderAxis(Object* obj)
 {
 	BasicEffect*basicEffect = Effects::BasicFX;
-
 	UINT stride = sizeof(Basic32);
 	UINT offset = 0;
 	ID3D11DeviceContext*  context = m_pImmediateContext;
+	context->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	context->IASetVertexBuffers(0, 1, &m_pAxisVertexBuffer, &stride, &offset);
 	context->IASetIndexBuffer(m_pAxisIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	context->IASetInputLayout(InputLayouts::PosNorTex);
@@ -253,13 +265,17 @@ void D3DRenderer::renderAxis(Object* obj)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMFLOAT3 center = obj->getBoundingBox().center;
-	XMMATRIX center_mat = XMMatrixTranslation(center.x, center.y, center.z);
+	const BoundingBox &bb = obj->getBoundingBox();
+	XMFLOAT3 center = bb.center;
+	XMMATRIX trans_center_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(center.x, center.y, center.z, 1.0), obj->getWorldMatrix()));
+
 	XMMATRIX axisTrans = XMMatrixIdentity();
-	XMMATRIX objWorldMat = obj->getWorldMatrix();
-	XMMATRIX worldMat = axisTrans * center_mat * objWorldMat;
+	XMMATRIX scale_mat = XMMatrixScaling(1.5, 1.5, 1.5);
+	
+	XMMATRIX worldMat = scale_mat * axisTrans * trans_center_mat;
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		basicEffect->SetWorld(worldMat);
@@ -270,7 +286,7 @@ void D3DRenderer::renderAxis(Object* obj)
 		context->DrawIndexed(axisIndexCount, 0, 0);
 
 		axisTrans = XMMatrixRotationZ(-MathHelper::Pi * 0.5f);
-		worldMat = axisTrans * center_mat * objWorldMat;
+		worldMat = scale_mat * axisTrans * trans_center_mat;
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
@@ -281,7 +297,7 @@ void D3DRenderer::renderAxis(Object* obj)
 		context->DrawIndexed(axisIndexCount, 0, 0);
 
 		axisTrans = XMMatrixRotationX(MathHelper::Pi * 0.5f);
-		worldMat = axisTrans * center_mat * objWorldMat;
+		worldMat = scale_mat * axisTrans * trans_center_mat;
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);

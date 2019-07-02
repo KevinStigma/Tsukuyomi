@@ -35,6 +35,9 @@ public:
 	const BoundingBox & getBoundingBox() { return boundingBox; }
 	void genereateWorldMatrix();
 	XMMATRIX getWorldMatrix() { return world_mat; }
+	XMMATRIX getRotMatrix() { return rot_mat; }
+	XMMATRIX getTransMatrix() { return trans_mat; }
+	XMMATRIX getScaleMatrix() { return scale_mat; }
 	XMFLOAT3 getTranslation() { return translation; }
 	XMFLOAT3 getRotation() { return rotation; }
 	XMFLOAT3 getScale() { return scale; }

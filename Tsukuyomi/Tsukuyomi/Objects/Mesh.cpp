@@ -63,8 +63,6 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
 	}
-
-	Object::render(context, renderer);
 }
 
 void Mesh::loadObjMesh(const std::string& obj_path)

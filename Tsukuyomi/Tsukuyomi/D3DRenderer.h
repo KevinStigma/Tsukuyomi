@@ -30,6 +30,7 @@ protected:
 	void initLights();
 	void initMaterials();
 	void renderRulerLlines();
+	void renderSelObjFlag();
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
 	void createSelObjAxisBuffers();
