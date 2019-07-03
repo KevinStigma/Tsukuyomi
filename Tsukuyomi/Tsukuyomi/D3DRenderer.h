@@ -31,6 +31,7 @@ protected:
 	void initMaterials();
 	void renderRulerLlines();
 	void renderSelObjFlag();
+	void renderRotAxis(Object* obj);
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
 	void createSelObjAxisBuffers();
@@ -58,6 +59,9 @@ protected:
 	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
 	int						axisIndexCount;
+	int                     rotAxisIndexBegin;
+	int                     rotAxisIndexCount;
+	int                     axisVertexCount;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
 };

@@ -215,6 +215,41 @@ void D3DRenderer::renderSelObjFlag()
 		renderBoundingBox(sel_obj);
 		renderAxis(sel_obj);
 	}
+	renderRotAxis(nullptr);
+}
+
+void D3DRenderer::renderRotAxis(Object* obj)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	ID3D11DeviceContext*  context = m_pImmediateContext;
+	context->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	context->IASetVertexBuffers(0, 1, &m_pAxisVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pAxisIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
+	basicEffect->SetDirLights(&m_dirLights[0]);
+	basicEffect->SetEyePosW(eyePosW);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMMATRIX worldMat = XMMatrixIdentity();
+	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[2]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(rotAxisIndexCount * 0.5, rotAxisIndexBegin, axisVertexCount);
+	}
 }
 
 void D3DRenderer::renderRulerLlines()
@@ -489,6 +524,9 @@ void D3DRenderer::createSelObjAxisBuffers()
 	GeometryGenerator::MeshData cone_data;
 	geoGen.CreateCylinder(0.05, 0.0, 0.2, 4, 4, cone_data);
 
+	GeometryGenerator::MeshData torus_data;
+	geoGen.CreateTorus(1.0, 0.2, 8, 8, torus_data);
+
 	for (int i = 0; i < cylinder_data.Vertices.size(); i++)
 		cylinder_data.Vertices[i].Position.y += 0.4;
 	
@@ -503,17 +541,33 @@ void D3DRenderer::createSelObjAxisBuffers()
 	for (int i = 0; i < cone_data.Indices.size(); i++)
 		axis_inds.push_back(count + cone_data.Indices[i]);
 
+	/*count = axis_verts.size();
+	for (int i = 0; i < torus_data.Indices.size(); i++)
+		torus_data.Indices[i] += count;*/
+	axisVertexCount = axis_verts.size();
+	rotAxisIndexBegin = axis_inds.size();
+	rotAxisIndexCount = torus_data.Indices.size();
+
 	D3D11_BUFFER_DESC buffDesc = {};
 	D3D11_SUBRESOURCE_DATA initData = {};
 	ZeroMemory(&buffDesc, sizeof(buffDesc));
 
 	std::vector<Basic32> vertices;
 	std::vector<unsigned int> indices(axis_inds);
+	indices.insert(indices.end(), torus_data.Indices.begin(), torus_data.Indices.end());
 	XMMATRIX rot_mat_x = XMMatrixRotationX(1.5707963);
 	XMMATRIX rot_mat_z = XMMatrixRotationZ(-1.5707963);
 	for (int i = 0; i < axis_verts.size(); i++)
 	{
 		auto vertex = axis_verts[i];
+		Basic32 vert(vertex.Position.x, vertex.Position.y, vertex.Position.z, vertex.Normal.x, vertex.Normal.y, vertex.Normal.z,
+			vertex.TexC.x, vertex.TexC.y);
+		vertices.push_back(vert);
+	}
+
+	for (int i = 0; i < torus_data.Vertices.size(); i++)
+	{
+		auto vertex = torus_data.Vertices[i];
 		Basic32 vert(vertex.Position.x, vertex.Position.y, vertex.Position.z, vertex.Normal.x, vertex.Normal.y, vertex.Normal.z,
 			vertex.TexC.x, vertex.TexC.y);
 		vertices.push_back(vert);

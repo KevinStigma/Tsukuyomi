@@ -442,6 +442,55 @@ void GeometryGenerator::CreateCylinder(float bottomRadius, float topRadius, floa
 	BuildCylinderBottomCap(bottomRadius, topRadius, height, sliceCount, stackCount, meshData);
 }
 
+void GeometryGenerator::CreateTorus(float largeRadius, float smallRadius, UINT sliceCount, UINT stackCount, MeshData& meshData)
+{
+	meshData.Vertices.clear();
+	meshData.Indices.clear();
+
+	float slice_step = 2.0 * MathHelper::Pi / sliceCount;
+	float stack_step = 2.0 * MathHelper::Pi / stackCount;
+	float stack_radius = (largeRadius - smallRadius) * 0.5f;
+	XMFLOAT2 center(stack_radius, 0.0);
+	for (int i = 0; i < sliceCount; i++)
+	{
+		XMMATRIX trans_mat = XMMatrixRotationY(i*slice_step);
+		for (int j = 0; j < stackCount; j++)
+		{
+			Vertex vertex;
+			float radian = j * stack_step;
+			XMVECTOR normal = XMVectorSet(cos(radian) * stack_radius, sin(radian) * stack_radius, 0.0, 0.0);
+			XMVECTOR pos = XMVectorSet(center.x + XMVectorGetX(normal), center.y + XMVectorGetY(normal), 0.0, 1.0);
+			pos = XMVector3TransformCoord(pos, trans_mat);
+			normal = XMVector3TransformNormal(normal, trans_mat);
+			XMFLOAT3 new_pos, new_normal;
+			XMStoreFloat3(&new_pos, pos);
+			XMStoreFloat3(&new_normal, normal);
+			vertex.Position = new_pos;
+			vertex.Normal = new_normal;
+			meshData.Vertices.push_back(vertex);
+		}
+	}
+
+	for (int i = 0; i < sliceCount; i++)
+	{
+		int cur_slice = i;
+		int next_slice = (i + 1) % sliceCount;
+		for (int j = 0; j < stackCount; j++)
+		{
+			int cur_stack = j;
+			int next_stack = (j + 1) % stackCount;
+			meshData.Indices.push_back(next_slice * sliceCount + next_stack);
+			meshData.Indices.push_back(cur_slice * sliceCount + next_stack);
+			meshData.Indices.push_back(cur_slice * sliceCount + cur_stack);
+
+			meshData.Indices.push_back(cur_slice * sliceCount + cur_stack);
+			meshData.Indices.push_back(next_slice * sliceCount + cur_stack);
+			meshData.Indices.push_back(next_slice * sliceCount + next_stack);
+		}
+	}
+}
+
+
 void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius, float height, 
 											UINT sliceCount, UINT stackCount, MeshData& meshData)
 {
