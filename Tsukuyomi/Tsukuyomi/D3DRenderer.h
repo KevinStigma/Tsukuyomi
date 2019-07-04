@@ -18,8 +18,6 @@ public:
 	void initScene();
 	void renderScene();
 	void cleanup();
-	void renderBoundingBox(Object* object);
-	void renderAxis(Object* obj);
 	Camera& getCamera() { return m_camera; }
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
@@ -31,6 +29,8 @@ protected:
 	void initMaterials();
 	void renderRulerLlines();
 	void renderSelObjFlag();
+	void renderBoundingBox(Object* object);
+	void renderCoordAxis(Object* obj);
 	void renderRotAxis(Object* obj);
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
@@ -58,7 +58,7 @@ protected:
 	ID3D11Buffer*			m_pAxisVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
-	int						axisIndexCount;
+	int						transAxisIndexCount;
 	int                     rotAxisIndexBegin;
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;

@@ -450,7 +450,7 @@ void GeometryGenerator::CreateTorus(float largeRadius, float smallRadius, UINT s
 	float slice_step = 2.0 * MathHelper::Pi / sliceCount;
 	float stack_step = 2.0 * MathHelper::Pi / stackCount;
 	float stack_radius = (largeRadius - smallRadius) * 0.5f;
-	XMFLOAT2 center(stack_radius, 0.0);
+	XMFLOAT2 center(smallRadius + stack_radius, 0.0);
 	for (int i = 0; i < sliceCount; i++)
 	{
 		XMMATRIX trans_mat = XMMatrixRotationY(i*slice_step);
