@@ -167,3 +167,13 @@ void Camera::updateAspectRatio(float ratio)
 	XMMATRIX camViewProj = camView * XMLoadFloat4x4(&mProj);
 	XMStoreFloat4x4(&mViewProj, camViewProj);
 }
+
+Ray Camera::getRay(float width_ratio, float height_ratio)
+{
+	float frustum_height = zNear * atanf(fov * 0.5f);
+	float y = frustum_height * (height_ratio - 0.5f) * 2.0f;
+	float x = frustum_height * aspectRatio * (width_ratio - 0.5f) * 2.0f;
+	XMFLOAT3 world_dir;
+	XMStoreFloat3(&world_dir, XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(x, y, zNear, 0.0), DirectX::XMLoadFloat4x4(&mView))));
+	return Ray(position, world_dir);
+}

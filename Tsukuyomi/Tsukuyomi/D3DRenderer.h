@@ -5,6 +5,8 @@
 #include <d3dcompiler.h>
 #include <directxcolors.h>
 #include "Camera.h"
+#include "Axis/TransAxis.h"
+#include "Axis/RotAxis.h"
 
 class Object;
 enum  RenderSelObjMode { NONE, COORD_AXIS, ROT_AXIS};
@@ -64,4 +66,6 @@ protected:
 	int                     axisVertexCount;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
+	TransAxis				transAixs;
+	RotAxis					rotAxis;
 };

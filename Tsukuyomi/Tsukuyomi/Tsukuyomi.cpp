@@ -1,6 +1,7 @@
 #include "Tsukuyomi.h"
 #include "Globalsys.h"
 #include "D3DRenderer.h"
+#include "intersection.h"
 #include <QFileDialog>
 #include <iostream>
 

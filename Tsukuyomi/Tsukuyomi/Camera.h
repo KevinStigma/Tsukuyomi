@@ -1,5 +1,6 @@
 #pragma once
 #include "LightHelper.h"
+#include "MathHelper/MathHelper.h"
 
 class Camera
 {
@@ -21,6 +22,7 @@ public:
 	void rotateY(float radian);
 	void rotateRight(float radian);
 	void updateAspectRatio(float ratio);
+	Ray getRay(float width_ratio, float height_ratio);
 
 	XMFLOAT3 position;
 	XMFLOAT3 up;

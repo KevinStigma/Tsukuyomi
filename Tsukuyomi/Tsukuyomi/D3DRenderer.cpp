@@ -332,15 +332,8 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
-	XMVECTOR v;
-	const BoundingBox &bb = obj->getBoundingBox();
-	XMFLOAT3 center = bb.center;
-	XMMATRIX trans_center_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(center.x, center.y, center.z, 1.0), obj->getWorldMatrix()));
-
-	XMMATRIX axisTrans = XMMatrixIdentity();
-	XMMATRIX scale_mat = XMMatrixScaling(1.5, 1.5, 1.5);
-	
-	XMMATRIX worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+	XMVECTOR v = XMVectorZero();
+	XMMATRIX worldMat = transAixs.computeWorldMatrix(obj, 0);
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 
@@ -353,8 +346,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
-		axisTrans = XMMatrixRotationZ(-MathHelper::Pi * 0.5f);
-		worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+		worldMat = transAixs.computeWorldMatrix(obj, 1);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
@@ -364,8 +356,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
-		axisTrans = XMMatrixRotationX(MathHelper::Pi * 0.5f);
-		worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+		worldMat = worldMat = transAixs.computeWorldMatrix(obj, 2);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
@@ -552,10 +543,10 @@ void D3DRenderer::createSelObjAxisBuffers()
 {
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData cylinder_data;
-	geoGen.CreateCylinder(0.025, 0.025, 0.8, 4, 4, cylinder_data);
+	geoGen.CreateCylinder(0.025, 0.025, transAixs.get_cylinder_length(), 4, 4, cylinder_data);
 
 	GeometryGenerator::MeshData cone_data;
-	geoGen.CreateCylinder(0.05, 0.0, 0.2, 4, 4, cone_data);
+	geoGen.CreateCylinder(0.05, 0.0, transAixs.get_cone_length(), 4, 4, cone_data);
 
 	GeometryGenerator::MeshData torus_data;
 	geoGen.CreateTorus(1.0, 0.95, 30, 30, torus_data);

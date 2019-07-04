@@ -46,6 +46,9 @@
     <Filter Include="MathHelper">
       <UniqueIdentifier>{6806110d-fcec-46c2-9daf-22805249078c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Axis">
+      <UniqueIdentifier>{b6aaeae4-a360-4ff4-8818-ec69172277f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="MathHelper\MathHelper.cpp">
       <Filter>MathHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Axis\RotAxis.cpp">
+      <Filter>Axis</Filter>
+    </ClCompile>
+    <ClCompile Include="Axis\TransAxis.cpp">
+      <Filter>Axis</Filter>
+    </ClCompile>
+    <ClCompile Include="intersection.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +172,15 @@
     </ClInclude>
     <ClInclude Include="MathHelper\MathHelper.h">
       <Filter>MathHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Axis\RotAxis.h">
+      <Filter>Axis</Filter>
+    </ClInclude>
+    <ClInclude Include="Axis\TransAxis.h">
+      <Filter>Axis</Filter>
+    </ClInclude>
+    <ClInclude Include="intersection.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

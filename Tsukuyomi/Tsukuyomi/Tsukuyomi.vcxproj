@@ -115,12 +115,15 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Axis\RotAxis.cpp" />
+    <ClCompile Include="Axis\TransAxis.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
     <ClCompile Include="Effects\Effects.cpp" />
     <ClCompile Include="GeometryGenerator\GeometryGenerator.cpp" />
     <ClCompile Include="GlobalSys.cpp" />
+    <ClCompile Include="intersection.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathHelper\MathHelper.cpp" />
     <ClCompile Include="ObjectPropertyWidget.cpp" />
@@ -143,6 +146,8 @@
     <QtRcc Include="Tsukuyomi.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Axis\RotAxis.h" />
+    <ClInclude Include="Axis\TransAxis.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="D3DRenderer.h" />
@@ -157,6 +162,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
+    <ClInclude Include="intersection.h" />
     <ClInclude Include="MathHelper\MathHelper.h" />
     <ClInclude Include="ObjectsManager.h" />
     <ClInclude Include="Objects\Mesh.h" />

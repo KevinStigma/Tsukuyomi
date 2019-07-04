@@ -7,6 +7,7 @@
 #ifndef MATHHELPER_H
 #define MATHHELPER_H
 
+#include <utility>
 #include <Windows.h>
 #include <DirectXMath.h>
 
@@ -72,6 +73,23 @@ public:
 	static const float Infinity;
 	static const float Pi;
 
-
+	static bool solveForQuadraticEquation(float a, float b, float c, std::pair<float, float>& solution)
+	{
+		float val = b * b - 4.0*a*c;
+		if (val < 0.0)
+			return false;
+		solution.first = (-b + sqrtf(val)) * 0.5f / a;
+		solution.second = (-b - sqrtf(val)) * 0.5f / a;
+		return true;
+	}
 };
+
+struct Ray
+{
+	XMFLOAT3 origin;
+	XMFLOAT3 direction;
+	Ray(XMFLOAT3 o=XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 d=XMFLOAT3(0.0, 0.0, 0.0)):origin(o), direction(d){}
+	XMFLOAT3 getExtendPos(float t)const { return XMFLOAT3(origin.x + t * direction.x, origin.y + t * direction.y, origin.z + t * direction.z); }
+};
+
 #endif // MATHHELPER_H
