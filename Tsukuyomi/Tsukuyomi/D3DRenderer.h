@@ -24,7 +24,9 @@ public:
 	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
 	ID3D11Device* getDevice() { return m_pd3dDevice; }
+	RenderSelObjMode getRenderSelObjMode() { return renderSelObjMode; }
 	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
+	void rayAxisIntersectionDetect(float x_ratio, float y_ratio);
 
 protected:
 	void initLights();
@@ -60,12 +62,14 @@ protected:
 	ID3D11Buffer*			m_pAxisVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
+	int						transAxisCylinderIndexCount;
 	int						transAxisIndexCount;
 	int                     rotAxisIndexBegin;
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;
+	AXIS                     curSelAxis = AXIS::NO;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
-	TransAxis				transAixs;
+	TransAxis				transAxis;
 	RotAxis					rotAxis;
 };

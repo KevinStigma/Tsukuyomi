@@ -77,3 +77,15 @@ XMVECTOR MathHelper::RandHemisphereUnitVec3(XMVECTOR n)
 		return XMVector3Normalize(v);
 	}
 }
+
+Ray Ray::transform(XMMATRIX trans_mat) const
+{
+	XMVECTOR v = XMLoadFloat3(&origin);
+	XMFLOAT3 new_origin;
+	XMStoreFloat3(&new_origin, XMVector3TransformCoord(v, trans_mat));
+
+	v = XMLoadFloat3(&direction);
+	XMFLOAT3 new_dir;
+	XMStoreFloat3(&new_dir, XMVector3TransformNormal(v, trans_mat));
+	return Ray(new_origin, new_dir);
+}

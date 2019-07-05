@@ -1,6 +1,8 @@
 #include "RenderWidget.h"
 #include "Globalsys.h"
 #include "common.h"
+#include "intersection.h"
+#include "Camera.h"
 #include <iostream>
 #include <QMouseEvent>
 #include <QListWidget>
@@ -9,6 +11,7 @@ RenderWidget::RenderWidget(QWidget* parent) : QWidget(parent)
 {
 	setAttribute(Qt::WA_PaintOnScreen, true);
 	setAttribute(Qt::WA_NativeWindow, true);
+	setMouseTracking(true);
 };
 
 RenderWidget::~RenderWidget()
@@ -80,6 +83,10 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 		float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
 		camera.walkRight(diff_x);
 		camera.walkUp(diff_y);
+	}
+	else if (touchType == -1)
+	{
+		renderer->rayAxisIntersectionDetect(cur_pos.x() / float(width()), 1.0 - (cur_pos.y() / float(height())));
 	}
 	lastMousePos = cur_pos;
 }

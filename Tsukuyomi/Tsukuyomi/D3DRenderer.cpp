@@ -1,6 +1,7 @@
 #include "D3DRenderer.h"
 #include <directxcolors.h>
 #include <vector>
+#include <iostream>
 #include "common.h"
 #include "Vertex.h"
 #include "Globalsys.h"
@@ -154,7 +155,7 @@ void D3DRenderer::initLights()
 void D3DRenderer::initMaterials()
 {
 	float r = 0.73725f, g = 0.741176f, b = 0.74902f;
-	m_materials.resize(6);
+	m_materials.resize(9);
 	m_materials[0].Ambient = XMFLOAT4(r*0.2f, g*0.2f, b*0.2f, 1.0f);
 	m_materials[0].Diffuse = XMFLOAT4(r*0.6f, g*0.6f, b*0.6f, 1.0f);
 	m_materials[0].Specular = XMFLOAT4(r*0.5f, g*0.5f, b*0.5f, 16.0f);
@@ -175,9 +176,21 @@ void D3DRenderer::initMaterials()
 	m_materials[4].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.8f, 1.0f);
 	m_materials[4].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
 
-	m_materials[5].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_materials[5].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	m_materials[5].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
+	m_materials[5].Ambient = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
+	m_materials[5].Diffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	m_materials[5].Specular = XMFLOAT4(0.0f, 1.0f, 0.0f, 32.0f);
+
+	m_materials[6].Ambient = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
+	m_materials[6].Diffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	m_materials[6].Specular = XMFLOAT4(1.0f, 0.0f, 0.0f, 32.0f);
+
+	m_materials[7].Ambient = XMFLOAT4(0.0f, 0.0f, 0.8f, 1.0f);
+	m_materials[7].Diffuse = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	m_materials[7].Specular = XMFLOAT4(0.0f, 0.0f, 1.0f, 32.0f);
+
+	m_materials[8].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_materials[8].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	m_materials[8].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 }
 
 void D3DRenderer::initScene()
@@ -217,6 +230,27 @@ void D3DRenderer::renderSelObjFlag()
 			renderCoordAxis(sel_obj);
 		else if(renderSelObjMode == ROT_AXIS)
 			renderRotAxis(sel_obj);
+	}
+}
+
+void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
+{
+	Object* obj = g_pGlobalSys->objectManager.getCurSelObject();
+	if (obj)
+	{
+		Ray ray = m_camera.getRay(x_ratio, y_ratio);
+		if (renderSelObjMode == RenderSelObjMode::COORD_AXIS)
+		{
+			curSelAxis = AXIS(transAxis.rayIntersectDectect(ray, obj));
+		}
+		else
+		{
+			curSelAxis = AXIS::NO;
+		}
+	}
+	else
+	{
+		curSelAxis = AXIS::NO;
 	}
 }
 
@@ -333,36 +367,35 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v = XMVectorZero();
-	XMMATRIX worldMat = transAixs.computeWorldMatrix(obj, 0);
+	XMMATRIX worldMat = transAxis.computeWorldMatrix(obj, AXIS::X);
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
-
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[2]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 5 : 2]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
-		worldMat = transAixs.computeWorldMatrix(obj, 1);
+		worldMat = transAxis.computeWorldMatrix(obj, AXIS::Y);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[3]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 6 : 3]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
-		worldMat = worldMat = transAixs.computeWorldMatrix(obj, 2);
+		worldMat = worldMat = transAxis.computeWorldMatrix(obj, AXIS::Z);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[4]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
@@ -543,25 +576,26 @@ void D3DRenderer::createSelObjAxisBuffers()
 {
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData cylinder_data;
-	geoGen.CreateCylinder(0.025, 0.025, transAixs.get_cylinder_length(), 4, 4, cylinder_data);
+	geoGen.CreateCylinder(transAxis.get_cylinder_radius(), transAxis.get_cylinder_radius(), transAxis.get_cylinder_length(), 4, 4, cylinder_data);
 
 	GeometryGenerator::MeshData cone_data;
-	geoGen.CreateCylinder(0.05, 0.0, transAixs.get_cone_length(), 4, 4, cone_data);
+	geoGen.CreateCylinder(transAxis.get_cone_radius(), 0.0, transAxis.get_cone_length(), 4, 4, cone_data);
 
 	GeometryGenerator::MeshData torus_data;
 	geoGen.CreateTorus(1.0, 0.95, 30, 30, torus_data);
 
 	for (int i = 0; i < cylinder_data.Vertices.size(); i++)
-		cylinder_data.Vertices[i].Position.y += 0.4;
+		cylinder_data.Vertices[i].Position.y += transAxis.get_cylinder_length() * 0.5;
 	
 	for (int i = 0; i < cone_data.Vertices.size(); i++)
-		cone_data.Vertices[i].Position.y += 0.8;
+		cone_data.Vertices[i].Position.y += transAxis.get_cylinder_length();
 
 	std::vector<GeometryGenerator::Vertex> axis_verts(cylinder_data.Vertices);
 	axis_verts.insert(axis_verts.end(), cone_data.Vertices.begin(), cone_data.Vertices.end());
 
 	std::vector<UINT> axis_inds(cylinder_data.Indices);
 	int count = cylinder_data.Vertices.size();
+	transAxisCylinderIndexCount = cylinder_data.Indices.size();
 	for (int i = 0; i < cone_data.Indices.size(); i++)
 		axis_inds.push_back(count + cone_data.Indices[i]);
 
