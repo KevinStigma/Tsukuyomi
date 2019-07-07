@@ -3,6 +3,7 @@
 #include <QListWidget>
 #include <QSlider>
 #include "ObjectsManager.h"
+#include "ObjectPropertyWidget.h"
 
 class D3DRenderer;
 class RenderWidget;
@@ -18,6 +19,7 @@ public:
 	RenderWidget* renderWidget = nullptr;
 	QListWidget*  objectsList = nullptr;
 	QSlider*      moveSpeedSlider = nullptr;
+	ObjectPropertyWidget* objectPropertyWidget = nullptr;
 };
 
 extern GlobalSys *g_pGlobalSys;

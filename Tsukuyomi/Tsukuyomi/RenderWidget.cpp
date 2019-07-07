@@ -3,6 +3,7 @@
 #include "common.h"
 #include "intersection.h"
 #include "Camera.h"
+#include "Axis/TransAxis.h"
 #include <iostream>
 #include <QMouseEvent>
 #include <QListWidget>
@@ -72,10 +73,19 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 	Camera& camera = renderer->getCamera();
 	if (touchType == 0)
 	{
-		float diff_x = (cur_pos.x() - lastMousePos.x()) * 0.001;
-		float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
-		camera.rotateRight(-diff_y);
-		camera.rotateY(diff_x);
+		if (renderer->getCurSelAxis() == AXIS::NO)
+		{
+			float diff_x = (cur_pos.x() - lastMousePos.x()) * 0.001;
+			float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
+			camera.rotateRight(-diff_y);
+			camera.rotateY(diff_x);
+		}
+		else
+		{
+			XMFLOAT2 normalized_vec((cur_pos.x() - lastMousePos.x())/(float)width(), (lastMousePos.y() - cur_pos.y()) / (float)height());
+			renderer->translateSelObj(normalized_vec);
+			g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
+		}
 	}
 	else if (touchType == 1)
 	{

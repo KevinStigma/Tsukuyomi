@@ -82,6 +82,14 @@ public:
 		solution.second = (-b - sqrtf(val)) * 0.5f / a;
 		return true;
 	}
+
+	static float projectVector2D(XMFLOAT2 vector, XMFLOAT2 ref_vector)
+	{
+		float len = sqrtf(ref_vector.x * ref_vector.x + ref_vector.y * ref_vector.y);
+		if (len < 1e-4)
+			return 0.0f;
+		return (vector.x * ref_vector.x + vector.y * ref_vector.y) / len;
+	}
 };
 
 struct Ray

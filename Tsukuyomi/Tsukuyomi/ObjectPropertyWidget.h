@@ -11,6 +11,7 @@ public:
 	ObjectPropertyWidget(QWidget *parent = 0);
 	~ObjectPropertyWidget();
 	void updateObjectProperty(Object* object);
+	void updateObjectTranslation(Object* object);
 	void init();
 
 public slots:

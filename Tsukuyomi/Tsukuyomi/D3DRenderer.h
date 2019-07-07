@@ -27,6 +27,8 @@ public:
 	RenderSelObjMode getRenderSelObjMode() { return renderSelObjMode; }
 	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
 	void rayAxisIntersectionDetect(float x_ratio, float y_ratio);
+	void translateSelObj(XMFLOAT2 mouse_move_dir);
+	AXIS getCurSelAxis() { return curSelAxis; }
 
 protected:
 	void initLights();
@@ -67,7 +69,8 @@ protected:
 	int                     rotAxisIndexBegin;
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;
-	AXIS                     curSelAxis = AXIS::NO;
+	AXIS                    curSelAxis = AXIS::NO;
+	XMFLOAT2                curSelAxisProjDir;
 	std::vector<DirectionalLight> m_dirLights;
 	std::vector<Material> m_materials;
 	TransAxis				transAxis;

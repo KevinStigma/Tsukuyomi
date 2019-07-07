@@ -24,13 +24,6 @@ bool Object::isEmpty()
 
 void Object::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
-	/*
-	if (g_pGlobalSys->objectManager.getCurSelObject() == this)
-	{
-		renderer->renderBoundingBox(this);
-		renderer->renderAxis(this);
-	}
-	*/
 }
 
 void Object::updateTransform(XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)

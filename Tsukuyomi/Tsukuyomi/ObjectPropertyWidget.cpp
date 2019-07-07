@@ -71,6 +71,14 @@ void ObjectPropertyWidget::updateObjectProperty(Object* object)
 	rotZLineEdit->setText(QString(std::to_string(XMConvertToDegrees(rotation.z)).c_str()));
 }
 
+void ObjectPropertyWidget::updateObjectTranslation(Object* object)
+{
+	XMFLOAT3 translation = object->getTranslation();
+	transXLineEdit->setText(QString(std::to_string(translation.x).c_str()));
+	transYLineEdit->setText(QString(std::to_string(translation.y).c_str()));
+	transZLineEdit->setText(QString(std::to_string(translation.z).c_str()));
+}
+
 void ObjectPropertyWidget::scaleXLineEditingFinished()
 {
 	ObjectManager & obj_mgr = g_pGlobalSys->objectManager;

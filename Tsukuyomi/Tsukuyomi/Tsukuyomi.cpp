@@ -16,6 +16,7 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys->objectsList = ui.objectsListView;
 	g_pGlobalSys->renderWidget = ui.render_widget;
 	g_pGlobalSys->moveSpeedSlider = ui.moveSpeedSlider;
+	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
 }
 
 void Tsukuyomi::on_actionLoad_Mesh_triggered()

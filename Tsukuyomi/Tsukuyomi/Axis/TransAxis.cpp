@@ -21,9 +21,9 @@ XMMATRIX TransAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 XMMATRIX TransAxis::getAxisLocalTransform(AXIS axis_type)
 {
 	if (axis_type == AXIS::X)
-		return XMMatrixIdentity();
-	else if(axis_type == AXIS::Y)
 		return XMMatrixRotationZ(-MathHelper::Pi * 0.5f);
+	else if(axis_type == AXIS::Y)
+		return XMMatrixIdentity();
 	else
 		return XMMatrixRotationX(MathHelper::Pi * 0.5f);
 }
@@ -51,4 +51,18 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 		}
 	}
 	return axis_index;
+}
+
+XMFLOAT2 TransAxis::getAxisDirectionProj(const Camera& cam, AXIS axis_type)
+{
+	if (axis_type == AXIS::NO)
+		return XMFLOAT2(0.0, 0.0);
+	XMVECTOR local_dir = XMVectorSet(0.0f, cylinder_length * scale, 0.0f, 0.0f);
+	XMMATRIX axis_trans = getAxisLocalTransform(axis_type);
+	XMVECTOR proj_dir = XMVector3TransformNormal(local_dir, axis_trans*cam.getViewProjMatrix());
+	if (XMVectorGetX(XMVector2Length(proj_dir)) < 1e-6)
+		return XMFLOAT2(0.0, 0.0);
+	XMFLOAT2 normalized_dir;
+	XMStoreFloat2(&normalized_dir, XMVector2Normalize(proj_dir));
+	return normalized_dir;
 }

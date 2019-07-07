@@ -1,5 +1,6 @@
 #pragma once
 #include "MathHelper\MathHelper.h"
+#include "../Camera.h"
 #include "Objects\Object.h"
 
 enum AXIS {NO=-1,X=0,Y=1,Z=2};
@@ -13,6 +14,7 @@ public:
 	float get_cylinder_radius() { return cylinder_radius; }
 	float get_cone_radius() { return cone_radius; }
 	int rayIntersectDectect(const Ray& ray, Object* obj);
+	XMFLOAT2 getAxisDirectionProj(const Camera& cam, AXIS axis_type);
 	XMMATRIX computeWorldMatrix(Object * obj, AXIS axis_type);
 	XMMATRIX getAxisLocalTransform(AXIS axis_type);
 protected:

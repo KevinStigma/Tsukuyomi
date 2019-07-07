@@ -241,7 +241,13 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 		Ray ray = m_camera.getRay(x_ratio, y_ratio);
 		if (renderSelObjMode == RenderSelObjMode::COORD_AXIS)
 		{
+			AXIS lastSelAxis = curSelAxis;
 			curSelAxis = AXIS(transAxis.rayIntersectDectect(ray, obj));
+			XMFLOAT2 proj_dir = transAxis.getAxisDirectionProj(m_camera, curSelAxis);
+			if (lastSelAxis == AXIS::NO && curSelAxis != AXIS::NO)
+			{
+				curSelAxisProjDir = transAxis.getAxisDirectionProj(m_camera, curSelAxis);
+			}
 		}
 		else
 		{
@@ -252,6 +258,19 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 	{
 		curSelAxis = AXIS::NO;
 	}
+}
+
+void D3DRenderer::translateSelObj(XMFLOAT2 mouse_move_dir)
+{
+	float proj_length = MathHelper::projectVector2D(mouse_move_dir, curSelAxisProjDir);
+	Object* selObj = g_pGlobalSys->objectManager.getCurSelObject();
+	XMFLOAT3 t = selObj->getTranslation();
+	if (curSelAxis == AXIS::X)
+		selObj->setTranslation(XMFLOAT3(t.x + proj_length, t.y, t.z));
+	else if (curSelAxis == AXIS::Y)
+		selObj->setTranslation(XMFLOAT3(t.x, t.y + proj_length, t.z));
+	else if (curSelAxis == AXIS::Z)
+		selObj->setTranslation(XMFLOAT3(t.x, t.y, t.z + proj_length));
 }
 
 void D3DRenderer::renderRulerLlines()
@@ -375,7 +394,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 5 : 2]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 6 : 3]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
@@ -385,7 +404,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 6 : 3]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 5 : 2]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
