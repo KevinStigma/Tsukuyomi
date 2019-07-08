@@ -326,7 +326,8 @@ void D3DRenderer::renderRotAxis(Object* obj)
 	XMMATRIX trans_center_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(center.x, center.y, center.z, 1.0), obj->getWorldMatrix()));
 
 	XMMATRIX axisTrans = XMMatrixIdentity();
-	XMMATRIX scale_mat = XMMatrixScaling(1.2, 1.2, 1.2);
+	float scale = rotAxis.getScale();
+	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 
 	XMMATRIX worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
@@ -601,7 +602,7 @@ void D3DRenderer::createSelObjAxisBuffers()
 	geoGen.CreateCylinder(transAxis.get_cone_radius(), 0.0, transAxis.get_cone_length(), 4, 4, cone_data);
 
 	GeometryGenerator::MeshData torus_data;
-	geoGen.CreateTorus(1.0, 0.95, 30, 30, torus_data);
+	geoGen.CreateTorus(rotAxis.getLargetRadius(), rotAxis.getSmallRadius(), 30, 30, torus_data);
 
 	for (int i = 0; i < cylinder_data.Vertices.size(); i++)
 		cylinder_data.Vertices[i].Position.y += transAxis.get_cylinder_length() * 0.5;

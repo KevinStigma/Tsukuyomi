@@ -2,8 +2,7 @@
 #include "MathHelper\MathHelper.h"
 #include "../Camera.h"
 #include "Objects\Object.h"
-
-enum AXIS {NO=-1,X=0,Y=1,Z=2};
+#include "../common.h"
 
 class TransAxis
 {

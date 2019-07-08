@@ -90,6 +90,26 @@ public:
 			return 0.0f;
 		return (vector.x * ref_vector.x + vector.y * ref_vector.y) / len;
 	}
+
+	static XMFLOAT3 transRotationMatrixToEulerAngles(const XMFLOAT4X4& rot_mat)
+	{
+		float pitch = asinf(-rot_mat(2, 1));
+		float roll = 0.0f, yaw = 0.0f;
+		if (abs(abs(pitch) - Pi * 0.5f) < 1e-6)
+		{
+			roll = 0.0f;
+			yaw = asinf(rot_mat(1,0));
+			if (rot_mat(2, 1) > 0.0f)
+				yaw *= -1.0f;
+		}
+		else
+		{
+			float cos_p = cosf(pitch);
+			yaw = acosf(rot_mat(2, 2) / cos_p);
+			roll = acosf(rot_mat(1, 1) / cos_p);
+		}
+		return XMFLOAT3(pitch, yaw, roll);
+	}
 };
 
 struct Ray
