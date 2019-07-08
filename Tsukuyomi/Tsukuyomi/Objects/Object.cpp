@@ -73,16 +73,6 @@ void Object::genereateWorldMatrix()
 	rot_mat = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 	XMFLOAT4X4 r;
 	XMStoreFloat4x4(&r, rot_mat);
-
-	XMFLOAT3 rot = MathHelper::transRotationMatrixToEulerAngles(r);
-	std::cout << rot.x/MathHelper::Pi * 180.0 << " " << rot.y / MathHelper::Pi * 180.0 << " " << rot.z / MathHelper::Pi * 180.0 << std::endl;
-	/*for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-			std::cout << r(i, j) << " ";
-		std::cout << std::endl;
-	}*/
-
 	scale_mat = XMMatrixScaling(scale.x, scale.y, scale.z);
 	world_mat = scale_mat * rot_mat * trans_mat;
 }

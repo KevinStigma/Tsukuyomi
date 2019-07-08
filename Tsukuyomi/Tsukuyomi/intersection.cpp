@@ -12,6 +12,7 @@ bool inCylinderHeight(float y, float height)
 	return true;
 }
 
+// x^2 + z^2 = r^2
 float rayCylinderIntersection(const Ray& ray, float radius, float height)
 {
 	std::pair<float, float> solution;
@@ -57,7 +58,21 @@ float rayCylinderIntersection(const Ray& ray, float radius, float height)
 	}
 }
 
-bool raySphereIntersection(const Ray& ray)
+float raySphereIntersection(const Ray& ray, float radius)
+{	
+	return -1.0;
+}
+
+// x^2 + z^2 = r^2
+float rayCircleIntersection(const Ray& ray, float radius)
 {
-	return true;
+	if (ray.direction.y == 0.0f)
+		return -1.0;
+	float t = -ray.origin.y / (ray.direction.y);
+	float x = ray.origin.x + t * ray.direction.x;
+	float z = ray.origin.z + t * ray.direction.z;
+	if (x*x + z * z < radius * radius)
+		return t;
+	else
+		return -1.0;
 }

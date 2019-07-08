@@ -249,6 +249,11 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 				curSelAxisProjDir = transAxis.getAxisDirectionProj(m_camera, curSelAxis);
 			}
 		}
+		else if (renderSelObjMode == RenderSelObjMode::ROT_AXIS)
+		{
+			AXIS lastSelAxis = curSelAxis;
+			curSelAxis = AXIS(rotAxis.rayIntersectDectect(ray, obj));
+		}
 		else
 		{
 			curSelAxis = AXIS::NO;
@@ -321,15 +326,7 @@ void D3DRenderer::renderRotAxis(Object* obj)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	const BoundingBox &bb = obj->getBoundingBox();
-	XMFLOAT3 center = bb.center;
-	XMMATRIX trans_center_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(center.x, center.y, center.z, 1.0), obj->getWorldMatrix()));
-
-	XMMATRIX axisTrans = XMMatrixIdentity();
-	float scale = rotAxis.getScale();
-	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
-
-	XMMATRIX worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+	XMMATRIX worldMat = rotAxis.computeWorldMatrix(obj, AXIS::X);
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 
@@ -338,29 +335,27 @@ void D3DRenderer::renderRotAxis(Object* obj)
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[3]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 6 : 3]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
 
-		axisTrans = XMMatrixRotationX(MathHelper::Pi * 0.5f);
-		worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Y);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[2]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 5 : 2]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
 
-		axisTrans = XMMatrixRotationZ(MathHelper::Pi * 0.5f);
-		worldMat = scale_mat * axisTrans * obj->getRotMatrix() * trans_center_mat;
+		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Z);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[4]);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
 	}
@@ -631,8 +626,6 @@ void D3DRenderer::createSelObjAxisBuffers()
 	std::vector<unsigned int> indices(axis_inds);
 	transAxisIndexCount = indices.size();
 	indices.insert(indices.end(), torus_data.Indices.begin(), torus_data.Indices.end());
-	XMMATRIX rot_mat_x = XMMatrixRotationX(1.5707963);
-	XMMATRIX rot_mat_z = XMMatrixRotationZ(-1.5707963);
 	for (int i = 0; i < axis_verts.size(); i++)
 	{
 		auto vertex = axis_verts[i];
