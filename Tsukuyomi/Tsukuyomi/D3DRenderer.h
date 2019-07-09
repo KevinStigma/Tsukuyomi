@@ -28,6 +28,7 @@ public:
 	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
 	void rayAxisIntersectionDetect(float x_ratio, float y_ratio);
 	void translateSelObj(XMFLOAT2 mouse_move_dir);
+	void rotateSelObj(XMFLOAT2 mouse_move_dir);
 	AXIS getCurSelAxis() { return curSelAxis; }
 
 protected:

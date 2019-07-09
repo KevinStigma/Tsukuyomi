@@ -243,26 +243,22 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 		{
 			AXIS lastSelAxis = curSelAxis;
 			curSelAxis = AXIS(transAxis.rayIntersectDectect(ray, obj));
-			XMFLOAT2 proj_dir = transAxis.getAxisDirectionProj(m_camera, curSelAxis);
 			if (lastSelAxis == AXIS::NO && curSelAxis != AXIS::NO)
-			{
 				curSelAxisProjDir = transAxis.getAxisDirectionProj(m_camera, curSelAxis);
-			}
 		}
 		else if (renderSelObjMode == RenderSelObjMode::ROT_AXIS)
 		{
 			AXIS lastSelAxis = curSelAxis;
 			curSelAxis = AXIS(rotAxis.rayIntersectDectect(ray, obj));
+			
+			if (lastSelAxis == AXIS::NO && curSelAxis != AXIS::NO)
+				curSelAxisProjDir = rotAxis.getAxisDirectionProj(m_camera, obj, curSelAxis);
 		}
 		else
-		{
 			curSelAxis = AXIS::NO;
-		}
 	}
 	else
-	{
 		curSelAxis = AXIS::NO;
-	}
 }
 
 void D3DRenderer::translateSelObj(XMFLOAT2 mouse_move_dir)
@@ -276,6 +272,25 @@ void D3DRenderer::translateSelObj(XMFLOAT2 mouse_move_dir)
 		selObj->setTranslation(XMFLOAT3(t.x, t.y + proj_length, t.z));
 	else if (curSelAxis == AXIS::Z)
 		selObj->setTranslation(XMFLOAT3(t.x, t.y, t.z + proj_length));
+}
+
+void D3DRenderer::rotateSelObj(XMFLOAT2 mouse_move_dir)
+{
+	float proj_length = MathHelper::projectVector2D(mouse_move_dir, curSelAxisProjDir);
+	Object* selObj = g_pGlobalSys->objectManager.getCurSelObject();
+	XMMATRIX rot_mat = selObj->getRotMatrix();
+	XMVECTOR rot_axis;
+	if (curSelAxis == AXIS::X)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), selObj->getRotMatrix());
+	else if (curSelAxis == AXIS::Y)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), selObj->getRotMatrix());
+	else if (curSelAxis == AXIS::Z)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), selObj->getRotMatrix());
+	XMFLOAT4X4 new_rot_mat;
+	XMStoreFloat4x4(&new_rot_mat, selObj->getRotMatrix() * XMMatrixRotationAxis(rot_axis, proj_length));
+
+	XMFLOAT3 rot = MathHelper::transRotationMatrixToEulerAngles(new_rot_mat);
+	selObj->setRotation(rot);
 }
 
 void D3DRenderer::renderRulerLlines()

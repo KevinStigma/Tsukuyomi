@@ -12,6 +12,7 @@ public:
 	~ObjectPropertyWidget();
 	void updateObjectProperty(Object* object);
 	void updateObjectTranslation(Object* object);
+	void updateObjectRotation(Object* object);
 	void init();
 
 public slots:

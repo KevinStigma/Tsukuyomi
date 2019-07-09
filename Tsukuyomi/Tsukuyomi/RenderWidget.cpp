@@ -83,8 +83,16 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 		else
 		{
 			XMFLOAT2 normalized_vec((cur_pos.x() - lastMousePos.x())/(float)width(), (lastMousePos.y() - cur_pos.y()) / (float)height());
-			renderer->translateSelObj(normalized_vec);
-			g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
+			if (renderer->getRenderSelObjMode() == RenderSelObjMode::COORD_AXIS)
+			{
+				renderer->translateSelObj(normalized_vec);
+				g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
+			}
+			else if (renderer->getRenderSelObjMode() == RenderSelObjMode::ROT_AXIS)
+			{
+				renderer->rotateSelObj(normalized_vec);
+				g_pGlobalSys->objectPropertyWidget->updateObjectRotation(g_pGlobalSys->objectManager.getCurSelObject());
+			}
 		}
 	}
 	else if (touchType == 1)

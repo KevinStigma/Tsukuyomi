@@ -8,6 +8,7 @@
 #define MATHHELPER_H
 
 #include <utility>
+#include <iostream>
 #include <Windows.h>
 #include <DirectXMath.h>
 
@@ -98,15 +99,12 @@ public:
 		if (abs(abs(pitch) - Pi * 0.5f) < 1e-6)
 		{
 			roll = 0.0f;
-			yaw = asinf(rot_mat(1,0));
-			if (rot_mat(2, 1) > 0.0f)
-				yaw *= -1.0f;
+			yaw = atan2(-rot_mat(0, 2), rot_mat(0, 0));
 		}
 		else
 		{
-			float cos_p = cosf(pitch);
-			yaw = acosf(rot_mat(2, 2) / cos_p);
-			roll = acosf(rot_mat(1, 1) / cos_p);
+			roll = atan2(rot_mat(0, 1), rot_mat(1, 1));
+			yaw = atan2(rot_mat(2, 0), rot_mat(2, 2));
 		}
 		return XMFLOAT3(pitch, yaw, roll);
 	}
