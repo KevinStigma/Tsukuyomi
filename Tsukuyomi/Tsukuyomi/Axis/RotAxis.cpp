@@ -64,6 +64,51 @@ int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 	return axis_index;
 }
 
+XMFLOAT3 RotAxis::computeNormalSpherePoint(XMFLOAT2 normal_pos2d)
+{
+	float x = normal_pos2d.x;
+	float y = normal_pos2d.y;
+	float length = sqrt(x * x + y * y);
+	if (length > 1.0f)
+	{
+		x = x / length;
+		y = y / length;
+	}
+	float z = -sqrt(MathHelper::Clamp<float>(1.0f - x * x - y * y, 0.0f, 1.0f));
+	return XMFLOAT3(x, y, z);
+}
+
+void RotAxis::rotateSelObj(const Camera& cam, XMFLOAT2 cur_normalized_pos, XMFLOAT2 last_normalized_pos, AXIS curSelAxis, Object* obj)
+{
+	XMVECTOR sp1 = XMLoadFloat3(&computeNormalSpherePoint(cur_normalized_pos));
+	XMVECTOR sp2 = XMLoadFloat3(&computeNormalSpherePoint(last_normalized_pos));
+	XMMATRIX axisTrans = getAxisLocalTransform(curSelAxis);
+	XMMATRIX world_mat = axisTrans * obj->getRotMatrix() * cam.getViewMatrix();
+	XMVECTOR v;
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
+	sp1 = XMVector3TransformCoord(sp1, inv_world_mat);
+	sp2 = XMVector3TransformCoord(sp2, inv_world_mat);
+	float x = XMVectorGetX(sp1);
+	float z = XMVectorGetZ(sp1);
+	float cur_radian = atan2(x, -z);
+	x = XMVectorGetX(sp2);
+	z = XMVectorGetZ(sp2);
+	float last_radian = atan2(x, -z);
+
+	XMMATRIX rot_mat = obj->getRotMatrix();
+	XMVECTOR rot_axis;
+	if (curSelAxis == AXIS::X)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), obj->getRotMatrix());
+	else if (curSelAxis == AXIS::Y)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), obj->getRotMatrix());
+	else if (curSelAxis == AXIS::Z)
+		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), obj->getRotMatrix());
+	XMFLOAT4X4 new_rot_mat;
+	XMStoreFloat4x4(&new_rot_mat, obj->getRotMatrix() * XMMatrixRotationAxis(rot_axis, (last_radian - cur_radian) * 3.0f));
+	XMFLOAT3 rot = MathHelper::transRotationMatrixToEulerAngles(new_rot_mat);
+	obj->setRotation(rot);
+}
+
 XMFLOAT2 RotAxis::getAxisDirectionProj(const Camera& cam, Object*sel_obj, AXIS axis_type)
 {
 	XMVECTOR p1 = XMVectorSet(-large_radius * scale, 0.0f, 0.0f, 1.0f);

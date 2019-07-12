@@ -22,8 +22,9 @@ public:
 	void rotateY(float radian);
 	void rotateRight(float radian);
 	void updateAspectRatio(float ratio);
-	Ray getRay(float width_ratio, float height_ratio);
+	Ray getRay(float width_ratio, float height_ratio)const;
 	XMFLOAT2 projectCoord(XMFLOAT3 pos);
+	XMFLOAT3 unprojectCoord(XMFLOAT2 pos, float depth);
 
 	XMFLOAT3 position;
 	XMFLOAT3 up;

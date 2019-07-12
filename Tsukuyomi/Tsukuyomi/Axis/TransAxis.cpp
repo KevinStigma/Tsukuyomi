@@ -1,5 +1,6 @@
 #include "TransAxis.h"
 #include "intersection.h"
+#include "GlobalSys.h"
 #include <assert.h>
 
 TransAxis::TransAxis():cylinder_length(0.8), cone_length(0.2), scale(1.5), cylinder_radius(0.025), cone_radius(0.05)
@@ -25,6 +26,19 @@ XMMATRIX TransAxis::getAxisLocalTransform(AXIS axis_type)
 		return XMMatrixRotationX(MathHelper::Pi * 0.5f);
 }
 
+void TransAxis::translateSelObj(XMFLOAT2 mouse_move_dir, AXIS curSelAxis)
+{
+	float proj_length = MathHelper::projectVector2D(mouse_move_dir, curSelAxisProjDir);
+	Object* selObj = g_pGlobalSys->objectManager.getCurSelObject();
+	XMFLOAT3 t = selObj->getTranslation();
+	if (curSelAxis == AXIS::X)
+		selObj->setTranslation(XMFLOAT3(t.x + proj_length, t.y, t.z));
+	else if (curSelAxis == AXIS::Y)
+		selObj->setTranslation(XMFLOAT3(t.x, t.y + proj_length, t.z));
+	else if (curSelAxis == AXIS::Z)
+		selObj->setTranslation(XMFLOAT3(t.x, t.y, t.z + proj_length));
+}
+
 int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 {
 	if(!obj)
@@ -48,16 +62,22 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 	return axis_index;
 }
 
-XMFLOAT2 TransAxis::getAxisDirectionProj(const Camera& cam, AXIS axis_type)
+void TransAxis::computeAxisDirectionProj(const Camera& cam, AXIS axis_type)
 {
 	if (axis_type == AXIS::NO)
-		return XMFLOAT2(0.0, 0.0);
+	{
+		curSelAxisProjDir = XMFLOAT2(0.0, 0.0);
+		return;
+	}
 	XMVECTOR local_dir = XMVectorSet(0.0f, cylinder_length * scale, 0.0f, 0.0f);
 	XMMATRIX axis_trans = getAxisLocalTransform(axis_type);
 	XMVECTOR proj_dir = XMVector3TransformNormal(local_dir, axis_trans*cam.getViewProjMatrix());
 	if (XMVectorGetX(XMVector2Length(proj_dir)) < 1e-6)
-		return XMFLOAT2(0.0, 0.0);
+	{
+		curSelAxisProjDir = XMFLOAT2(0.0, 0.0);
+		return;
+	}
 	XMFLOAT2 normalized_dir;
 	XMStoreFloat2(&normalized_dir, XMVector2Normalize(proj_dir));
-	return normalized_dir;
+	curSelAxisProjDir = normalized_dir;
 }

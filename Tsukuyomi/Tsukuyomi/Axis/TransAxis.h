@@ -13,10 +13,12 @@ public:
 	float get_cylinder_radius() { return cylinder_radius; }
 	float get_cone_radius() { return cone_radius; }
 	int rayIntersectDectect(const Ray& ray, Object* obj);
-	XMFLOAT2 getAxisDirectionProj(const Camera& cam, AXIS axis_type);
+	void computeAxisDirectionProj(const Camera& cam, AXIS axis_type);
 	XMMATRIX computeWorldMatrix(Object * obj, AXIS axis_type);
 	XMMATRIX getAxisLocalTransform(AXIS axis_type);
+	void translateSelObj(XMFLOAT2 mouse_move_dir, AXIS curSelAxis);
 protected:
+	XMFLOAT2  curSelAxisProjDir;
 	float cylinder_length;
 	float cone_length;
 	float cylinder_radius;

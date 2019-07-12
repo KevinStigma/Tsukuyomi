@@ -82,15 +82,17 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 		}
 		else
 		{
-			XMFLOAT2 normalized_vec((cur_pos.x() - lastMousePos.x())/(float)width(), (lastMousePos.y() - cur_pos.y()) / (float)height());
+			XMFLOAT2 cur_normalized_pos((cur_pos.x() / (float)width()) * 2.0f - 1.0f, cur_pos.y()/(float)height() * 2.0f - 1.0f);
+			XMFLOAT2 last_normalized_pos(lastMousePos.x() / (float)width() * 2.0f - 1.0f, lastMousePos.y() / (float)height() * 2.0f - 1.0f);
+
 			if (renderer->getRenderSelObjMode() == RenderSelObjMode::COORD_AXIS)
 			{
-				renderer->translateSelObj(normalized_vec);
+				renderer->translateSelObj(XMFLOAT2(cur_normalized_pos.x - last_normalized_pos.x, -cur_normalized_pos.y + last_normalized_pos.y));
 				g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
 			}
 			else if (renderer->getRenderSelObjMode() == RenderSelObjMode::ROT_AXIS)
 			{
-				renderer->rotateSelObj(normalized_vec);
+				renderer->rotateSelObj(cur_normalized_pos, last_normalized_pos);
 				g_pGlobalSys->objectPropertyWidget->updateObjectRotation(g_pGlobalSys->objectManager.getCurSelObject());
 			}
 		}

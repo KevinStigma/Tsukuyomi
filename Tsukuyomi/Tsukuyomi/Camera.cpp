@@ -168,7 +168,7 @@ void Camera::updateAspectRatio(float ratio)
 	XMStoreFloat4x4(&mViewProj, camViewProj);
 }
 
-Ray Camera::getRay(float width_ratio, float height_ratio)
+Ray Camera::getRay(float width_ratio, float height_ratio)const
 {
 	float frustum_height = zNear * tanf(fov * 0.5f);
 	float y = frustum_height * (height_ratio - 0.5f) * 2.0f;
@@ -187,4 +187,12 @@ XMFLOAT2 Camera::projectCoord(XMFLOAT3 pos)
 	XMMATRIX camViewProj = camView * XMLoadFloat4x4(&mProj);
 	v = XMVector3TransformCoord(v, camViewProj);
 	return XMFLOAT2(XMVectorGetX(v), XMVectorGetY(v));
+}
+
+XMFLOAT3 Camera::unprojectCoord(XMFLOAT2 pos, float depth)
+{
+	float frustum_height = depth * tanf(fov * 0.5f);
+	float y = frustum_height * (pos.y - 0.5f) * 2.0f;
+	float x = frustum_height * aspectRatio * (pos.y - 0.5f) * 2.0f;
+	return XMFLOAT3(x, y, depth);
 }
