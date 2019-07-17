@@ -249,7 +249,13 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 		else if (renderSelObjMode == RenderSelObjMode::ROT_AXIS)
 		{
 			AXIS lastSelAxis = curSelAxis;
-			curSelAxis = AXIS(rotAxis.rayIntersectDectect(ray, obj));
+			float t;
+			curSelAxis = AXIS(rotAxis.rayIntersectDectect(ray, obj, t));
+			if (curSelAxis != AXIS::NO)
+			{
+				XMFLOAT3 inter_pt(ray.origin.x + t * ray.direction.x, ray.origin.y + t * ray.direction.y, ray.origin.z + t * ray.direction.z);
+				rotAxis.setIntersectionPoint(inter_pt);
+			}
 		}
 		else
 			curSelAxis = AXIS::NO;

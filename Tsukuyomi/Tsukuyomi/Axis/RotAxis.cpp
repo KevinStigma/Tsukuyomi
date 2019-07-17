@@ -27,7 +27,7 @@ XMMATRIX RotAxis::getAxisLocalTransform(AXIS axis_type)
 		return XMMatrixRotationX(MathHelper::Pi * 0.5f);
 }
 
-int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj)
+int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj, float &t)
 {
 	if (!obj)
 		return -1;
@@ -61,6 +61,7 @@ int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 			axis_index = i;
 		}
 	}
+	t = min_t;
 	return axis_index;
 }
 
@@ -80,31 +81,33 @@ XMFLOAT3 RotAxis::computeNormalSpherePoint(XMFLOAT2 normal_pos2d)
 
 void RotAxis::rotateSelObj(const Camera& cam, XMFLOAT2 cur_normalized_pos, XMFLOAT2 last_normalized_pos, AXIS curSelAxis, Object* obj)
 {
-	XMVECTOR sp1 = XMLoadFloat3(&computeNormalSpherePoint(cur_normalized_pos));
-	XMVECTOR sp2 = XMLoadFloat3(&computeNormalSpherePoint(last_normalized_pos));
+	XMFLOAT3 cur_pos = cam.unprojectCoord(cur_normalized_pos, cam.zNear * 10.0f);
+	XMFLOAT3 last_pos = cam.unprojectCoord(last_normalized_pos, cam.zNear * 10.0f);
+	XMFLOAT3 vec(cur_pos.x - last_pos.x, cur_pos.y-last_pos.y, cur_pos.z-last_pos.z);
+	XMVECTOR inter_pt1 = XMVectorSet(intersection_pt.x, intersection_pt.y, intersection_pt.z, 1.0);
+	XMVECTOR inter_pt2 = XMVectorSet(intersection_pt.x + vec.x, intersection_pt.y + vec.y, intersection_pt.z + vec.z, 1.0);
+
 	XMMATRIX axisTrans = getAxisLocalTransform(curSelAxis);
-	XMMATRIX world_mat = axisTrans * obj->getRotMatrix() * cam.getViewMatrix();
+	XMMATRIX world_mat = axisTrans * obj->getRotMatrix() * obj->getTransMatrix();
 	XMVECTOR v;
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
-	sp1 = XMVector3TransformCoord(sp1, inv_world_mat);
-	sp2 = XMVector3TransformCoord(sp2, inv_world_mat);
-	float x = XMVectorGetX(sp1);
-	float z = XMVectorGetZ(sp1);
-	float cur_radian = atan2(x, -z);
-	x = XMVectorGetX(sp2);
-	z = XMVectorGetZ(sp2);
-	float last_radian = atan2(x, -z);
+	inter_pt1 = XMVector3TransformCoord(inter_pt1, inv_world_mat);
+	inter_pt2 = XMVector3TransformCoord(inter_pt2, inv_world_mat);
+	float x = XMVectorGetX(inter_pt2);
+	float z = XMVectorGetZ(inter_pt2);
+ 	float cur_radian = atan2(x, z);
+	if (cur_radian < 0.0)
+		cur_radian += MathHelper::Pi;
+	x = XMVectorGetX(inter_pt1);
+	z = XMVectorGetZ(inter_pt1);
+	float last_radian = atan2(x, z);
+	if (last_radian < 0.0)
+		last_radian += MathHelper::Pi;
 
-	XMMATRIX rot_mat = obj->getRotMatrix();
-	XMVECTOR rot_axis;
-	if (curSelAxis == AXIS::X)
-		rot_axis = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), obj->getRotMatrix());
-	else if (curSelAxis == AXIS::Y)
-		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), obj->getRotMatrix());
-	else if (curSelAxis == AXIS::Z)
-		rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), obj->getRotMatrix());
+	XMVECTOR rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), axisTrans * obj->getRotMatrix());
+
 	XMFLOAT4X4 new_rot_mat;
-	XMStoreFloat4x4(&new_rot_mat, obj->getRotMatrix() * XMMatrixRotationAxis(rot_axis, (last_radian - cur_radian) * 3.0f));
+	XMStoreFloat4x4(&new_rot_mat, obj->getRotMatrix() * XMMatrixRotationAxis(rot_axis, (cur_radian - last_radian) * 8.0f));
 	XMFLOAT3 rot = MathHelper::transRotationMatrixToEulerAngles(new_rot_mat);
 	obj->setRotation(rot);
 }

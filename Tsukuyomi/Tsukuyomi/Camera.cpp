@@ -189,10 +189,15 @@ XMFLOAT2 Camera::projectCoord(XMFLOAT3 pos)
 	return XMFLOAT2(XMVectorGetX(v), XMVectorGetY(v));
 }
 
-XMFLOAT3 Camera::unprojectCoord(XMFLOAT2 pos, float depth)
+XMFLOAT3 Camera::unprojectCoord(XMFLOAT2 pos, float depth)const
 {
 	float frustum_height = depth * tanf(fov * 0.5f);
-	float y = frustum_height * (pos.y - 0.5f) * 2.0f;
-	float x = frustum_height * aspectRatio * (pos.y - 0.5f) * 2.0f;
-	return XMFLOAT3(x, y, depth);
+	float y = frustum_height * pos.y;
+	float x = frustum_height * aspectRatio * pos.x;
+	XMVECTOR v;
+	XMMATRIX inv_view = XMMatrixInverse(&v, DirectX::XMLoadFloat4x4(&mView));
+	XMVECTOR view_pos = XMVectorSet(x, y, depth, 1.0f);
+	XMFLOAT3 world_pos;
+	XMStoreFloat3(&world_pos, XMVector3TransformCoord(view_pos, inv_view));
+	return world_pos;
 }
