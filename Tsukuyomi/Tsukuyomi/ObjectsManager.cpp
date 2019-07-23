@@ -44,6 +44,25 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 	return mesh;
 }
 
+Object* ObjectManager::createNewObjectOfCamera(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)
+{
+	std::string obj_name = name;
+	if (name == "" || objects.find(name) != objects.end())
+	{
+		int i = 0;
+		std::string base_name = "object";
+		while (objects.find(base_name + std::to_string(i)) != objects.end())
+			i++;
+		obj_name = base_name + std::to_string(i);
+	}
+	Camera* cam = new Camera(obj_name, t, s, r);
+	objects.insert(std::pair<std::string, Object*>(obj_name, cam));
+	listview->addItem(QString(obj_name.c_str()));
+	QListWidgetItem* item = listview->item(listview->count() - 1);
+	listview->setCurrentItem(item);
+	return cam;
+}
+
 Object* ObjectManager::getObjectFromName(std::string name)
 {
 	if (objects.find(name) == objects.end())

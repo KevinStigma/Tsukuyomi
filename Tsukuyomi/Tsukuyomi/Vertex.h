@@ -7,6 +7,7 @@ struct SimpleVertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT4 Color;
+	SimpleVertex(float px = 0.0, float py = 0.0, float pz = 0.0, float cr = 0.0, float cg = 0.0, float cb = 0.0, float ca = 1.0) :Pos(px, py, pz), Color(cr, cg, cb, ca) {}
 };
 
 // Basic 32-byte vertex structure.

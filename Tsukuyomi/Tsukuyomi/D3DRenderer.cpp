@@ -200,6 +200,7 @@ void D3DRenderer::initScene()
 	createRulerLlinesVertexBuffer();
 	createBoundingBoxBuffers();
 	createSelObjAxisBuffers();
+	createFrustumBuffers();
 }
 
 void D3DRenderer::renderScene()
@@ -224,7 +225,14 @@ void D3DRenderer::renderSelObjFlag()
 	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
 	if (sel_obj)
 	{
-		renderBoundingBox(sel_obj);
+		if (sel_obj->getType() == MESH)
+		{
+			renderBoundingBox(sel_obj);
+		}
+		else if (sel_obj->getType() == CAM)
+		{
+			renderFrustum(((Camera*)sel_obj)->getFrustumMatrix());
+		}
 		if(renderSelObjMode == COORD_AXIS)
 			renderCoordAxis(sel_obj);
 		else if(renderSelObjMode == ROT_AXIS)
@@ -353,6 +361,34 @@ void D3DRenderer::renderRotAxis(Object* obj)
 		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
+	}
+}
+
+void D3DRenderer::renderFrustum(FXMMATRIX trans_mat)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pFrumstumVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pFrumstumIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosColor);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		WVP = trans_mat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(trans_mat);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(16, 0, 0);
 	}
 }
 
@@ -659,6 +695,66 @@ void D3DRenderer::createSelObjAxisBuffers()
 		return;
 }
 
+void D3DRenderer::createFrustumBuffers()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+
+	std::vector<SimpleVertex> vertices;
+	float depth = m_camera.frustumDepth;
+	vertices.push_back(SimpleVertex(0.0f, 0.0f, 0.0f, 0.9686, 0.59215686, 0.2));
+	vertices.push_back(SimpleVertex(-1.0f, -1.0f, depth, 0.9686, 0.59215686, 0.2));
+	vertices.push_back(SimpleVertex(1.0f, -1.0f, depth, 0.9686, 0.59215686, 0.2));
+	vertices.push_back(SimpleVertex(1.0f, 1.0f, depth, 0.9686, 0.59215686, 0.2));
+	vertices.push_back(SimpleVertex(-1.0f, 1.0f, depth, 0.9686, 0.59215686, 0.2));
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(Basic32) * vertices.size();
+
+	initData.pSysMem = vertices.data();
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pFrumstumVertexBuffer)))
+		return;
+
+	std::vector<unsigned int> indices(16);
+	indices[0] = 0;
+	indices[1] = 1;
+
+	indices[2] = 0;
+	indices[3] = 2;
+
+	indices[4] = 0;
+	indices[5] = 3;
+
+	indices[6] = 0;
+	indices[7] = 4;
+
+	indices[8] = 1;
+	indices[9] = 2;
+
+	indices[10] = 2;
+	indices[11] = 3;
+
+	indices[12] = 3;
+	indices[13] = 4;
+
+	indices[14] = 4;
+	indices[15] = 1;
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pFrumstumIndexBuffer)))
+		return;
+}
+
 void D3DRenderer::renderBoundingBox(Object* object)
 {
 	BasicEffect*basicEffect = Effects::BasicFX;
@@ -700,4 +796,6 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pBoundingBoxIndexBuffer);
 	SAFE_RELEASE(m_pAxisVertexBuffer);
 	SAFE_RELEASE(m_pAxisIndexBuffer);
+	SAFE_RELEASE(m_pFrumstumIndexBuffer);
+	SAFE_RELEASE(m_pFrumstumVertexBuffer);
 }

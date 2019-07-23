@@ -388,7 +388,14 @@
     <addaction name="actionClear_Scene"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuObjects">
+    <property name="title">
+     <string>Objects</string>
+    </property>
+    <addaction name="actionCamera"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menuObjects"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -422,6 +429,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionCamera">
+   <property name="text">
+    <string>Camera</string>
    </property>
   </action>
  </widget>

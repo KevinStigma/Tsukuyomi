@@ -30,6 +30,7 @@ public:
 	void translateSelObj(XMFLOAT2 mouse_move_dir);
 	void rotateSelObj(XMFLOAT2 np1, XMFLOAT2 np2);
 	AXIS getCurSelAxis() { return curSelAxis; }
+	void renderFrustum(FXMMATRIX trans_mat);
 
 protected:
 	void initLights();
@@ -42,6 +43,7 @@ protected:
 	void createRulerLlinesVertexBuffer();
 	void createBoundingBoxBuffers();
 	void createSelObjAxisBuffers();
+	void createFrustumBuffers();
 
 	Camera m_camera;
 	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
@@ -64,6 +66,8 @@ protected:
 	ID3D11Buffer*           m_pBoundingBoxIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pAxisVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
+	ID3D11Buffer*			m_pFrumstumVertexBuffer = nullptr;
+	ID3D11Buffer*           m_pFrumstumIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
 	int						transAxisCylinderIndexCount;
 	int						transAxisIndexCount;

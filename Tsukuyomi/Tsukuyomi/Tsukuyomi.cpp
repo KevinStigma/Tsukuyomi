@@ -47,7 +47,6 @@ void Tsukuyomi::on_actionSave_Project_triggered()
 		return;
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
 	object_mgr.exportProject(name.toStdString());
-
 }
 
 void Tsukuyomi::on_actionClear_Scene_triggered()
@@ -59,6 +58,12 @@ void Tsukuyomi::on_actionClear_Scene_triggered()
 void Tsukuyomi::on_actionExit_triggered()
 {
 	qApp->quit();
+}
+
+void Tsukuyomi::on_actionCamera_triggered()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.createNewObjectOfCamera("");
 }
 
 void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)

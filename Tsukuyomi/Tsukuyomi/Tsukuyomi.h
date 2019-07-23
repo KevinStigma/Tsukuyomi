@@ -20,6 +20,7 @@ public slots:
 	void on_actionSave_Project_triggered();
 	void on_actionClear_Scene_triggered();
 	void on_actionExit_triggered();
+	void on_actionCamera_triggered();
 	void on_transButton_clicked(bool checked);
 	void on_rotButton_clicked(bool checked);
 

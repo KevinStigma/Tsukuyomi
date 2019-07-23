@@ -29,6 +29,7 @@ public:
 	Ray getRay(float width_ratio, float height_ratio)const;
 	XMFLOAT2 projectCoord(XMFLOAT3 pos);
 	XMFLOAT3 unprojectCoord(XMFLOAT2 pos, float depth)const;
+	XMMATRIX getFrustumMatrix();
 
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
@@ -37,4 +38,5 @@ public:
 	float zNear;
 	float zFar;
 	float aspectRatio=800.0f/600.0f;
+	static float frustumDepth;
 };

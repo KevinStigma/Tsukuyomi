@@ -1,5 +1,8 @@
 #include "Camera.h"
+#include "../D3DRenderer.h"
 #include <iostream>
+
+float Camera::frustumDepth = 20.0f;
 
 Camera::Camera(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
 {
@@ -10,6 +13,7 @@ Camera::Camera(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name
 	ZeroMemory(&mProj, sizeof(XMFLOAT4X4));
 	setLens(fov, aspectRatio, zNear, zFar);
 	updateViewMatrix();
+	type = CAM;
 }
 
 void Camera::init()
@@ -78,6 +82,14 @@ XMFLOAT3 Camera::getRight()
 	XMFLOAT3 right;
 	XMStoreFloat3(&right, XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), rot_mat));
 	return right;
+}
+
+XMMATRIX Camera::getFrustumMatrix()
+{
+	float frustum_height = frustumDepth * tanf(fov * 0.5f);
+	float frustum_width = frustum_height * aspectRatio;
+	XMMATRIX scale_mat = XMMatrixScaling(frustum_width, frustum_height, 1.0f);
+	return XMMatrixMultiply(scale_mat, world_mat);
 }
 
 void Camera::lookAt(XMFLOAT3 pos, XMFLOAT3 target, XMFLOAT3 worldUp)

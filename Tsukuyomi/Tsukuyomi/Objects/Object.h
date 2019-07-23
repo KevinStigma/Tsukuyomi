@@ -9,7 +9,7 @@
 using namespace DirectX;
 class D3DRenderer;
 
-enum ObjectType {EMPTY, MESH, LIGHT};
+enum ObjectType {EMPTY, MESH, LIGHT, CAM};
 
 struct BoundingBox
 {
