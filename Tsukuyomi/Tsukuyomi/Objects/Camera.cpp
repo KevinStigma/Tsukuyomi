@@ -1,18 +1,23 @@
 #include "Camera.h"
 #include <iostream>
 
-void Camera::init()
+Camera::Camera(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
 {
 	fov = 0.25f * XM_PI;
 	zNear = 0.01f;
 	zFar = 1000.0f;
-	position = XMFLOAT3(0.0f, 0.0f, -2.5f);
-	up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	look = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	updateRight();
+	aspectRatio = 800.0f / 600.0f;
 	ZeroMemory(&mProj, sizeof(XMFLOAT4X4));
 	setLens(fov, aspectRatio, zNear, zFar);
+	updateViewMatrix();
+}
 
+void Camera::init()
+{
+	translation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	genereateWorldMatrix();
 	updateViewMatrix();
 }
 
@@ -43,33 +48,43 @@ void Camera::setLens(float fovY, float aspect, float zn, float zf)
 
 void Camera::setPosition(float posX, float posY, float posZ)
 {
-	position.x = posX;
-	position.y = posY;
-	position.z = posZ;
+	translation.x = posX;
+	translation.y = posY;
+	translation.z = posZ;
 	updateViewMatrix();
 }
 
-void Camera::lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
+XMFLOAT3 Camera::getPosition()
 {
-	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
-	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
-	XMVECTOR U = XMVector3Cross(L, R);
-
-	XMStoreFloat3(&position, pos);
-	XMStoreFloat3(&look, L);
-	XMStoreFloat3(&right, R);
-	XMStoreFloat3(&up, U);
+	return translation;
 }
 
-void Camera::updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u)
+XMFLOAT3 Camera::getLook()
 {
-	position = pos;
-	XMVECTOR look_vec = XMVector3Normalize(XMLoadFloat3(&t) - XMLoadFloat3(&pos));
-	XMVECTOR right_vec = XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&u), look_vec));
-	XMVECTOR up_vec = XMVector3Cross(look_vec, right_vec);
-	XMStoreFloat3(&look, look_vec);
-	XMStoreFloat3(&right, right_vec);
-	XMStoreFloat3(&up, up_vec);
+	XMFLOAT3 look;
+	XMStoreFloat3(&look, XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), rot_mat));
+	return look;
+}
+
+XMFLOAT3 Camera::getUp()
+{
+	XMFLOAT3 up;
+	XMStoreFloat3(&up, XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), rot_mat));
+	return up;
+}
+
+XMFLOAT3 Camera::getRight()
+{
+	XMFLOAT3 right;
+	XMStoreFloat3(&right, XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), rot_mat));
+	return right;
+}
+
+void Camera::lookAt(XMFLOAT3 pos, XMFLOAT3 target, XMFLOAT3 worldUp)
+{
+	world_mat  = XMMatrixLookAtLH(XMVectorSet(pos.x, pos.y, pos.z, 1.0), XMVectorSet(target.x, target.y, target.z, 1.0), XMVectorSet(worldUp.x, worldUp.y, worldUp.z, 1.0));
+	trans_mat = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	rot_mat = world_mat * XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
 	updateViewMatrix();
 }
 
@@ -77,6 +92,12 @@ void Camera::updateViewMatrix()
 {
 	ZeroMemory(&mView, sizeof(XMFLOAT4X4));
 	ZeroMemory(&mViewProj, sizeof(XMFLOAT4X4));
+
+	XMFLOAT3 right, look, up;
+	XMFLOAT3 position = getPosition();
+	right = getRight();
+	look = getLook();
+	up = getUp();
 
 	mView(0, 0) = right.x;
 	mView(1, 0) = right.y;
@@ -109,43 +130,38 @@ void Camera::updateViewMatrix()
 	XMStoreFloat4x4(&mViewProj, camViewProj);
 }
 
-void Camera::updateRight()
-{
-	XMVECTOR look_dir = XMLoadFloat3(&look);
-	XMVECTOR u = XMLoadFloat3(&up);
-	XMVECTOR r = XMVector3Cross(XMVector3Normalize(u), XMVector3Normalize(look_dir));
-	XMStoreFloat3(&right, r);
-}
-
 void Camera::walkForward(float d)
 {
-	position.x += d * look.x;
-	position.y += d * look.y;
-	position.z += d * look.z;
+	XMFLOAT3 look = getLook();
+	translation.x += d * look.x;
+	translation.y += d * look.y;
+	translation.z += d * look.z;
 	updateViewMatrix();
 }
 
 void Camera::walkRight(float d)
 {
-	position.x += d * right.x;
-	position.y += d * right.y;
-	position.z += d * right.z;
+	XMFLOAT3 right = getRight();
+	translation.x += d * right.x;
+	translation.y += d * right.y;
+	translation.z += d * right.z;
 
 	updateViewMatrix();
 }
 
 void Camera::walkUp(float d)
 {
-	position.y += d;
+	XMFLOAT3 up = getUp();
+	translation.x += d * up.x;
+	translation.y += d * up.y;
+	translation.z += d * up.z;
 	updateViewMatrix();
 }
 
 void Camera::rotate(XMFLOAT3 axis, float radian)
 {
 	XMMATRIX R = XMMatrixRotationAxis(XMVectorSet(axis.x, axis.y, axis.z, 0.0), radian);
-	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), R));
-	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	rot_mat = XMMatrixMultiply(rot_mat, R);
 	updateViewMatrix();
 }
 
@@ -156,7 +172,7 @@ void Camera::rotateY(float radian)
 
 void Camera::rotateRight(float radian)
 {
-	rotate(right, radian);
+	rotate(getRight(), radian);
 }
 
 void Camera::updateAspectRatio(float ratio)
@@ -177,7 +193,7 @@ Ray Camera::getRay(float width_ratio, float height_ratio)const
 	XMMATRIX inv_view = XMMatrixInverse(&v, DirectX::XMLoadFloat4x4(&mView));
 	XMFLOAT3 world_dir;
 	XMStoreFloat3(&world_dir, XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(x, y, zNear, 0.0)), inv_view));
-	return Ray(position, world_dir);
+	return Ray(translation, world_dir);
 }
 
 XMFLOAT2 Camera::projectCoord(XMFLOAT3 pos)

@@ -4,7 +4,7 @@
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <directxcolors.h>
-#include "Camera.h"
+#include "Objects/Camera.h"
 #include "Axis/TransAxis.h"
 #include "Axis/RotAxis.h"
 

@@ -12,7 +12,7 @@
 
 using namespace DirectX::Colors;
 
-D3DRenderer::D3DRenderer()
+D3DRenderer::D3DRenderer():m_camera("main_cam")
 {
 	g_pGlobalSys->renderer = this;
 }
@@ -195,7 +195,6 @@ void D3DRenderer::initMaterials()
 
 void D3DRenderer::initScene()
 {
-	m_camera.init();
 	initLights();
 	initMaterials();
 	createRulerLlinesVertexBuffer();
@@ -313,7 +312,7 @@ void D3DRenderer::renderRotAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
+	XMFLOAT3 eyePosW = m_camera.getPosition();
 	basicEffect->SetDirLights(&m_dirLights[0]);
 	basicEffect->SetEyePosW(eyePosW);
 
@@ -369,7 +368,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	XMFLOAT3 eyePosW(m_camera.position.x, m_camera.position.y, m_camera.position.z);
+	XMFLOAT3 eyePosW = m_camera.getPosition();
 	basicEffect->SetDirLights(&m_dirLights[0]);
 	basicEffect->SetEyePosW(eyePosW);
 

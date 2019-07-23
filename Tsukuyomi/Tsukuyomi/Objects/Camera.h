@@ -1,10 +1,12 @@
 #pragma once
+#include "Object.h"
 #include "LightHelper.h"
-#include "MathHelper/MathHelper.h"
+#include "../MathHelper/MathHelper.h"
 
-class Camera
+class Camera : public Object
 {
 public:
+	Camera(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0));
 	void init();
 	XMMATRIX getViewMatrix()const;
 	XMMATRIX getProjMatrix()const;
@@ -12,12 +14,14 @@ public:
 	void walkForward(float d);
 	void walkRight(float d);
 	void walkUp(float d);
-	void lookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp);
+	void lookAt(XMFLOAT3 pos, XMFLOAT3 target, XMFLOAT3 worldUp);
 	void setPosition(float posX, float posY, float posZ);
+	XMFLOAT3 getPosition();
+	XMFLOAT3 getLook();
+	XMFLOAT3 getUp();
+	XMFLOAT3 getRight();
 	void setLens(float fovY, float aspect, float zn, float zf);
 	void updateViewMatrix();
-	void updateViewMatrix(XMFLOAT3 pos, XMFLOAT3 t, XMFLOAT3 u);
-	void updateRight();
 	void rotate(XMFLOAT3 axis, float radian);
 	void rotateY(float radian);
 	void rotateRight(float radian);
@@ -26,10 +30,6 @@ public:
 	XMFLOAT2 projectCoord(XMFLOAT3 pos);
 	XMFLOAT3 unprojectCoord(XMFLOAT2 pos, float depth)const;
 
-	XMFLOAT3 position;
-	XMFLOAT3 up;
-	XMFLOAT3 right;
-	XMFLOAT3 look;
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
 	XMFLOAT4X4 mViewProj;

@@ -1,6 +1,6 @@
 #pragma once
 #include "MathHelper\MathHelper.h"
-#include "../Camera.h"
+#include "../Objects/Camera.h"
 #include "Objects\Object.h"
 #include "../common.h"
 

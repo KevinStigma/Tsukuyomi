@@ -1,6 +1,7 @@
 #pragma once
 #include "../common.h"
 #include "../Objects/Object.h"
+#include "../Objects/Camera.h"
 
 class RotAxis
 {

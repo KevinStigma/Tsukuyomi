@@ -40,7 +40,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	auto & lights = renderer->getLights();
 	auto & mats = renderer->getMaterials();
 
-	XMFLOAT3 eyePosW(camera.position.x, camera.position.y, camera.position.z);
+	XMFLOAT3 eyePosW = camera.getPosition();
 	basicEffect->SetDirLights(&lights[0]);
 	basicEffect->SetEyePosW(eyePosW);
 

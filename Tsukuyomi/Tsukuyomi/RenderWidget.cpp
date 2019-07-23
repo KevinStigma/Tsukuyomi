@@ -2,7 +2,7 @@
 #include "Globalsys.h"
 #include "common.h"
 #include "intersection.h"
-#include "Camera.h"
+#include "./Objects/Camera.h"
 #include "Axis/TransAxis.h"
 #include <iostream>
 #include <QMouseEvent>

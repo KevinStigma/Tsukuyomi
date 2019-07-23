@@ -1,6 +1,5 @@
 #pragma once
 #include "../common.h"
-#include "../Camera.h"
 #include "tiny_obj_loader.h"
 #include <string>
 #include <windows.h>
