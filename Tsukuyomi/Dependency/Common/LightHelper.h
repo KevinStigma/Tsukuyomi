@@ -15,9 +15,9 @@
 //   cannot straddle a 4D vector boundary.
 using namespace DirectX;
 
-struct DirectionalLight
+struct DirLight
 {
-	DirectionalLight() { ZeroMemory(this, sizeof(this)); }
+	DirLight() { ZeroMemory(this, sizeof(this)); }
 
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;

@@ -202,6 +202,7 @@ void D3DRenderer::initScene()
 	createSelObjAxisBuffers();
 	createFrustumBuffers();
 	createCircleBuffers();
+	createDirectionalLightBuffers();
 }
 
 void D3DRenderer::renderScene()
@@ -227,17 +228,13 @@ void D3DRenderer::renderSelObjFlag()
 	if (sel_obj)
 	{
 		if (sel_obj->getType() == MESH)
-		{
 			renderBoundingBox(sel_obj);
-		}
 		else if (sel_obj->getType() == CAM)
-		{
 			renderFrustum(((Camera*)sel_obj)->getFrustumMatrix());
-		}
 		else if (sel_obj->getType() == POINT_LIGHT)
-		{
 			renderWireFrameSphere(sel_obj);
-		}
+		else if (sel_obj->getType() == DIR_LIGHT)
+			renderDirectionalLight(sel_obj);
 
 		if(renderSelObjMode == COORD_AXIS)
 			renderCoordAxis(sel_obj);
@@ -443,9 +440,33 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 	}
 }
 
-void D3DRenderer::renderDirectionalLight()
+void D3DRenderer::renderDirectionalLight(Object* obj)
 {
+	BasicEffect*basicEffect = Effects::BasicFX;
 
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pDirLightVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pDirLightIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosColor);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		XMMATRIX world_matrix = obj->getRotMatrix() * obj->getTransMatrix();
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(72, 0, 0);
+	}
 }
 
 void D3DRenderer::renderCoordAxis(Object* obj)
@@ -852,6 +873,69 @@ void D3DRenderer::createCircleBuffers()
 	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pCircleIndexBuffer)))
 		return;
 }
+
+void D3DRenderer::createDirectionalLightBuffers()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+
+	std::vector<SimpleVertex> vertices;
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData circle_data;
+	geoGen.CreateCircle(0.5, 30, circle_data);
+
+	for (int i = 0; i < circle_data.Vertices.size(); i++)
+	{
+		auto& pos = circle_data.Vertices[i].Position;
+		vertices.push_back(SimpleVertex(pos.x, pos.y, pos.z, 0.96, 0.906, 0.62));
+	}
+
+	int inds[] = { 0, 5, 10, 15, 20, 25 };
+	for (int i = 0; i < 6; i++)
+	{
+		auto&vert = vertices[inds[i]];
+		vertices.push_back(SimpleVertex(vert.Pos.x, vert.Pos.y, vert.Pos.z - 3.0, 0.96, 0.906, 0.62));
+	}
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		auto&vert = vertices[i];
+		XMVECTOR v = XMVector3TransformCoord(XMVectorSet(vert.Pos.x, vert.Pos.y, vert.Pos.z, 1.0), XMMatrixRotationY(-MathHelper::Pi * 0.5f));
+		XMStoreFloat3(&vert.Pos, v);
+	}
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(Basic32) * vertices.size();
+
+	initData.pSysMem = vertices.data();
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pDirLightVertexBuffer)))
+		return;
+
+	std::vector<unsigned int> indices;
+	for (int i = 0; i < circle_data.Indices.size(); i++)
+		indices.push_back(circle_data.Indices[i]);
+	
+	for (int i = 0; i < 6; i++)
+	{
+		indices.push_back(inds[i]);
+		indices.push_back(i+circle_data.Vertices.size());
+	}
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pDirLightIndexBuffer)))
+		return;
+}
+
 
 void D3DRenderer::renderBoundingBox(Object* object)
 {

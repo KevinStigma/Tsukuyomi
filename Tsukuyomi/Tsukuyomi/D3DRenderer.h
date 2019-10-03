@@ -21,7 +21,7 @@ public:
 	void renderScene();
 	void cleanup();
 	Camera& getCamera() { return m_camera; }
-	std::vector<DirectionalLight> & getLights() { return m_dirLights; }
+	std::vector<DirLight> & getLights() { return m_dirLights; }
 	std::vector<Material> & getMaterials() { return m_materials; }
 	ID3D11Device* getDevice() { return m_pd3dDevice; }
 	RenderSelObjMode getRenderSelObjMode() { return renderSelObjMode; }
@@ -38,7 +38,7 @@ protected:
 	void renderSelObjFlag();
 	void renderFrustum(FXMMATRIX trans_mat);
 	void renderWireFrameSphere(Object * obj);
-	void renderDirectionalLight();
+	void renderDirectionalLight(Object* obj);
 	void renderBoundingBox(Object* object);
 	void renderCoordAxis(Object* obj);
 	void renderRotAxis(Object* obj);
@@ -47,6 +47,7 @@ protected:
 	void createSelObjAxisBuffers();
 	void createFrustumBuffers();
 	void createCircleBuffers();
+	void createDirectionalLightBuffers();
 
 	Camera m_camera;
 	D3D_DRIVER_TYPE         m_driverType = D3D_DRIVER_TYPE_NULL;
@@ -73,6 +74,8 @@ protected:
 	ID3D11Buffer*           m_pFrumstumIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pCircleVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pCircleIndexBuffer = nullptr;
+	ID3D11Buffer*			m_pDirLightVertexBuffer = nullptr;
+	ID3D11Buffer*           m_pDirLightIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
 	int						transAxisCylinderIndexCount;
 	int						transAxisIndexCount;
@@ -81,7 +84,7 @@ protected:
 	int                     axisVertexCount;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
-	std::vector<DirectionalLight> m_dirLights;
+	std::vector<DirLight> m_dirLights;
 	std::vector<Material> m_materials;
 	TransAxis				transAxis;
 	RotAxis					rotAxis;

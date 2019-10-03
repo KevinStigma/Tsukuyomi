@@ -75,7 +75,15 @@ std::string ObjectManager::genNewObjectName()
 
 Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)
 {
-	return nullptr;
+	std::string obj_name = name;
+	if (name == "" || objects.find(name) != objects.end())
+		obj_name = genNewObjectName();
+	DirectionalLight* light = new DirectionalLight(obj_name, t, s, r);
+	objects.insert(std::pair<std::string, Object*>(obj_name, light));
+	listview->addItem(QString(obj_name.c_str()));
+	QListWidgetItem* item = listview->item(listview->count() - 1);
+	listview->setCurrentItem(item);
+	return light;
 }
 
 Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)

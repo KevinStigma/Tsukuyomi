@@ -6,6 +6,7 @@
 #include "Objects/Mesh.h"
 #include "Objects/Camera.h"
 #include "Objects/PointLight.h"
+#include "Objects/DirectionalLight.h"
 #include "ObjectsListWidget.h"
 
 class ObjectManager
