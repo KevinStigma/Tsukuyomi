@@ -128,9 +128,13 @@
     <ClCompile Include="ObjectPropertyWidget.cpp" />
     <ClCompile Include="ObjectsListWidget.cpp" />
     <ClCompile Include="ObjectsManager.cpp" />
+    <ClCompile Include="Objects\AreaLight.cpp" />
     <ClCompile Include="Objects\Camera.cpp" />
+    <ClCompile Include="Objects\DirectionalLight.cpp" />
+    <ClCompile Include="Objects\Light.cpp" />
     <ClCompile Include="Objects\Mesh.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
+    <ClCompile Include="Objects\SpotLight.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
@@ -164,9 +168,13 @@
     <ClInclude Include="intersection.h" />
     <ClInclude Include="MathHelper\MathHelper.h" />
     <ClInclude Include="ObjectsManager.h" />
+    <ClInclude Include="Objects\AreaLight.h" />
     <ClInclude Include="Objects\Camera.h" />
+    <ClInclude Include="Objects\DirectionalLight.h" />
+    <ClInclude Include="Objects\Light.h" />
     <ClInclude Include="Objects\Mesh.h" />
     <ClInclude Include="Objects\Object.h" />
+    <ClInclude Include="Objects\SpotLight.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="Vertex.h" />
     <QtMoc Include="RenderWidget.h">

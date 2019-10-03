@@ -392,7 +392,16 @@
     <property name="title">
      <string>Objects</string>
     </property>
+    <widget class="QMenu" name="menuLights">
+     <property name="title">
+      <string>Lights</string>
+     </property>
+     <addaction name="actionPointLight"/>
+     <addaction name="actionDirectionalLight"/>
+     <addaction name="actionAreaLight"/>
+    </widget>
     <addaction name="actionCamera"/>
+    <addaction name="menuLights"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
@@ -434,6 +443,21 @@
   <action name="actionCamera">
    <property name="text">
     <string>Camera</string>
+   </property>
+  </action>
+  <action name="actionPointLight">
+   <property name="text">
+    <string>PointLight</string>
+   </property>
+  </action>
+  <action name="actionDirectionalLight">
+   <property name="text">
+    <string>DirectionalLight</string>
+   </property>
+  </action>
+  <action name="actionAreaLight">
+   <property name="text">
+    <string>AreaLight</string>
    </property>
   </action>
  </widget>
