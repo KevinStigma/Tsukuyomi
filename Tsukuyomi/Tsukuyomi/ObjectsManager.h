@@ -7,6 +7,7 @@
 #include "Objects/Camera.h"
 #include "Objects/PointLight.h"
 #include "Objects/DirectionalLight.h"
+#include "Objects/AreaLight.h"
 #include "ObjectsListWidget.h"
 
 class ObjectManager

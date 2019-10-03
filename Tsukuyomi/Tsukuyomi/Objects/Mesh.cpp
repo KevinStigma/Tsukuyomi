@@ -5,6 +5,7 @@
 #include "../D3DRenderer.h"
 #include "GlobalSys.h"
 #include <iostream>
+#include <fstream>
 
 Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
 {
@@ -12,6 +13,7 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 	type = MESH;
 	if (!isEmpty())
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
+	mat = g_pGlobalSys->renderer->getMaterials()[0];
 }
 
 Mesh::~Mesh()
@@ -38,7 +40,6 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 	Camera& camera = renderer->getCamera();
 	auto & lights = renderer->getLights();
-	auto & mats = renderer->getMaterials();
 
 	XMFLOAT3 eyePosW = camera.getPosition();
 	basicEffect->SetDirLights(&lights[0]);
@@ -58,7 +59,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		basicEffect->SetWorldInvTranspose(worldMat);
 		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(mats[0]);
+		basicEffect->SetMaterial(mat);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
@@ -88,6 +89,28 @@ void Mesh::loadObjMesh(const std::string& obj_path)
 	std::cout << "load " << obj_path << " successfully!" << std::endl;
 }
 
+void Mesh::writeObj(const std::string& obj_path)
+{
+	std::ofstream fout(obj_path.c_str());
+	int count = shape.mesh.positions.size() / 3;
+	auto& center = boundingBox.center;
+	for (int i = 0; i < count; i++)
+	{
+		fout << "v " << shape.mesh.positions[i * 3] - center.x << " " << shape.mesh.positions[i * 3 + 1] - center.y << " " << shape.mesh.positions[i * 3 + 2] - center.z << std::endl;
+		fout << "vn " << shape.mesh.normals[i * 3]<< " " << shape.mesh.normals[i * 3 + 1]<< " " << shape.mesh.normals[i * 3 + 2]<< std::endl;
+	}
+
+	fout << std::endl;
+	for (int i = 0; i < shape.mesh.indices.size()/3; i++)
+	{
+		int id1 = shape.mesh.indices[i*3]+1;
+		int id2 = shape.mesh.indices[i * 3+1] + 1;
+		int id3 = shape.mesh.indices[i * 3+2] + 1;
+		fout << "f " << id1 << "//" << id1 << " " << id2 << "//" << id2 << " " << id3 << "//" << id3 << std::endl;
+	}
+	fout.close();
+}
+
 void Mesh::computeBoundingBox()
 {
 	int num_vertices = shape.mesh.positions.size() / 3;
@@ -105,13 +128,13 @@ void Mesh::computeBoundingBox()
 		center.y += y;
 		center.z += z;
 
-		boundingBox.top.x = max(boundingBox.top.x, x);
-		boundingBox.top.y = max(boundingBox.top.y, y);
-		boundingBox.top.z = max(boundingBox.top.z, z);
+		boundingBox.top.x = std::max(boundingBox.top.x, x);
+		boundingBox.top.y = std::max(boundingBox.top.y, y);
+		boundingBox.top.z = std::max(boundingBox.top.z, z);
 
-		boundingBox.bottom.x = min(boundingBox.bottom.x, x);
-		boundingBox.bottom.y = min(boundingBox.bottom.y, y);
-		boundingBox.bottom.z = min(boundingBox.bottom.z, z);
+		boundingBox.bottom.x = std::min(boundingBox.bottom.x, x);
+		boundingBox.bottom.y = std::min(boundingBox.bottom.y, y);
+		boundingBox.bottom.z = std::min(boundingBox.bottom.z, z);
 	}
 	center.x /= num_vertices;
 	center.y /= num_vertices;

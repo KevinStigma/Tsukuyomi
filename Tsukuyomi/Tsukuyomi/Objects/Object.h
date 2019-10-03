@@ -32,7 +32,7 @@ public:
 	std::string getScaleText();
 	std::string getRotationText();
 	const BoundingBox & getBoundingBox() { return boundingBox; }
-	void genereateWorldMatrix();
+	virtual void genereateWorldMatrix();
 	XMMATRIX getWorldMatrix() { return world_mat; }
 	XMMATRIX getRotMatrix() { return rot_mat; }
 	XMMATRIX getTransMatrix() { return trans_mat; }
@@ -40,9 +40,9 @@ public:
 	XMFLOAT3 getTranslation() { return translation; }
 	XMFLOAT3 getRotation() { return rotation; }
 	XMFLOAT3 getScale() { return scale; }
-	void setScale(XMFLOAT3 s);
-	void setRotation(XMFLOAT3 r);
-	void setTranslation(XMFLOAT3 t);
+	virtual void setScale(XMFLOAT3 s);
+	virtual void setRotation(XMFLOAT3 r);
+	virtual void setTranslation(XMFLOAT3 t);
 protected:
 	std::string name;
 	ObjectType type;

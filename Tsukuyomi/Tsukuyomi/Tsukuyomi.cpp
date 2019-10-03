@@ -80,8 +80,12 @@ void Tsukuyomi::on_actionDirectionalLight_triggered()
 
 void Tsukuyomi::on_actionAreaLight_triggered()
 {
+	QString filename = QFileDialog::getOpenFileName(this, tr("Load Mesh"), "./Data/Meshes", "obj files(*.obj)", 0);
+	if (!filename.size())
+		return;
+	
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
-	object_mgr.createNewObjectOfAreaLight("", "");
+	object_mgr.createNewObjectOfAreaLight("", filename.toStdString());
 }
 
 void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)

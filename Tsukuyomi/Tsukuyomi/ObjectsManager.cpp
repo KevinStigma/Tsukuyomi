@@ -56,7 +56,7 @@ Object* ObjectManager::createNewObjectOfPointLight(std::string name, XMFLOAT3 t,
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
 		obj_name = genNewObjectName();
-	PointLight* light = new PointLight(obj_name, t, s, r);
+	PointLight* light = new PointLight(obj_name, t, s, r, c);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count() - 1);
@@ -78,7 +78,7 @@ Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLO
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
 		obj_name = genNewObjectName();
-	DirectionalLight* light = new DirectionalLight(obj_name, t, s, r);
+	DirectionalLight* light = new DirectionalLight(obj_name, t, s, r, c);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count() - 1);
@@ -88,7 +88,15 @@ Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLO
 
 Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)
 {
-	return nullptr;
+	std::string obj_name = name;
+	if (name == "" || objects.find(name) != objects.end())
+		obj_name = genNewObjectName();
+	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c);
+	objects.insert(std::pair<std::string, Object*>(obj_name, light));
+	listview->addItem(QString(obj_name.c_str()));
+	QListWidgetItem* item = listview->item(listview->count() - 1);
+	listview->setCurrentItem(item);
+	return light;
 }
 
 Object* ObjectManager::getObjectFromName(std::string name)
@@ -169,6 +177,26 @@ void ObjectManager::exportProject(std::string file_path)
 			type_str = "mesh";
 			obj_element->SetAttribute("MeshPath", ((Mesh*)obj)->getMeshPath().c_str());
 		}
+		else if (obj->getType() == CAM)
+		{
+			type_str = "cam";
+		}
+		else if (obj->getType() == POINT_LIGHT)
+		{
+			type_str = "point_light";
+			obj_element->SetAttribute("Color", ((PointLight*)obj)->getColorText().c_str());
+		}
+		else if (obj->getType() == DIR_LIGHT)
+		{
+			type_str = "dir_light";
+			obj_element->SetAttribute("Color", ((DirectionalLight*)obj)->getColorText().c_str());
+		}
+		else if (obj->getType() == AREA_LIGHT)
+		{
+			type_str = "area_light";
+			obj_element->SetAttribute("MeshPath", ((AreaLight*)obj)->getMesh()->getMeshPath().c_str());
+			obj_element->SetAttribute("Color", ((DirectionalLight*)obj)->getColorText().c_str());
+		}
 		else
 			continue;
 		obj_element->SetAttribute("Name", obj->getName().c_str());
@@ -218,6 +246,32 @@ void ObjectManager::updateFromProject(std::string file_path)
 		{
 			std::string mesh_path = express->Attribute("MeshPath");
 			createNewObjectOfMesh(name, mesh_path, translation, scale, rotation);
+		}
+		else if (type == "cam")
+		{
+			createNewObjectOfCamera(name, translation, scale, rotation);
+		}
+		else if (type == "point_light")
+		{
+			std::string color_str = express->Attribute("Color");
+			SplitString(color_str, strs, ",");
+			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+			createNewObjectOfPointLight(name, translation, scale, rotation, color);
+		}
+		else if (type == "dir_light")
+		{
+			std::string color_str = express->Attribute("Color");
+			SplitString(color_str, strs, ",");
+			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+			createNewObjectOfDirectionalLight(name, translation, scale, rotation, color);
+		}
+		else if (type == "area_light")
+		{
+			std::string mesh_path = express->Attribute("MeshPath");
+			std::string color_str = express->Attribute("Color");
+			SplitString(color_str, strs, ",");
+			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color);
 		}
 	}
 }
