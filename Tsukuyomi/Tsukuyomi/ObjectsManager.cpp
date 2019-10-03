@@ -29,13 +29,7 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 		return nullptr;
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
-	{
-		int i = 0;
-		std::string base_name = "object";
-		while (objects.find(base_name + std::to_string(i)) != objects.end())
-			i++;
-		obj_name = base_name + std::to_string(i);
-	}
+		obj_name = genNewObjectName();
 	Mesh* mesh = new Mesh(obj_name, obj_path, t, s, r);
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
 	listview->addItem(QString(obj_name.c_str()));
@@ -48,19 +42,45 @@ Object* ObjectManager::createNewObjectOfCamera(std::string name, XMFLOAT3 t, XMF
 {
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
-	{
-		int i = 0;
-		std::string base_name = "object";
-		while (objects.find(base_name + std::to_string(i)) != objects.end())
-			i++;
-		obj_name = base_name + std::to_string(i);
-	}
+		obj_name = genNewObjectName();
 	Camera* cam = new Camera(obj_name, t, s, r);
 	objects.insert(std::pair<std::string, Object*>(obj_name, cam));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count() - 1);
 	listview->setCurrentItem(item);
 	return cam;
+}
+
+Object* ObjectManager::createNewObjectOfPointLight(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)
+{
+	std::string obj_name = name;
+	if (name == "" || objects.find(name) != objects.end())
+		obj_name = genNewObjectName();
+	PointLight* light = new PointLight(obj_name, t, s, r);
+	objects.insert(std::pair<std::string, Object*>(obj_name, light));
+	listview->addItem(QString(obj_name.c_str()));
+	QListWidgetItem* item = listview->item(listview->count() - 1);
+	listview->setCurrentItem(item);
+	return light;
+}
+
+std::string ObjectManager::genNewObjectName()
+{
+	int i = 0;
+	std::string base_name = "object";
+	while (objects.find(base_name + std::to_string(i)) != objects.end())
+		i++;
+	return base_name + std::to_string(i);
+}
+
+Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)
+{
+	return nullptr;
+}
+
+Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c)
+{
+	return nullptr;
 }
 
 Object* ObjectManager::getObjectFromName(std::string name)

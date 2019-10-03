@@ -120,7 +120,7 @@
     <ClCompile Include="Objects\DirectionalLight.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\SpotLight.cpp">
+    <ClCompile Include="Objects\PointLight.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +203,7 @@
     <ClInclude Include="Objects\Light.h">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\SpotLight.h">
+    <ClInclude Include="Objects\PointLight.h">
       <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>

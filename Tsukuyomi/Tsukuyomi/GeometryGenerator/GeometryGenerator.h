@@ -83,6 +83,8 @@ public:
 
 	void CreateTorus(float largeRadius, float smallRadius, UINT sliceCount, UINT stackCount, MeshData& meshData);
 
+	void CreateCircle(float radius, UINT sliceCount, MeshData& meshData);
+
 private:
 	void Subdivide(MeshData& meshData);
 	void BuildCylinderTopCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);

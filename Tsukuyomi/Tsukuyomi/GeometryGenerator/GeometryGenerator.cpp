@@ -490,6 +490,29 @@ void GeometryGenerator::CreateTorus(float largeRadius, float smallRadius, UINT s
 	}
 }
 
+void GeometryGenerator::CreateCircle(float radius, UINT sliceCount, MeshData& meshData)
+{
+	meshData.Vertices.clear();
+	meshData.Indices.clear();
+
+	float slice_step = 2.0 * MathHelper::Pi / sliceCount;
+
+	for (int i = 0; i < sliceCount; i++)
+	{
+		Vertex vertex;
+		float radian = i * slice_step;
+		XMVECTOR normal = XMVectorSet(cos(radian) * radius, sin(radian) * radius, 0.0, 0.0);
+		XMVECTOR pos = XMVectorSet(XMVectorGetX(normal), XMVectorGetY(normal), 0.0, 1.0);
+		XMFLOAT3 new_pos, new_normal;
+		XMStoreFloat3(&new_pos, pos);
+		XMStoreFloat3(&new_normal, normal);
+		vertex.Position = new_pos;
+		vertex.Normal = new_normal;
+		meshData.Vertices.push_back(vertex);
+		meshData.Indices.push_back(i);
+		meshData.Indices.push_back((i + 1) % sliceCount);
+	}
+}
 
 void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius, float height, 
 											UINT sliceCount, UINT stackCount, MeshData& meshData)

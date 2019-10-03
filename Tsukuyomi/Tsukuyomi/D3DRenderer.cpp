@@ -201,6 +201,7 @@ void D3DRenderer::initScene()
 	createBoundingBoxBuffers();
 	createSelObjAxisBuffers();
 	createFrustumBuffers();
+	createCircleBuffers();
 }
 
 void D3DRenderer::renderScene()
@@ -233,6 +234,11 @@ void D3DRenderer::renderSelObjFlag()
 		{
 			renderFrustum(((Camera*)sel_obj)->getFrustumMatrix());
 		}
+		else if (sel_obj->getType() == POINT_LIGHT)
+		{
+			renderWireFrameSphere(sel_obj);
+		}
+
 		if(renderSelObjMode == COORD_AXIS)
 			renderCoordAxis(sel_obj);
 		else if(renderSelObjMode == ROT_AXIS)
@@ -390,6 +396,56 @@ void D3DRenderer::renderFrustum(FXMMATRIX trans_mat)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(16, 0, 0);
 	}
+}
+
+void D3DRenderer::renderWireFrameSphere(Object* obj)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pCircleVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pCircleIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosColor);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		XMMATRIX world_matrix = obj->getTransMatrix();
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(60, 0, 0);
+
+		world_matrix = XMMatrixRotationY(MathHelper::Pi * 0.5) * obj->getTransMatrix();
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(60, 0, 0);
+
+		world_matrix = XMMatrixRotationX(MathHelper::Pi * 0.5) * obj->getTransMatrix();
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(60, 0, 0);
+	}
+}
+
+void D3DRenderer::renderDirectionalLight()
+{
+
 }
 
 void D3DRenderer::renderCoordAxis(Object* obj)
@@ -752,6 +808,48 @@ void D3DRenderer::createFrustumBuffers()
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &indices[0];
 	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pFrumstumIndexBuffer)))
+		return;
+}
+
+void D3DRenderer::createCircleBuffers()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+
+	std::vector<SimpleVertex> vertices;
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData circle_data;
+	geoGen.CreateCircle(1.0, 30, circle_data);
+
+	for (int i = 0; i <circle_data.Vertices.size();i++)
+	{
+		auto& pos = circle_data.Vertices[i].Position;
+		vertices.push_back(SimpleVertex(pos.x, pos.y, pos.z, 0.96, 0.906, 0.62));
+	}
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(Basic32) * vertices.size();
+
+	initData.pSysMem = vertices.data();
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pCircleVertexBuffer)))
+		return;
+	
+	std::vector<unsigned int> indices;
+	for (int i = 0; i < circle_data.Indices.size(); i++)
+		indices.push_back(circle_data.Indices[i]);
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pCircleIndexBuffer)))
 		return;
 }
 

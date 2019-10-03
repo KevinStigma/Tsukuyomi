@@ -66,6 +66,24 @@ void Tsukuyomi::on_actionCamera_triggered()
 	object_mgr.createNewObjectOfCamera("");
 }
 
+void Tsukuyomi::on_actionPointLight_triggered()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.createNewObjectOfPointLight("");
+}
+
+void Tsukuyomi::on_actionDirectionalLight_triggered()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.createNewObjectOfDirectionalLight("");
+}
+
+void Tsukuyomi::on_actionAreaLight_triggered()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.createNewObjectOfAreaLight("", "");
+}
+
 void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key::Key_R)
