@@ -7,6 +7,7 @@
 #include <cmath>
 const float MathHelper::Infinity = FLT_MAX;
 const float MathHelper::Pi       = 3.1415926535f;
+const float MathHelper::InvPi = 1 / 3.1415926535f;
 
 float MathHelper::AngleFromXY(float x, float y)
 {

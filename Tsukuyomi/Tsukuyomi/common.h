@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 #include <DirectXMath.h>
 
 using namespace DirectX;

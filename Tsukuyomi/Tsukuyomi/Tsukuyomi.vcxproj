@@ -135,6 +135,7 @@
     <ClCompile Include="Objects\Mesh.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Objects\PointLight.cpp" />
+    <ClCompile Include="PbrMat\BxDF.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
@@ -175,6 +176,12 @@
     <ClInclude Include="Objects\Mesh.h" />
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Objects\PointLight.h" />
+    <ClInclude Include="PbrMat\BxDF.h" />
+    <ClInclude Include="PbrMat\LambertianReflection.h" />
+    <ClInclude Include="PbrMat\MicrofacetReflection.h" />
+    <ClInclude Include="PbrMat\OrenNayar.h" />
+    <ClInclude Include="PbrMat\SpecularReflection.h" />
+    <ClInclude Include="RGBSpectrum.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="Vertex.h" />
     <QtMoc Include="RenderWidget.h">

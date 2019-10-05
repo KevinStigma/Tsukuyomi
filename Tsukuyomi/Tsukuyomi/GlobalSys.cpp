@@ -3,6 +3,7 @@
 #include "common.h"
 #include "D3DRenderer.h"
 #include "RenderWidget.h"
+#include "RGBSpectrum.h"
 #include <iostream>
 
 GlobalSys *g_pGlobalSys = NULL;

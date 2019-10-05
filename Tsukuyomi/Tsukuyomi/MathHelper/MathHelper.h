@@ -9,6 +9,7 @@
 
 #include <utility>
 #include <iostream>
+#include <algorithm>
 #include <Windows.h>
 #include <DirectXMath.h>
 
@@ -73,6 +74,7 @@ public:
 
 	static const float Infinity;
 	static const float Pi;
+	static const float InvPi;
 
 	static bool solveForQuadraticEquation(float a, float b, float c, std::pair<float, float>& solution)
 	{
@@ -107,6 +109,34 @@ public:
 			yaw = atan2(rot_mat(2, 0), rot_mat(2, 2));
 		}
 		return XMFLOAT3(pitch, yaw, roll);
+	}
+
+	static XMFLOAT2 ConcentricSampleDisk(const XMFLOAT2 &u) {
+		// Map uniform random numbers to $[-1,1]^2$
+		XMFLOAT2 uOffset(2.f * u.x - 1.0f, 2.0f * u.y - 1.0f);
+
+		// Handle degeneracy at the origin
+		if (uOffset.x == 0 && uOffset.y == 0) return XMFLOAT2(0, 0);
+
+		float piOver4 = Pi * 0.25f;
+		float piOver2 = Pi * 0.5f;
+		// Apply concentric mapping to point
+		float theta, r;
+		if (std::abs(uOffset.x) > std::abs(uOffset.y)) {
+			r = uOffset.x;
+			theta = piOver4 * (uOffset.y / uOffset.x);
+		}
+		else {
+			r = uOffset.y;
+			theta = piOver2 - piOver4 * (uOffset.x / uOffset.y);
+		}
+		return XMFLOAT2(std::cos(theta) * r, std::sin(theta) * r);
+	}
+
+	static XMFLOAT3 CosineSampleHemisphere(const XMFLOAT2 &u) {
+		XMFLOAT2 d = ConcentricSampleDisk(u);
+		float z = std::sqrt(std::max<float>((float)0, 1 - d.x * d.x - d.y * d.y));
+		return XMFLOAT3(d.x, d.y, z);
 	}
 };
 
