@@ -139,6 +139,7 @@
     <ClCompile Include="PbrMat\LambertianReflection.cpp" />
     <ClCompile Include="PbrMat\MicrofacetReflection.cpp" />
     <ClCompile Include="PbrMat\OrenNayar.cpp" />
+    <ClCompile Include="PbrMat\SpecularReflection.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
