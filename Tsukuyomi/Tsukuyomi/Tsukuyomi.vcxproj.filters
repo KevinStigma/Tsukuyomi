@@ -129,6 +129,15 @@
     <ClCompile Include="PbrMat\BxDF.cpp">
       <Filter>PbrMat</Filter>
     </ClCompile>
+    <ClCompile Include="PbrMat\LambertianReflection.cpp">
+      <Filter>PbrMat</Filter>
+    </ClCompile>
+    <ClCompile Include="PbrMat\OrenNayar.cpp">
+      <Filter>PbrMat</Filter>
+    </ClCompile>
+    <ClCompile Include="PbrMat\MicrofacetReflection.cpp">
+      <Filter>PbrMat</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">

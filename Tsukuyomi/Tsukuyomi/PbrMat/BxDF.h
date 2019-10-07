@@ -1,6 +1,7 @@
 #pragma once
 #include "../common.h"
 #include "../RGBSpectrum.h"
+#include "../MathHelper/MathHelper.h"
 
 enum BxDFType {
 	BSDF_REFLECTION = 1 << 0,
@@ -20,7 +21,7 @@ inline float CosTheta(const XMFLOAT3 &w) { return w.z; }
 inline float Cos2Theta(const XMFLOAT3 &w) { return w.z * w.z; }
 inline float AbsCosTheta(const XMFLOAT3 &w) { return std::abs(w.z); }
 inline float Sin2Theta(const XMFLOAT3 &w) {
-	return std::max((float)0, (float)1 - Cos2Theta(w));
+	return std::max<float>((float)0, (float)1 - Cos2Theta(w));
 }
 
 inline float SinTheta(const XMFLOAT3 &w) { return std::sqrt(Sin2Theta(w)); }
@@ -31,6 +32,19 @@ inline float Tan2Theta(const XMFLOAT3 &w) {
 	return Sin2Theta(w) / Cos2Theta(w);
 }
 
+inline float CosPhi(const XMFLOAT3 &w) {
+	float sinTheta = SinTheta(w);
+	return (sinTheta == 0) ? 1 : MathHelper::Clamp<float>(w.x / sinTheta, -1, 1);
+}
+
+inline float SinPhi(const XMFLOAT3 &w) {
+	float sinTheta = SinTheta(w);
+	return (sinTheta == 0) ? 0 : MathHelper::Clamp<float>(w.y / sinTheta, -1, 1);
+}
+
+inline float Cos2Phi(const XMFLOAT3 &w) { return CosPhi(w) * CosPhi(w); }
+
+inline float Sin2Phi(const XMFLOAT3 &w) { return SinPhi(w) * SinPhi(w); }
 
 class BxDF {
 public:

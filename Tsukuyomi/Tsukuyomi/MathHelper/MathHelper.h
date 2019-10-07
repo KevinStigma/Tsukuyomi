@@ -54,6 +54,12 @@ public:
 		return x < low ? low : (x > high ? high : x); 
 	}
 
+	static XMFLOAT3 NormalizeFloat3(XMFLOAT3 n)
+	{
+		float l = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
+		return XMFLOAT3(n.x/l, n.y/l, n.z/l);
+	}
+
 	// Returns the polar angle of the point (x,y) in [0, 2*PI).
 	static float AngleFromXY(float x, float y);
 
@@ -137,6 +143,16 @@ public:
 		XMFLOAT2 d = ConcentricSampleDisk(u);
 		float z = std::sqrt(std::max<float>((float)0, 1 - d.x * d.x - d.y * d.y));
 		return XMFLOAT3(d.x, d.y, z);
+	}
+
+	static float Degree2Radian(float degree)
+	{
+		return degree / 180.0f * Pi;
+	}
+
+	static float Radian2Degree(float radian)
+	{
+		return radian * InvPi * 180.0f;
 	}
 };
 
