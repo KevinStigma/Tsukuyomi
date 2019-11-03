@@ -30,6 +30,7 @@ public:
 	void setCurSelObject(std::string name);
 	void exportProject(std::string file_path);
 	void updateFromProject(std::string file_path);
+	std::vector<Object*> getAllObjects();
 protected:
 	std::string genNewObjectName();
 	std::unordered_map<std::string, Object*> objects;

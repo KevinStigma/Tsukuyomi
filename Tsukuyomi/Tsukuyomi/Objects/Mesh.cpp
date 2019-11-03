@@ -198,7 +198,6 @@ bool Mesh::is_intersect(const Ray&ray, float& t)
 		return false;
 	int face_num = shape.mesh.indices.size() / 3;
 	float min_t = -1.0;
-	float t;
 	int index[3];
 	XMFLOAT3 vertices[3];
 	std::vector<float>& positions = shape.mesh.positions;

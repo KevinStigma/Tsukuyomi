@@ -136,6 +136,7 @@
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Objects\PointLight.cpp" />
     <ClCompile Include="OfflineRenderer\NormalRenderer.cpp" />
+    <ClCompile Include="OfflineRenderer\OfflineRenderer.cpp" />
     <ClCompile Include="PbrMat\BxDF.cpp" />
     <ClCompile Include="PbrMat\Fresnel.cpp" />
     <ClCompile Include="PbrMat\LambertianReflection.cpp" />
@@ -173,6 +174,7 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
     <ClInclude Include="intersection.h" />
+    <ClInclude Include="intersect_info.h" />
     <ClInclude Include="MathHelper\MathHelper.h" />
     <ClInclude Include="ObjectsManager.h" />
     <ClInclude Include="Objects\AreaLight.h" />

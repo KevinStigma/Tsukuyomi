@@ -150,6 +150,9 @@
     <ClCompile Include="OfflineRenderer\NormalRenderer.cpp">
       <Filter>OfflineRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="OfflineRenderer\OfflineRenderer.cpp">
+      <Filter>OfflineRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -262,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="OfflineRenderer\NormalRenderer.h">
       <Filter>OfflineRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="intersect_info.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

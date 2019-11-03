@@ -275,3 +275,13 @@ void ObjectManager::updateFromProject(std::string file_path)
 		}
 	}
 }
+
+std::vector<Object*> ObjectManager::getAllObjects()
+{
+	std::vector<Object*> objs;
+	for each (auto item in objects)
+	{
+		objs.push_back(item.second);
+	}
+	return objs;
+}
