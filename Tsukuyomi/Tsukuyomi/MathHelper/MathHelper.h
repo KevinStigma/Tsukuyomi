@@ -169,6 +169,7 @@ struct Ray
 	Ray(Ray& r) :origin(r.origin), direction(r.direction){}
 	XMFLOAT3 getExtendPos(float t)const { return XMFLOAT3(origin.x + t * direction.x, origin.y + t * direction.y, origin.z + t * direction.z); }
 	Ray transform(XMMATRIX trans_mat)const;
+	bool is_intersect_triangle(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c, float& t)const;
 };
 
 #endif // MATHHELPER_H

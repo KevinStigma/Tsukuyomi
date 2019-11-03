@@ -19,6 +19,9 @@ public slots:
 	void on_actionLoad_Project_triggered();
 	void on_actionSave_Project_triggered();
 	void on_actionClear_Scene_triggered();
+	void on_actionNormalDebug_triggered();
+	void on_actionWhitted_triggered();
+	void on_actionPathTracing_triggered();
 	void on_actionExit_triggered();
 	void on_actionCamera_triggered();
 	void on_actionPointLight_triggered();

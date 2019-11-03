@@ -52,6 +52,9 @@
     <Filter Include="PbrMat">
       <UniqueIdentifier>{bfc8a17b-03d5-4f56-80f6-a0825ef5840b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OfflineRenderer">
+      <UniqueIdentifier>{77ae43af-34c5-40c6-b790-e126afaf13a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -143,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="PbrMat\Fresnel.cpp">
       <Filter>PbrMat</Filter>
+    </ClCompile>
+    <ClCompile Include="OfflineRenderer\NormalRenderer.cpp">
+      <Filter>OfflineRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +253,15 @@
     </ClInclude>
     <ClInclude Include="PbrMat\Fresnel.h">
       <Filter>PbrMat</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderParas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OfflineRenderer\OfflineRenderer.h">
+      <Filter>OfflineRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="OfflineRenderer\NormalRenderer.h">
+      <Filter>OfflineRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -41,6 +41,9 @@ public:
     QAction *actionPointLight;
     QAction *actionDirectionalLight;
     QAction *actionAreaLight;
+    QAction *actionNormalDebug;
+    QAction *actionPathTracing;
+    QAction *actionWhitted;
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
@@ -66,6 +69,9 @@ public:
     QMenu *menu;
     QMenu *menuObjects;
     QMenu *menuLights;
+    QMenu *menuRenderOption;
+    QMenu *menuOfflineRender;
+    QMenu *menuType;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -95,6 +101,17 @@ public:
         actionDirectionalLight->setObjectName(QString::fromUtf8("actionDirectionalLight"));
         actionAreaLight = new QAction(TsukuyomiClass);
         actionAreaLight->setObjectName(QString::fromUtf8("actionAreaLight"));
+        actionNormalDebug = new QAction(TsukuyomiClass);
+        actionNormalDebug->setObjectName(QString::fromUtf8("actionNormalDebug"));
+        actionNormalDebug->setCheckable(true);
+        actionNormalDebug->setChecked(true);
+        actionPathTracing = new QAction(TsukuyomiClass);
+        actionPathTracing->setObjectName(QString::fromUtf8("actionPathTracing"));
+        actionPathTracing->setCheckable(true);
+        actionWhitted = new QAction(TsukuyomiClass);
+        actionWhitted->setObjectName(QString::fromUtf8("actionWhitted"));
+        actionWhitted->setCheckable(true);
+        actionWhitted->setChecked(false);
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
@@ -191,6 +208,12 @@ public:
         menuObjects->setObjectName(QString::fromUtf8("menuObjects"));
         menuLights = new QMenu(menuObjects);
         menuLights->setObjectName(QString::fromUtf8("menuLights"));
+        menuRenderOption = new QMenu(menuBar);
+        menuRenderOption->setObjectName(QString::fromUtf8("menuRenderOption"));
+        menuOfflineRender = new QMenu(menuRenderOption);
+        menuOfflineRender->setObjectName(QString::fromUtf8("menuOfflineRender"));
+        menuType = new QMenu(menuOfflineRender);
+        menuType->setObjectName(QString::fromUtf8("menuType"));
         TsukuyomiClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TsukuyomiClass);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -201,6 +224,7 @@ public:
 
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menuObjects->menuAction());
+        menuBar->addAction(menuRenderOption->menuAction());
         menu->addAction(actionLoad_Mesh);
         menu->addAction(actionLoad_Project);
         menu->addAction(actionSave_Project);
@@ -211,6 +235,11 @@ public:
         menuLights->addAction(actionPointLight);
         menuLights->addAction(actionDirectionalLight);
         menuLights->addAction(actionAreaLight);
+        menuRenderOption->addAction(menuOfflineRender->menuAction());
+        menuOfflineRender->addAction(menuType->menuAction());
+        menuType->addAction(actionNormalDebug);
+        menuType->addAction(actionWhitted);
+        menuType->addAction(actionPathTracing);
 
         retranslateUi(TsukuyomiClass);
 
@@ -229,6 +258,9 @@ public:
         actionPointLight->setText(QApplication::translate("TsukuyomiClass", "PointLight", nullptr));
         actionDirectionalLight->setText(QApplication::translate("TsukuyomiClass", "DirectionalLight", nullptr));
         actionAreaLight->setText(QApplication::translate("TsukuyomiClass", "AreaLight", nullptr));
+        actionNormalDebug->setText(QApplication::translate("TsukuyomiClass", "NormalDebug", nullptr));
+        actionPathTracing->setText(QApplication::translate("TsukuyomiClass", "PathTracing", nullptr));
+        actionWhitted->setText(QApplication::translate("TsukuyomiClass", "Whitted", nullptr));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", nullptr));
         sx_lineEdit->setInputMask(QString());
         sx_lineEdit->setText(QString());
@@ -256,6 +288,9 @@ public:
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", nullptr));
         menuObjects->setTitle(QApplication::translate("TsukuyomiClass", "Objects", nullptr));
         menuLights->setTitle(QApplication::translate("TsukuyomiClass", "Lights", nullptr));
+        menuRenderOption->setTitle(QApplication::translate("TsukuyomiClass", "Options", nullptr));
+        menuOfflineRender->setTitle(QApplication::translate("TsukuyomiClass", "OfflineRender", nullptr));
+        menuType->setTitle(QApplication::translate("TsukuyomiClass", "Type", nullptr));
     } // retranslateUi
 
 };

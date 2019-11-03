@@ -2,6 +2,7 @@
 #include <string>
 #include <QListWidget>
 #include <QSlider>
+#include "RenderParas.h"
 #include "ObjectsManager.h"
 #include "ObjectPropertyWidget.h"
 
@@ -14,6 +15,7 @@ public:
 	GlobalSys();
 	~GlobalSys();
 	float getMoveSpeed();
+	RenderParas render_paras;
 	ObjectManager objectManager;
 	D3DRenderer * renderer = nullptr;
 	RenderWidget* renderWidget = nullptr;

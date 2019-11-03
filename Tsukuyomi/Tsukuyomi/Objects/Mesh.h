@@ -17,6 +17,7 @@ public:
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	std::string getMeshPath() { return mesh_path; }
+	bool is_intersect(const Ray&ray, float& t);
 	void setMaterial(Material new_mat) { mat = new_mat; }
 protected:
 	Material mat;

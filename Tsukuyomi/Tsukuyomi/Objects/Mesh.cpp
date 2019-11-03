@@ -192,6 +192,39 @@ void Mesh::generateBuffers(ID3D11Device* device)
 	device->CreateBuffer(&ibd, &iinitData, &indexBuffer);
 }
 
+bool Mesh::is_intersect(const Ray&ray, float& t)
+{
+	if (!is_intersect_bounding_box(ray))
+		return false;
+	int face_num = shape.mesh.indices.size() / 3;
+	float min_t = -1.0;
+	float t;
+	int index[3];
+	XMFLOAT3 vertices[3];
+	std::vector<float>& positions = shape.mesh.positions;
+	for (int i = 0; i < face_num; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			index[j] = shape.mesh.indices[i * 3 + j];
+			vertices[j] = XMFLOAT3(positions[index[j] * 3],
+				positions[index[j] * 3 + 1],
+				positions[index[j] * 3 + 2]);
+		}
+		if (ray.is_intersect_triangle(vertices[0], vertices[1], vertices[2], t))
+		{
+			if (min_t < 0.0 || t < min_t)
+				min_t = t;
+		}
+	}
+	if (min_t > 0.0)
+	{
+		t = min_t;
+		return true;
+	}
+	return false;
+}
+
 void Mesh::constructNormals()
 {
 	if (isEmpty())

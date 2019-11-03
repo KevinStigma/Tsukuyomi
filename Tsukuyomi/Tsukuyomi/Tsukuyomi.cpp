@@ -60,6 +60,30 @@ void Tsukuyomi::on_actionExit_triggered()
 	qApp->quit();
 }
 
+void Tsukuyomi::on_actionNormalDebug_triggered()
+{
+	ui.actionNormalDebug->setChecked(true);
+	ui.actionWhitted->setChecked(false);
+	ui.actionPathTracing->setChecked(false);
+	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::NORMAL_DEBUG;
+}
+
+void Tsukuyomi::on_actionWhitted_triggered()
+{
+	ui.actionNormalDebug->setChecked(false);
+	ui.actionWhitted->setChecked(true);
+	ui.actionPathTracing->setChecked(false);
+	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::WHITTED;
+}
+
+void Tsukuyomi::on_actionPathTracing_triggered()
+{
+	ui.actionNormalDebug->setChecked(false);
+	ui.actionWhitted->setChecked(false);
+	ui.actionPathTracing->setChecked(true);
+	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::PATH_TRACING;
+}
+
 void Tsukuyomi::on_actionCamera_triggered()
 {
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;

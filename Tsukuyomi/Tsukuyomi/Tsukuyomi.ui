@@ -403,8 +403,29 @@
     <addaction name="actionCamera"/>
     <addaction name="menuLights"/>
    </widget>
+   <widget class="QMenu" name="menuRenderOption">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <widget class="QMenu" name="menuOfflineRender">
+     <property name="title">
+      <string>OfflineRender</string>
+     </property>
+     <widget class="QMenu" name="menuType">
+      <property name="title">
+       <string>Type</string>
+      </property>
+      <addaction name="actionNormalDebug"/>
+      <addaction name="actionWhitted"/>
+      <addaction name="actionPathTracing"/>
+     </widget>
+     <addaction name="menuType"/>
+    </widget>
+    <addaction name="menuOfflineRender"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
+   <addaction name="menuRenderOption"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -458,6 +479,36 @@
   <action name="actionAreaLight">
    <property name="text">
     <string>AreaLight</string>
+   </property>
+  </action>
+  <action name="actionNormalDebug">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>NormalDebug</string>
+   </property>
+  </action>
+  <action name="actionPathTracing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>PathTracing</string>
+   </property>
+  </action>
+  <action name="actionWhitted">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Whitted</string>
    </property>
   </action>
  </widget>

@@ -90,3 +90,33 @@ Ray Ray::transform(XMMATRIX trans_mat) const
 	XMStoreFloat3(&new_dir, XMVector3TransformNormal(v, trans_mat));
 	return Ray(new_origin, new_dir);
 }
+
+bool Ray::is_intersect_triangle(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c, float& t)const
+{
+	XMMATRIX A(XMVectorSet(a.x - b.x, a.x - c.x, a.x - origin.x, 0.0f), 
+		XMVectorSet(a.y - b.y, a.y - c.y, a.y - origin.y, 0.0f), 
+		XMVectorSet(a.z - b.z, a.z - c.z, a.z - origin.z, 0.0f),
+		XMVectorSet(0.0f,0.0f,0.0f, 1.0f));
+	float det = XMVectorGetX(XMMatrixDeterminant(A));
+	if (abs(det) < 1e-6)
+		return false;
+	XMMATRIX B(XMVectorSet(a.x - origin.x, a.x - c.x, direction.x, 0.0f),
+		XMVectorSet(a.y - origin.y, a.y - c.y, direction.y, 0.0f),
+		XMVectorSet(a.z - origin.z, a.z - c.z, direction.z, 0.0f),
+		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f));
+
+	XMMATRIX C(XMVectorSet(a.x - b.x, a.x - origin.x, direction.x, 0.0f),
+		XMVectorSet(a.y - b.y, a.y - origin.y, direction.y, 0.0f),
+		XMVectorSet(a.z - b.z, a.z - origin.z, direction.z, 0.0f),
+		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f));
+	float beta = XMVectorGetX(XMMatrixDeterminant(B)) / det;
+	float gama = XMVectorGetX(XMMatrixDeterminant(C)) / det;
+	if (beta + gama > 1.0f)
+		return false;
+	XMMATRIX D(XMVectorSet(a.x - b.x, a.x - c.x, a.x - origin.x, 0.0f),
+		XMVectorSet(a.y - b.y, a.y - c.y, a.y - origin.y, 0.0f),
+		XMVectorSet(a.z - b.z, a.z - c.z, a.z - origin.z, 0.0f),
+		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f));
+	t = XMVectorGetX(XMMatrixDeterminant(D)) / det;
+	return true;
+}

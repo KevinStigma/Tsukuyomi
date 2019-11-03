@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "../MathHelper/MathHelper.h"
 #include "tiny_obj_loader.h"
 #include <string>
 #include <windows.h>
@@ -15,6 +16,13 @@ struct BoundingBox
 {
 	XMFLOAT3 top, bottom, center;
 	BoundingBox():top(1.0, 1.0, 1.0), bottom(-1.0, -1.0, -1.0), center(0.0, 0.0, 0.0){}
+	bool inBox(XMFLOAT3 v)
+	{
+		if (bottom.x <= v.x&&top.x >= v.x&&bottom.y <= v.y&&top.y >= v.y&&bottom.z <= v.z&&top.z >= v.z)
+			return false;
+		return true;
+	}
+
 };
 
 class Object
@@ -43,6 +51,7 @@ public:
 	virtual void setScale(XMFLOAT3 s);
 	virtual void setRotation(XMFLOAT3 r);
 	virtual void setTranslation(XMFLOAT3 t);
+	bool is_intersect_bounding_box(const Ray&ray);
 protected:
 	std::string name;
 	ObjectType type;
