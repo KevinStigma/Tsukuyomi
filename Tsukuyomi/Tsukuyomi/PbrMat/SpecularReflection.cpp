@@ -8,7 +8,7 @@ Spectrum SpecularReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
 	return Spectrum();
 }
 
-Spectrum SpecularReflection::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &sample, float *pdf, BxDFType *sampledType = nullptr) const
+Spectrum SpecularReflection::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &sample, float *pdf, BxDFType *sampledType) const
 {
 	*wi = XMFLOAT3(-wo.x, -wo.y, wo.z);
 	*pdf = 1.0f;

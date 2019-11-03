@@ -1,5 +1,6 @@
 #pragma once
 #include "BxDF.h"
+#include "Fresnel.h"
 
 class LambertianReflection :public BxDF
 {

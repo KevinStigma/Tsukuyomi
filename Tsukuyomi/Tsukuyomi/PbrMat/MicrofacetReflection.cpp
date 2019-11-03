@@ -1,9 +1,10 @@
 #include "MicrofacetReflection.h"
 
-MicrofacetReflection::MicrofacetReflection(const Spectrum &R, float ax, float ay):BxDF(BxDFType(BSDF_REFLECTION|BSDF_GLOSSY)), R(R)
+MicrofacetReflection::MicrofacetReflection(const Spectrum &R, const Fresnel*f, float ax, float ay):BxDF(BxDFType(BSDF_REFLECTION|BSDF_GLOSSY)), R(R)
 {
 	alphax = ax;
 	alphay = ay;
+	fresnel = f;
 }
 
 float MicrofacetReflection::D(const XMFLOAT3&wh)const
@@ -39,6 +40,6 @@ Spectrum MicrofacetReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 	if ((cosThetaI == 0.0f || cosThetaO == 0.0f)||(wh.x==0.0&&wh.y == 0.0 &&wh.z == 0.0))
 		return Spectrum();
 	wh = MathHelper::NormalizeFloat3(wh);
-	// TODO: fix Frenel parameter
-	return R * D(wh)* G(wi, wo) / (4.0f * cosThetaI * cosThetaO);
+	Spectrum F = fresnel->Evaluate(MathHelper::DotFloat3(wi, wh));
+	return R * D(wh)* G(wi, wo) * F / (4.0f * cosThetaI * cosThetaO);
 }

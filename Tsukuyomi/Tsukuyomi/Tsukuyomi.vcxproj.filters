@@ -141,6 +141,9 @@
     <ClCompile Include="PbrMat\SpecularReflection.cpp">
       <Filter>PbrMat</Filter>
     </ClCompile>
+    <ClCompile Include="PbrMat\Fresnel.cpp">
+      <Filter>PbrMat</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="RGBSpectrum.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PbrMat\Fresnel.h">
+      <Filter>PbrMat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

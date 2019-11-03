@@ -154,6 +154,11 @@ public:
 	{
 		return radian * InvPi * 180.0f;
 	}
+
+	static float DotFloat3(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return a.x*b.x + a.y*b.y + a.z*b.z;
+	}
 };
 
 struct Ray
