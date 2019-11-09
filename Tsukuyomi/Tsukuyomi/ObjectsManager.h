@@ -31,6 +31,7 @@ public:
 	void exportProject(std::string file_path);
 	void updateFromProject(std::string file_path);
 	std::vector<Object*> getAllObjects();
+	Camera* getRenderCamera();
 protected:
 	std::string genNewObjectName();
 	std::unordered_map<std::string, Object*> objects;

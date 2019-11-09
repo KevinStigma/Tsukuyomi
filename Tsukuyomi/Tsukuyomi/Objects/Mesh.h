@@ -2,6 +2,7 @@
 #include <string>
 #include <LightHelper.h>
 #include "Object.h"
+#include "../intersect_info.h"
 
 
 class Mesh :public Object
@@ -17,7 +18,7 @@ public:
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	std::string getMeshPath() { return mesh_path; }
-	bool is_intersect(const Ray&ray, float& t);
+	bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
 protected:
 	Material mat;

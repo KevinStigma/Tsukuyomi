@@ -276,6 +276,16 @@ void ObjectManager::updateFromProject(std::string file_path)
 	}
 }
 
+Camera* ObjectManager::getRenderCamera()
+{
+	for each (auto item in objects)
+	{
+		if (item.second->getType() == CAM)
+			return dynamic_cast<Camera*>(item.second);
+	}
+	return nullptr;
+}
+
 std::vector<Object*> ObjectManager::getAllObjects()
 {
 	std::vector<Object*> objs;

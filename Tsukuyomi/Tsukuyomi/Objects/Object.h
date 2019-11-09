@@ -19,8 +19,8 @@ struct BoundingBox
 	bool inBox(XMFLOAT3 v)
 	{
 		if (bottom.x <= v.x&&top.x >= v.x&&bottom.y <= v.y&&top.y >= v.y&&bottom.z <= v.z&&top.z >= v.z)
-			return false;
-		return true;
+			return true;
+		return false;
 	}
 
 };

@@ -192,28 +192,40 @@ void Mesh::generateBuffers(ID3D11Device* device)
 	device->CreateBuffer(&ibd, &iinitData, &indexBuffer);
 }
 
-bool Mesh::is_intersect(const Ray&ray, float& t)
+bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 {
 	if (!is_intersect_bounding_box(ray))
 		return false;
 	int face_num = shape.mesh.indices.size() / 3;
 	float min_t = -1.0;
+	float beta, gama;
 	int index[3];
 	XMFLOAT3 vertices[3];
-	std::vector<float>& positions = shape.mesh.positions;
+	XMVECTOR normals[3];
+	XMMATRIX world_mat = getWorldMatrix();
+	XMMATRIX rot_mat = getRotMatrix();
 	for (int i = 0; i < face_num; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
 			index[j] = shape.mesh.indices[i * 3 + j];
-			vertices[j] = XMFLOAT3(positions[index[j] * 3],
-				positions[index[j] * 3 + 1],
-				positions[index[j] * 3 + 2]);
+			XMStoreFloat3(&vertices[j],XMVector3TransformCoord(XMVectorSet(shape.mesh.positions[index[j] * 3],
+				shape.mesh.positions[index[j] * 3 + 1],
+				shape.mesh.positions[index[j] * 3 + 2], 1.0), world_mat));
+
+			normals[j] = XMVector3TransformNormal(XMVectorSet(shape.mesh.normals[index[j] * 3],
+				shape.mesh.normals[index[j] * 3 + 1],
+				shape.mesh.normals[index[j] * 3 + 2], 0.0), rot_mat);
 		}
-		if (ray.is_intersect_triangle(vertices[0], vertices[1], vertices[2], t))
+		if (ray.is_intersect_triangle(vertices[0], vertices[1], vertices[2], t, beta, gama))
 		{
 			if (min_t < 0.0 || t < min_t)
+			{
 				min_t = t;
+				is_info.obj = this;
+				is_info.pos = ray.getExtendPos(t);
+				XMStoreFloat3(&is_info.normal, XMVector3Normalize(normals[0] + (normals[1] - normals[0])*beta + (normals[2] - normals[0])*gama));
+			}
 		}
 	}
 	if (min_t > 0.0)

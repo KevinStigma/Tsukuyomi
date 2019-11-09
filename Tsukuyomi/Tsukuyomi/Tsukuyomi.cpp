@@ -132,6 +132,23 @@ void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 	}
 }
 
+void Tsukuyomi::on_renderButton_clicked()
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	Camera* cam = object_mgr.getRenderCamera();
+	if (!cam)
+		std::cout << "Don't have valid camera!" << std::endl;
+	else
+	{
+		OfflineRenderer* renderer = g_pGlobalSys->generateOfflineRenderer();
+		if (renderer)
+		{
+			renderer->start_render(cam, 720);
+			SAFE_DELETE(renderer);
+		}
+	}
+}
+
 void Tsukuyomi::on_transButton_clicked(bool checked)
 {
 	if (checked)

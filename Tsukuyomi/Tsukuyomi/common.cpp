@@ -1,4 +1,10 @@
 #include "common.h"
+#include "time.h"
+#include "string.h"
+
+char table[] = { '1','2','3','4','5','6','7','8','9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '+', '-', '\0'};
 
 void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c)
 {
@@ -42,4 +48,16 @@ XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat)
 	float z = quat.z;
 	float w = quat.w;
 	return XMFLOAT3(atan2(2.0*(w*z+x*y), 1.0-2.0*(z*z+x*x)), asin(2.0*(w*x-y*z)), atan2(2.0*(w*y+z*x),1.0-2.0*(x*x+y*y)));
+}
+
+std::string generateRandomId(int len)
+{
+	srand(time(0));
+	int table_len = strlen(table);
+	std::string str = "";
+	for (int i = 0; i < len; i++)
+	{
+		str += table[rand()%table_len];
+	}
+	return str;
 }

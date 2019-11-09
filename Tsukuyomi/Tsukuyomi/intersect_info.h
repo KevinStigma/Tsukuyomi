@@ -7,6 +7,6 @@ struct IntersectInfo
 {
 	XMFLOAT3 normal;
 	XMFLOAT3 pos;
-	BxDF* bxdf;
+	BxDF* bxdf=nullptr;
 	Object* obj=nullptr;
 };

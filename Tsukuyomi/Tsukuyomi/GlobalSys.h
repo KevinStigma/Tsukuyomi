@@ -4,6 +4,7 @@
 #include <QSlider>
 #include "RenderParas.h"
 #include "ObjectsManager.h"
+#include "OfflineRenderer/OfflineRenderer.h"
 #include "ObjectPropertyWidget.h"
 
 class D3DRenderer;
@@ -15,6 +16,8 @@ public:
 	GlobalSys();
 	~GlobalSys();
 	float getMoveSpeed();
+	OfflineRenderer* generateOfflineRenderer();
+
 	RenderParas render_paras;
 	ObjectManager objectManager;
 	D3DRenderer * renderer = nullptr;

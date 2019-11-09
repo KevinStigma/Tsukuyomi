@@ -1,4 +1,5 @@
 #pragma once
+#include <omp.h>
 #include "../Objects/Camera.h"
 #include "../intersect_info.h"
 class OfflineRenderer

@@ -65,6 +65,7 @@ public:
     QWidget *widget;
     QPushButton *transButton;
     QPushButton *rotButton;
+    QPushButton *renderButton;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menuObjects;
@@ -198,6 +199,9 @@ public:
         rotButton->setGeometry(QRect(80, 10, 51, 41));
         rotButton->setIconSize(QSize(16, 16));
         rotButton->setCheckable(true);
+        renderButton = new QPushButton(centralWidget);
+        renderButton->setObjectName(QString::fromUtf8("renderButton"));
+        renderButton->setGeometry(QRect(850, 260, 111, 41));
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -285,6 +289,7 @@ public:
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", nullptr));
         transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", nullptr));
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", nullptr));
+        renderButton->setText(QApplication::translate("TsukuyomiClass", "Render", nullptr));
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", nullptr));
         menuObjects->setTitle(QApplication::translate("TsukuyomiClass", "Objects", nullptr));
         menuLights->setTitle(QApplication::translate("TsukuyomiClass", "Lights", nullptr));

@@ -368,6 +368,19 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="renderButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>260</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Render</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

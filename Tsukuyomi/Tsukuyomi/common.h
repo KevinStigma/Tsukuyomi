@@ -17,6 +17,7 @@ enum AXIS { NO = -1, X = 0, Y = 1, Z = 2 };
 extern void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
 extern XMFLOAT4 transEulerAnglesToQuaternions(XMFLOAT3 angles);
 extern XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat);
+extern std::string generateRandomId(int len=12);
 
 template <class Type>
 Type stringToNum(const std::string& str)

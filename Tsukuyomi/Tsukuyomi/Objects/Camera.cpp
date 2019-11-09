@@ -198,9 +198,9 @@ void Camera::updateAspectRatio(float ratio)
 
 Ray Camera::getRay(float width_ratio, float height_ratio)const
 {
-	float frustum_height = zNear * tanf(fov * 0.5f);
-	float y = frustum_height * (height_ratio - 0.5f) * 2.0f;
-	float x = frustum_height * aspectRatio * (width_ratio - 0.5f) * 2.0f;
+	float half_frustum_height = zNear * tanf(fov * 0.5f);
+	float y = half_frustum_height * (height_ratio - 0.5f) * 2.0f;
+	float x = half_frustum_height * aspectRatio * (width_ratio - 0.5f) * 2.0f;
 	XMVECTOR v;
 	XMMATRIX inv_view = XMMatrixInverse(&v, DirectX::XMLoadFloat4x4(&mView));
 	XMFLOAT3 world_dir;

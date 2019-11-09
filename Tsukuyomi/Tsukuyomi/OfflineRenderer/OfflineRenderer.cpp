@@ -12,7 +12,7 @@ void OfflineRenderer::cast_ray_to_get_intersection(Ray ray, IntersectInfo& info)
 		if (obj->getType() != MESH)
 			continue;
 		float t;
-		if (((Mesh*)obj)->is_intersect(ray, t) && (min_t < 0.0f || t < min_t))
+		if (((Mesh*)obj)->is_intersect(ray, t, info) && (min_t < 0.0f || t < min_t))
 		{
 			min_t = t;
 		}

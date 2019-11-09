@@ -5,6 +5,6 @@ class NormalRenderer :public OfflineRenderer
 {
 public:
 	NormalRenderer();
-	~NormalRenderer();
-	void start_renderer(Camera* camera, int height);
+	virtual ~NormalRenderer();
+	virtual void start_render(Camera* camera, int height);
 };
