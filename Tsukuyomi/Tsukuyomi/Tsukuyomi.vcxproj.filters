@@ -153,6 +153,9 @@
     <ClCompile Include="OfflineRenderer\OfflineRenderer.cpp">
       <Filter>OfflineRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="OfflineRenderer\PathTracingRenderer.cpp">
+      <Filter>OfflineRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="intersect_info.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OfflineRenderer\PathTracingRenderer.h">
+      <Filter>OfflineRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -141,6 +141,7 @@
     <ClCompile Include="Objects\PointLight.cpp" />
     <ClCompile Include="OfflineRenderer\NormalRenderer.cpp" />
     <ClCompile Include="OfflineRenderer\OfflineRenderer.cpp" />
+    <ClCompile Include="OfflineRenderer\PathTracingRenderer.cpp" />
     <ClCompile Include="PbrMat\BxDF.cpp" />
     <ClCompile Include="PbrMat\Fresnel.cpp" />
     <ClCompile Include="PbrMat\LambertianReflection.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Objects\PointLight.h" />
     <ClInclude Include="OfflineRenderer\NormalRenderer.h" />
     <ClInclude Include="OfflineRenderer\OfflineRenderer.h" />
+    <ClInclude Include="OfflineRenderer\PathTracingRenderer.h" />
     <ClInclude Include="PbrMat\BxDF.h" />
     <ClInclude Include="PbrMat\Fresnel.h" />
     <ClInclude Include="PbrMat\LambertianReflection.h" />

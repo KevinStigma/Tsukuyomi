@@ -5,6 +5,7 @@
 #include "RenderWidget.h"
 #include "RGBSpectrum.h"
 #include "OfflineRenderer\NormalRenderer.h"
+#include "OfflineRenderer\PathTracingRenderer.h"
 #include <iostream>
 
 GlobalSys *g_pGlobalSys = NULL;
@@ -27,5 +28,7 @@ OfflineRenderer* GlobalSys::generateOfflineRenderer()
 	OfflineRenderer* renderer=nullptr;
 	if (render_paras.offline_render_type == OfflineRenderType::NORMAL_DEBUG)
 		renderer = new NormalRenderer();
+	else if (render_paras.offline_render_type == OfflineRenderType::PATH_TRACING)
+		renderer = new PathTracingRenderer();
 	return renderer;
 }

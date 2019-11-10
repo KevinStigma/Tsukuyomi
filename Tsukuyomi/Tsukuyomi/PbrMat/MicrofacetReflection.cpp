@@ -33,6 +33,11 @@ float MicrofacetReflection::G(const XMFLOAT3&wi, const XMFLOAT3&wo)const
 	return 1.0f / (1.0f + Lambda(wo) + Lambda(wi));
 }
 
+float MicrofacetReflection::G1(const XMFLOAT3&w)const
+{
+	return 1.0f / (1.0f + Lambda(w));
+}
+
 Spectrum MicrofacetReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 {
 	float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
@@ -42,4 +47,18 @@ Spectrum MicrofacetReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 	wh = MathHelper::NormalizeFloat3(wh);
 	Spectrum F = fresnel->Evaluate(MathHelper::DotFloat3(wi, wh));
 	return R * D(wh)* G(wi, wo) * F / (4.0f * cosThetaI * cosThetaO);
+}
+
+float MicrofacetReflection::Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
+{
+	if (!SameHemisphere(wo, wi))
+		return 0.0;
+	XMFLOAT3 wh = MathHelper::NormalizeFloat3(XMFLOAT3(wo.x+wi.x, wo.y + wi.y, wo.z + wi.z));
+	float pdf = 0.0f;
+	float dot_wo_wh = MathHelper::DotFloat3(wo, wh);
+	if (sampleVisibleArea)
+		pdf = D(wh) * G1(wo) * abs(dot_wo_wh) / AbsCosTheta(wo);
+	else
+		pdf = D(wh) * AbsCosTheta(wh);
+	return pdf / (4.0 * dot_wo_wh);
 }

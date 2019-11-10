@@ -14,12 +14,15 @@ public:
 	}
 	MicrofacetReflection(const Spectrum &R, const Fresnel*f, float alphax, float alphay);
 	Spectrum f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const;
+	float Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const;
 
 protected:
 	float Lambda(const XMFLOAT3& w)const;
 	virtual float D(const XMFLOAT3&wh)const;
 	virtual float G(const XMFLOAT3&wi, const XMFLOAT3&wo)const;
+	virtual float G1(const XMFLOAT3&w)const;
 	const Spectrum R;
 	const Fresnel* fresnel;
 	float alphax, alphay;
+	bool sampleVisibleArea = false;
 };
