@@ -10,13 +10,9 @@
 
 GlobalSys *g_pGlobalSys = NULL;
 
-GlobalSys::GlobalSys()
-{
-}
+GlobalSys::GlobalSys(){}
 
-GlobalSys::~GlobalSys()
-{
-}
+GlobalSys::~GlobalSys(){}
 
 float GlobalSys::getMoveSpeed()
 {
