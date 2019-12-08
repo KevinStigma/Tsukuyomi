@@ -5,14 +5,14 @@ float PowerHeuristic(int nf, float fPdf, int ng, float gPdf) {
 	return (f * f) / (f * f + g * g);
 }
 
-Spectrum EstimateDirect(const IntersectInfo& it, float u_scattering, float v_scattering, Light* light, float u_light, float v_light, bool specular)
+Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* light, XMFLOAT2 uLight, bool specular)
 {
 	Spectrum ld;
 	// sample light source with multiple importance sampling
 	XMFLOAT3 wi;
 	float light_pdf = 0.0f, scattering_pdf = 0.0f;
 	bool visibility = false;
-	Spectrum li = light->sampleLi(it, u_light, v_light, &wi, &light_pdf, &visibility);
+	Spectrum li = light->sample_li(it, uLight, &wi, &light_pdf, &visibility);
 	if (light_pdf > 0.0f && !li.isBlack())
 	{
 		Spectrum f;
@@ -47,7 +47,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, float u_scattering, float v_sca
 		BxDFType sampled_type;
 		if (it.isSurfaceInteraction())
 		{
-			f = it.bxdf->sample_f(it.wo, &wi, XMFLOAT2(u_scattering, v_scattering), &scattering_pdf, &sampled_type);
+			f = it.bxdf->sample_f(it.wo, &wi, uScattering, &scattering_pdf, &sampled_type);
 			f = f * MathHelper::DotFloat3(wi, it.normal);
 			sampledSpecular = sampled_type & BSDF_SPECULAR;
 		}
@@ -63,21 +63,20 @@ Spectrum EstimateDirect(const IntersectInfo& it, float u_scattering, float v_sca
 				weight = PowerHeuristic(1.0, scattering_pdf, 1.0, light_pdf);
 			}
 			IntersectInfo light_it;
-			Ray ray;
-			Spectrum Tr(1.0f);
-
+			Ray ray(it.pos, wi);
 			g_pGlobalSys->cast_ray_to_get_intersection(ray, light_it);
 			Spectrum li;
 			if (light_it.isSurfaceInteraction())
 			{
+				if (light_it.obj->getType() == AREA_LIGHT)
+				{
 
+				}
 			}
 			else
-			{
-
-			}
+				li = light->Le(ray);
 			if (!li.isBlack())
-				ld = ld + f * li * Tr * weight / scattering_pdf;
+				ld = ld + f * li * weight / scattering_pdf;
 		}
 	}
 	return ld;
@@ -88,5 +87,7 @@ Spectrum UniformSampleOneLight(const IntersectInfo& it)
 {
 	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
 	Light* sel_light = lights[rand() % (lights.size())];
-
+	XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
+	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
+	return (float)lights.size() * EstimateDirect(it, uScattering, sel_light, uLight);
 }

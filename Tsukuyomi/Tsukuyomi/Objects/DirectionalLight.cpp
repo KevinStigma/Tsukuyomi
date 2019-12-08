@@ -10,3 +10,19 @@ DirectionalLight::~DirectionalLight()
 {
 
 }
+
+XMFLOAT3 DirectionalLight::getWorldDir()
+{
+	XMMATRIX rot_mat = getRotMatrix();
+	XMVECTOR vec = XMVector3TransformNormal(XMVectorSet(defualt_dir.x, defualt_dir.y, defualt_dir.z, 0.0), rot_mat);
+	XMFLOAT3 world_dir;
+	XMStoreFloat3(&world_dir, vec);
+	return world_dir;
+}
+
+Spectrum DirectionalLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, bool visibility)
+{
+	*wi = getWorldDir();
+	*pdf = 1.0f;
+	return Spectrum(color.x, color.y, color.z);
+}
