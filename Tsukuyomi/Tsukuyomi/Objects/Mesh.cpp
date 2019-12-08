@@ -224,6 +224,7 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 				min_t = t;
 				is_info.obj = this;
 				is_info.pos = ray.getExtendPos(t);
+				is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
 				XMStoreFloat3(&is_info.normal, XMVector3Normalize(normals[0] + (normals[1] - normals[0])*beta + (normals[2] - normals[0])*gama));
 			}
 		}

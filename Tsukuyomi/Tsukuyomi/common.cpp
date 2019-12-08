@@ -61,3 +61,8 @@ std::string generateRandomId(int len)
 	}
 	return str;
 }
+
+float generateRandomFloat()
+{
+	return rand() / double(RAND_MAX);
+}

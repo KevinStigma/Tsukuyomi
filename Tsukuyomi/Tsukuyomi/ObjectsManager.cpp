@@ -99,6 +99,17 @@ Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string 
 	return light;
 }
 
+std::vector<Light*> ObjectManager::getAllLights()
+{
+	std::vector<Light*> lights;
+	for each (auto item in objects)
+	{
+		if (item.second->isLight())
+			lights.push_back(dynamic_cast<Light*>(item.second));
+	}
+	return lights;
+}
+
 Object* ObjectManager::getObjectFromName(std::string name)
 {
 	if (objects.find(name) == objects.end())

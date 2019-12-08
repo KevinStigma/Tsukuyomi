@@ -18,6 +18,7 @@ extern void SplitString(const std::string& s, std::vector<std::string>& v, const
 extern XMFLOAT4 transEulerAnglesToQuaternions(XMFLOAT3 angles);
 extern XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat);
 extern std::string generateRandomId(int len=12);
+extern float generateRandomFloat();
 
 template <class Type>
 Type stringToNum(const std::string& str)
