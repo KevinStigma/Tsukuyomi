@@ -24,5 +24,9 @@ Spectrum DirectionalLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample
 {
 	*wi = getWorldDir();
 	*pdf = 1.0f;
+	XMFLOAT3 pOutside(ref.pos.x + world_radius * 2.0 * wi->x, 
+		ref.pos.y + world_radius * 2.0 * wi->y,
+		ref.pos.z + world_radius * 2.0 * wi->z);
+	vt.setup(ref.pos, pOutside);
 	return Spectrum(color.x, color.y, color.z);
 }

@@ -20,21 +20,29 @@ struct RGBSpectrum
 	{
 		return RGBSpectrum(r / s.r, g / s.g, b / s.b);
 	}
-	void operator+=(const RGBSpectrum & s)const
+	void operator+=(const RGBSpectrum & s)
 	{
-		r + s.r;g + s.g; b + s.b;
+		r = r + s.r;
+		g = g + s.g;
+		b = b + s.b;
 	}
-	void operator-=(const RGBSpectrum & s)const
+	void operator-=(const RGBSpectrum & s)
 	{
-		r - s.r; g - s.g; b - s.b;
+		r = r - s.r;
+		g = g - s.g;
+		b = b - s.b;
 	}
-	void operator*=(const RGBSpectrum & s)const
+	void operator*=(const RGBSpectrum & s)
 	{
-		r * s.r; g * s.g; b * s.b;
+		r = r * s.r; 
+		g = g * s.g; 
+		b = b * s.b;
 	}
-	void operator/=(const RGBSpectrum & s)const
+	void operator/=(const RGBSpectrum & s)
 	{
-		r / s.r; g / s.g; b / s.b;
+		r = r / s.r;
+		g = g / s.g;
+		b = b / s.b;
 	}
 	RGBSpectrum operator+(const float & n)const
 	{
@@ -52,21 +60,29 @@ struct RGBSpectrum
 	{
 		return RGBSpectrum(r / n, g / n, b / n);
 	}
-	void operator+=(float v)const
+	void operator+=(float v)
 	{
-		r + v; g + v; b + v;
+		r = r + v;
+		g = g + v;
+		b = b + v;
 	}
-	void operator-=(float v)const
+	void operator-=(float v)
 	{
-		r - v; g - v; b - v;
+		r = r - v;
+		g = g - v;
+		b = b - v;
 	}
-	void operator*=(float v)const
+	void operator*=(float v)
 	{
-		r * v; g * v; b * v;
+		r = r * v;
+		g = g * v;
+		b = b * v;
 	}
-	void operator/=(float v)const
+	void operator/=(float v)
 	{
-		r / v; g / v; b / v;
+		r = r / v;
+		g = g / v;
+		b = b / v;
 	}
 	friend RGBSpectrum operator+(const float & n,const RGBSpectrum & s)
 	{

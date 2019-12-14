@@ -10,4 +10,5 @@ public:
 	bool isDelta() { return true; }
 protected:
 	XMFLOAT3 defualt_dir;
+	float world_radius = 1024.0f;  // set a large number for the moment.
 };
