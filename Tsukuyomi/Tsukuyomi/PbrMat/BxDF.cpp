@@ -7,6 +7,7 @@ Spectrum BxDF::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &u, flo
 	*wi = MathHelper::CosineSampleHemisphere(u);
 	if (wo.z < 0) wi->z *= -1;
 	*pdf = Pdf(wo, *wi);
+	*sampledType = BxDFType::BSDF_REFLECTION;
 	return f(wo, *wi);
 }
 

@@ -17,7 +17,7 @@ public:
 	~GlobalSys();
 	float getMoveSpeed();
 	OfflineRenderer* generateOfflineRenderer();
-	void cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info);
+	float cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info);
 	RenderParas render_paras;
 	ObjectManager objectManager;
 	D3DRenderer * renderer = nullptr;

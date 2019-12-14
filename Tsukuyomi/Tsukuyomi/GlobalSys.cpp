@@ -29,7 +29,7 @@ OfflineRenderer* GlobalSys::generateOfflineRenderer()
 	return renderer;
 }
 
-void GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info)
+float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info)
 {
 	auto objs = objectManager.getAllObjects();
 	float min_t = -1.0f;
@@ -40,8 +40,7 @@ void GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info
 			continue;
 		float t;
 		if (((Mesh*)obj)->is_intersect(ray, t, info) && (min_t < 0.0f || t < min_t))
-		{
 			min_t = t;
-		}
 	}
+	return min_t;
 }

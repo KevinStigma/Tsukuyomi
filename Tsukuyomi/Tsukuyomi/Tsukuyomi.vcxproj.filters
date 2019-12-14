@@ -162,6 +162,9 @@
     <ClCompile Include="intersect_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VisibilityTester.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -283,6 +286,9 @@
     </ClInclude>
     <ClInclude Include="OfflineRenderer\OfflineRenderUtility.h">
       <Filter>OfflineRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="VisibilityTester.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

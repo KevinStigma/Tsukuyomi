@@ -9,7 +9,7 @@ PointLight::~PointLight()
 {
 }
 
-Spectrum PointLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, bool visibility)
+Spectrum PointLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
 {
 	XMFLOAT3 pos = getTranslation();
 	XMFLOAT3 diff = XMFLOAT3(pos.x - ref.pos.x, pos.y - ref.pos.y, pos.z - ref.pos.z);

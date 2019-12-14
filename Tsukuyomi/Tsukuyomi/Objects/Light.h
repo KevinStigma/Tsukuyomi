@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "../intersect_info.h"
+#include "../VisibilityTester.h"
 
 class Light:public Object
 {
@@ -12,7 +13,7 @@ public:
 	XMFLOAT3 getColor() { return color; }
 	void setColor(XMFLOAT3 c) { color = c; }
 	virtual Spectrum Le(const Ray& ray) { return Spectrum(); }
-	virtual Spectrum sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, bool visibility) { return Spectrum(); };
+	virtual Spectrum sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt) { return Spectrum(); };
 	std::string getColorText() { return std::to_string(color.x) + "," + std::to_string(color.y) + "," + std::to_string(color.z); }
 protected:
 	XMFLOAT3 color;

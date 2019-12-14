@@ -87,14 +87,14 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(generateRandomFloat(), generateRandomFloat()), &pdf, &flags);
 		if (f.isBlack() || pdf == 0.0f)
 			break;
-		beta *= f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf;
+		beta *= (f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf);
 		specularBounce = (flags&BxDFType::BSDF_SPECULAR) != 0;
 		ray = it.spawnRay(wi);
 
 		// Russian roulette
 		if (bounce > 3)
 		{
-			float q = std::max<float>(0.05f, 1.0 - beta.g);
+			float q = std::max<float>(0.05f, 1.0 - beta.y());
 			if (generateRandomFloat() < q)
 				break;
 			beta /= (1.0 - q);

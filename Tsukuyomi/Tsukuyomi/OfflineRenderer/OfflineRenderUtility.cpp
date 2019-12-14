@@ -11,8 +11,8 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 	// sample light source with multiple importance sampling
 	XMFLOAT3 wi;
 	float light_pdf = 0.0f, scattering_pdf = 0.0f;
-	bool visibility = false;
-	Spectrum li = light->sample_li(it, uLight, &wi, &light_pdf, &visibility);
+	VisibilityTester vt;
+	Spectrum li = light->sample_li(it, uLight, &wi, &light_pdf, vt);
 	if (light_pdf > 0.0f && !li.isBlack())
 	{
 		Spectrum f;
@@ -24,16 +24,16 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 		}
 		if (!f.isBlack())
 		{
-			if (!visibility)
+			if (!vt.unoccluded())
 				li = Spectrum();
 			if (!li.isBlack())
 			{
 				if (light->isDelta())
-					ld = ld + f * li / light_pdf;
+					ld += f * li / light_pdf;
 				else
 				{
 					float weight = PowerHeuristic(1.0, scattering_pdf, 1.0, light_pdf);
-					ld = ld + f * li * weight / light_pdf;
+					ld += f * li * weight / light_pdf;
 				}
 			}
 		}
@@ -63,7 +63,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 				weight = PowerHeuristic(1.0, scattering_pdf, 1.0, light_pdf);
 			}
 			IntersectInfo light_it;
-			Ray ray(it.pos, wi);
+			Ray ray = it.spawnRay(wi);
 			g_pGlobalSys->cast_ray_to_get_intersection(ray, light_it);
 			Spectrum li;
 			if (light_it.isSurfaceInteraction())

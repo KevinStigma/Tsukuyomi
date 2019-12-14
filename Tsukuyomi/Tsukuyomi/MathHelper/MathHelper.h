@@ -159,6 +159,11 @@ public:
 	{
 		return a.x*b.x + a.y*b.y + a.z*b.z;
 	}
+
+	static float Float3Length(const XMFLOAT3 & l)
+	{
+		return sqrtf(DotFloat3(l,l));
+	}
 };
 
 struct Ray

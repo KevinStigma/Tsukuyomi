@@ -20,7 +20,7 @@ XMFLOAT3 DirectionalLight::getWorldDir()
 	return world_dir;
 }
 
-Spectrum DirectionalLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, bool visibility)
+Spectrum DirectionalLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
 {
 	*wi = getWorldDir();
 	*pdf = 1.0f;
