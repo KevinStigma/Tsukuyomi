@@ -1,5 +1,6 @@
 #include "PathTracingRenderer.h"
 #include "../intersect_info.h"
+#include "OfflineRenderUtility.h"
 #include "GlobalSys.h"
 #include <QImage>
 
@@ -48,17 +49,56 @@ Spectrum PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int wid
 		sample_x = x + ((rand() % 100) / 100.0f);
 		sample_y = y + ((rand() % 100) / 100.0f);
 		Ray ray = camera->getRay(sample_x / width, sample_y / height);
-		color = color + Li();
+		color = color + Li(ray);
 	}
 	color = color / (float)sample_count;
 	return color;
 }
 
-Spectrum PathTracingRenderer::Li()
+Spectrum PathTracingRenderer::Li(const Ray& r)
 {
+	bool specularBounce = false;
+	Spectrum L, beta(1.0f, 1.0f, 1.0f);
+	Ray ray(r);
 	for (int bounce = 0; bounce < max_bounce; bounce++)
 	{
+		IntersectInfo it;
+		g_pGlobalSys->cast_ray_to_get_intersection(ray, it);
+		if (bounce == 0 || specularBounce)
+		{
+			if (!it.isSurfaceInteraction())
+			{
+				auto& lights = g_pGlobalSys->objectManager.getAllLights();
+				for each (Light* light in lights)
+					L += (beta* light->Le(ray));
+			}
+			else
+			{
+				// le for area light
+			}
+		}
+		if (!it.isSurfaceInteraction()||bounce >= max_bounce)
+			break;
+		L += beta * UniformSampleOneLight(it);
 
+		XMFLOAT3 wo(-ray.direction.x, -ray.direction.y, -ray.direction.z), wi;
+		float pdf;
+		BxDFType flags;
+		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(generateRandomFloat(), generateRandomFloat()), &pdf, &flags);
+		if (f.isBlack() || pdf == 0.0f)
+			break;
+		beta *= f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf;
+		specularBounce = (flags&BxDFType::BSDF_SPECULAR) != 0;
+		ray = it.spawnRay(wi);
+
+		// Russian roulette
+		if (bounce > 3)
+		{
+			float q = std::max<float>(0.05f, 1.0 - beta.g);
+			if (generateRandomFloat() < q)
+				break;
+			beta /= (1.0 - q);
+		}
 	}
-	return Spectrum();
+	return L;
 }

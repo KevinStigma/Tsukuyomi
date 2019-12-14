@@ -8,7 +8,7 @@ public:
 	virtual ~PathTracingRenderer();
 	virtual void start_render(Camera* camera, int height);
 protected:
-	Spectrum Li();
+	Spectrum Li(const Ray& ray);
 	Spectrum sample_pixel(Camera* camera, int x, int y, int width, int height);
 	int sample_count = 100;
 	int max_bounce = 5;

@@ -159,6 +159,9 @@
     <ClCompile Include="OfflineRenderer\OfflineRenderUtility.cpp">
       <Filter>OfflineRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="intersect_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">

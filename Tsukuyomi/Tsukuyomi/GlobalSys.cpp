@@ -29,7 +29,7 @@ OfflineRenderer* GlobalSys::generateOfflineRenderer()
 	return renderer;
 }
 
-void GlobalSys::cast_ray_to_get_intersection(Ray ray, IntersectInfo& info)
+void GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info)
 {
 	auto objs = objectManager.getAllObjects();
 	float min_t = -1.0f;

@@ -127,6 +127,7 @@
     <ClCompile Include="GeometryGenerator\GeometryGenerator.cpp" />
     <ClCompile Include="GlobalSys.cpp" />
     <ClCompile Include="intersection.cpp" />
+    <ClCompile Include="intersect_info.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathHelper\MathHelper.cpp" />
     <ClCompile Include="ObjectPropertyWidget.cpp" />

@@ -11,4 +11,5 @@ struct IntersectInfo
 	BxDF* bxdf=nullptr;
 	Object* obj=nullptr;
 	bool isSurfaceInteraction()const { return obj != nullptr; }
+	Ray spawnRay(const XMFLOAT3& d);
 };

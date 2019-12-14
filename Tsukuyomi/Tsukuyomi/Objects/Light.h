@@ -11,7 +11,7 @@ public:
 	virtual bool isDelta() { return false; }
 	XMFLOAT3 getColor() { return color; }
 	void setColor(XMFLOAT3 c) { color = c; }
-	virtual Spectrum Le(Ray& ray) { return Spectrum(); }
+	virtual Spectrum Le(const Ray& ray) { return Spectrum(); }
 	virtual Spectrum sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, bool visibility) { return Spectrum(); };
 	std::string getColorText() { return std::to_string(color.x) + "," + std::to_string(color.y) + "," + std::to_string(color.z); }
 protected:
