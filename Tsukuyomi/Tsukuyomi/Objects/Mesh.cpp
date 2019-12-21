@@ -3,6 +3,7 @@
 #include "../Effects/Effects.h"
 #include "../Vertex.h"
 #include "../D3DRenderer.h"
+#include "../PbrMat/LambertianReflection.h"
 #include "GlobalSys.h"
 #include <iostream>
 #include <fstream>
@@ -14,12 +15,14 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 	if (!isEmpty())
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
 	mat = g_pGlobalSys->renderer->getMaterials()[0];
+	bxdf = new LambertianReflection(Spectrum(0.5,0.5,0.5));
 }
 
 Mesh::~Mesh()
 {
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
+	SAFE_DELETE(bxdf);
 }
 
 bool Mesh::isEmpty()
@@ -225,6 +228,7 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 				is_info.obj = this;
 				is_info.pos = ray.getExtendPos(t);
 				is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
+				is_info.bxdf = getPbrMat();
 				XMStoreFloat3(&is_info.normal, XMVector3Normalize(normals[0] + (normals[1] - normals[0])*beta + (normals[2] - normals[0])*gama));
 			}
 		}

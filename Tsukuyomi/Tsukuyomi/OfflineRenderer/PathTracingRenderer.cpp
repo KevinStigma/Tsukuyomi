@@ -85,6 +85,7 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 		float pdf;
 		BxDFType flags;
 		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(generateRandomFloat(), generateRandomFloat()), &pdf, &flags);
+		wi = transVectorToWorldFromLocal(it.normal, wi);
 		if (f.isBlack() || pdf == 0.0f)
 			break;
 		beta *= (f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf);

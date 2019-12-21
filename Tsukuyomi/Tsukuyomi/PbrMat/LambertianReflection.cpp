@@ -5,7 +5,13 @@ LambertianReflection::LambertianReflection(const Spectrum &R):BxDF(BxDFType(BSDF
 {
 }
 
-Spectrum LambertianReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)
+Spectrum LambertianReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 {
 	return R * MathHelper::InvPi;
+}
+
+
+std::string LambertianReflection::toString() const
+{
+	return "LambertianRef";
 }

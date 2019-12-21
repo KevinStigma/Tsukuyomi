@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "../intersect_info.h"
 
+class BxDF;
 
 class Mesh :public Object
 {
@@ -20,11 +21,13 @@ public:
 	std::string getMeshPath() { return mesh_path; }
 	bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
+	BxDF* getPbrMat() { return bxdf; }
 protected:
 	Material mat;
 	void computeBoundingBox();
 	tinyobj::shape_t shape;
 	std::string mesh_path = "";
+	BxDF* bxdf=nullptr;
 	ID3D11Buffer* vertexBuffer = nullptr;
 	ID3D11Buffer* indexBuffer = nullptr;
 };
