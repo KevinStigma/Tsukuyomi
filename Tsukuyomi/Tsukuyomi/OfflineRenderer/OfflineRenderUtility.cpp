@@ -97,6 +97,7 @@ XMFLOAT3 transVectorToLocalFromWorld(XMFLOAT3 n, XMFLOAT3 v)
 	mat.r[1] = Nb;
 	mat.r[2] = N;
 	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
+	mat = XMMatrixTranspose(mat);
 	XMVECTOR local_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
 	XMFLOAT3 local_v;
 	XMStoreFloat3(&local_v, local_V);
@@ -117,7 +118,6 @@ XMFLOAT3 transVectorToWorldFromLocal(XMFLOAT3 n, XMFLOAT3 v)
 	mat.r[1] = Nb;
 	mat.r[2] = N;
 	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
-	mat = XMMatrixTranspose(mat);
 	XMVECTOR world_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
 	XMFLOAT3 world_v;
 	XMStoreFloat3(&world_v, world_V);
