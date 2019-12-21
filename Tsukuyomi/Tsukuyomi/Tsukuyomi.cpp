@@ -2,6 +2,7 @@
 #include "Globalsys.h"
 #include "D3DRenderer.h"
 #include "intersection.h"
+#include "../OfflineRenderer/OfflineRenderUtility.h"
 #include <QFileDialog>
 #include <iostream>
 
@@ -129,6 +130,14 @@ void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 			return;
 		ObjectManager& obj_mgr = g_pGlobalSys->objectManager;
 		obj_mgr.removeObject(item->text().toStdString());
+	}
+	else if (event->key() == Qt::Key::Key_0)
+	{
+		std::cout << "66666" << std::endl;
+		XMFLOAT3 v = transVectorToLocalFromWorld(XMFLOAT3(1,0,0), XMFLOAT3(1,0,0));
+		XMFLOAT3 v2 = transVectorToWorldFromLocal(XMFLOAT3(1, 0, 0), XMFLOAT3(1, 0, 0));
+		std::cout << v.x << " " << v.y << " " << v.z << std::endl;
+		std::cout << v2.x << " " << v2.y << " " << v2.z << std::endl;
 	}
 }
 

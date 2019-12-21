@@ -1,4 +1,5 @@
 #include "OfflineRenderUtility.h"
+#include <algorithm>
 
 float PowerHeuristic(int nf, float fPdf, int ng, float gPdf) {
 	float f = nf * fPdf, g = ng * gPdf;
@@ -82,6 +83,46 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 	return ld;
 }
 
+XMFLOAT3 transVectorToLocalFromWorld(XMFLOAT3 n, XMFLOAT3 v)
+{
+	XMVECTOR Nt, Nb, N;
+	N = XMVectorSet(n.x, n.y, n.z, 0.0);
+	if (std::fabs(n.x) > std::fabs(n.y))
+		Nt = XMVector3Normalize(XMVectorSet(n.z, 0, -n.x, 0.0));
+	else
+		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.x, 0.0));
+	Nb = XMVector3Cross(N, Nt);
+	XMMATRIX mat;
+	mat.r[0] = Nt;
+	mat.r[1] = Nb;
+	mat.r[2] = N;
+	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
+	XMVECTOR local_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
+	XMFLOAT3 local_v;
+	XMStoreFloat3(&local_v, local_V);
+	return local_v;
+}
+
+XMFLOAT3 transVectorToWorldFromLocal(XMFLOAT3 n, XMFLOAT3 v)
+{
+	XMVECTOR Nt, Nb, N;
+	N = XMVectorSet(n.x, n.y, n.z, 0.0);
+	if (std::fabs(n.x) > std::fabs(n.y))
+		Nt = XMVector3Normalize(XMVectorSet(n.z, 0, -n.x, 0.0));
+	else
+		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.x, 0.0));
+	Nb = XMVector3Cross(N, Nt);
+	XMMATRIX mat;
+	mat.r[0] = Nt;
+	mat.r[1] = Nb;
+	mat.r[2] = N;
+	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
+	mat = XMMatrixTranspose(mat);
+	XMVECTOR world_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
+	XMFLOAT3 world_v;
+	XMStoreFloat3(&world_v, world_V);
+	return world_v;
+}
 
 Spectrum UniformSampleOneLight(const IntersectInfo& it)
 {
