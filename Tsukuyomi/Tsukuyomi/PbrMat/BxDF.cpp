@@ -13,5 +13,5 @@ Spectrum BxDF::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &u, flo
 
 float BxDF::Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
 {
-	return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * MathHelper::InvPi : 0;
+	return SameHemisphere(wo, wi) && SameHemisphereWithNormal(wo) ? AbsCosTheta(wi) * MathHelper::InvPi : 0;
 }

@@ -1,16 +1,11 @@
 <TsukuyomiProject>
-    <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere" Type="mesh">
-        <Translation>0.000000,0.000000,0.000000</Translation>
-        <Scale>0.500000,0.500000,0.500000</Scale>
+    <Object MeshPath="Data/Meshes/cow.obj" Name="cow" Type="mesh">
+        <Translation>1.849375,0.695833,0.000000</Translation>
+        <Scale>0.010000,0.010000,0.010000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object Name="cam" Type="cam">
-        <Translation>0.000000,0.000000,-10.000000</Translation>
-        <Scale>1.000000,1.000000,1.000000</Scale>
-        <Rotation>0.000000,0.000000,0.000000</Rotation>
-    </Object>
-    <Object Color="1.000000,1.000000,1.000000" Name="object0" Type="point_light">
-        <Translation>0.000000,1.337500,-2.734549</Translation>
+        <Translation>2.171694,0.308333,-6.142242</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>

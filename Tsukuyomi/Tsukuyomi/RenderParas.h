@@ -8,5 +8,5 @@ enum OfflineRenderType {
 
 struct RenderParas
 {
-	OfflineRenderType offline_render_type = NORMAL_DEBUG;
+	OfflineRenderType offline_render_type = PATH_TRACING;
 };

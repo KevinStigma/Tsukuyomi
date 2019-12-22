@@ -160,6 +160,11 @@ public:
 		return a.x*b.x + a.y*b.y + a.z*b.z;
 	}
 
+	static XMFLOAT3 NegativeFloat3(const XMFLOAT3& a)
+	{
+		return XMFLOAT3(-a.x,-a.y,-a.z);
+	}
+
 	static float Float3Length(const XMFLOAT3 & l)
 	{
 		return sqrtf(DotFloat3(l,l));

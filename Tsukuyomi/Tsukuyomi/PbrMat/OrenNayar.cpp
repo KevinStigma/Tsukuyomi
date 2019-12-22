@@ -12,6 +12,8 @@ OrenNayar::OrenNayar(const Spectrum &R, float sigma):BxDF(BxDFType(BSDF_REFLECTI
 
 Spectrum OrenNayar::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
 {
+	if (!(SameHemisphere(wo, wi)&&SameHemisphereWithNormal(wo)))
+		return Spectrum();
 	float sinThetaI = SinTheta(wi);
 	float sinThetaO = SinTheta(wo);
 	float max_cos = 0.0;

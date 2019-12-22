@@ -21,15 +21,25 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	start = clock();
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
+//#define DEBUG_PATHTRACING
+#ifndef DEBUG_PATHTRACING
 	#pragma omp parallel for num_threads(8)
 	for (int i = 0; i < width; i++)
 	{
 		for (int j = 0; j < height; j++)
 		{	
+#endif
+#ifdef DEBUG_PATHTRACING
+			int i = 480, j = 360;
+#endif
 			Spectrum color = sample_pixel(camera, i, j, width, height);
+			//std::cout << i << " " << j << std::endl;
+			//std::cout << color.r << " " << color.g << " " << color.b << std::endl;
 			image.setPixelColor(QPoint(i, height - 1 - j), QColor(color.r*255, color.g*255,  color.b*255));
+#ifndef DEBUG_PATHTRACING
 		}
 	}
+#endif
 	finish = clock();
 	double totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
 	std::cout << "total time:" << totaltime << "seconds" << std::endl;
@@ -77,7 +87,8 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 				// le for area light
 			}
 		}
-		if (!it.isSurfaceInteraction()||bounce >= max_bounce)
+
+		if (!it.isSurfaceInteraction() || bounce >= max_bounce)
 			break;
 		L += beta * UniformSampleOneLight(it);
 

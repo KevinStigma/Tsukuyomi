@@ -40,6 +40,8 @@ float MicrofacetReflection::G1(const XMFLOAT3&w)const
 
 Spectrum MicrofacetReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 {
+	if (!(SameHemisphere(wo, wi)&&SameHemisphereWithNormal(wo)))
+		return Spectrum();
 	float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
 	XMFLOAT3 wh(wi.x + wo.x, wi.y + wo.y, wi.z + wo.z);
 	if ((cosThetaI == 0.0f || cosThetaO == 0.0f)||(wh.x==0.0&&wh.y == 0.0 &&wh.z == 0.0))
@@ -51,7 +53,7 @@ Spectrum MicrofacetReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 
 float MicrofacetReflection::Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
 {
-	if (!SameHemisphere(wo, wi))
+	if (!(SameHemisphere(wo, wi)&&SameHemisphereWithNormal(wo)))
 		return 0.0;
 	XMFLOAT3 wh = MathHelper::NormalizeFloat3(XMFLOAT3(wo.x+wi.x, wo.y + wi.y, wo.z + wi.z));
 	float pdf = 0.0f;

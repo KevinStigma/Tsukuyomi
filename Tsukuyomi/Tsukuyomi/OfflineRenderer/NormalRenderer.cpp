@@ -33,6 +33,8 @@ void NormalRenderer::start_render(Camera* camera, int height)
 			else
 			{
 				auto normal = info.normal;
+				if (normal.z < 0.0)
+					normal.z *= -1.0f;
 				image.setPixelColor(QPoint(i, height - 1 - j), QColor(int(max(normal.x, 0.0) * 255), int(max(normal.y, 0.0) * 255), int(max(normal.z, 0.0) * 255)));
 			}
 		}

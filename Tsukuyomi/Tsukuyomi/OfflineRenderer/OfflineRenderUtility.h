@@ -9,6 +9,8 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 
 extern Spectrum UniformSampleOneLight(const IntersectInfo& it);
 
+extern Spectrum UniformSampleAllLights(const IntersectInfo& it);
+
 extern XMFLOAT3 transVectorToLocalFromWorld(XMFLOAT3 n, XMFLOAT3 v);
 
 extern XMFLOAT3 transVectorToWorldFromLocal(XMFLOAT3 n, XMFLOAT3 v);

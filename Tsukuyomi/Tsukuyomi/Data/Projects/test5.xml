@@ -9,11 +9,6 @@
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object Color="1.000000,1.000000,1.000000" Name="object0" Type="point_light">
-        <Translation>0.000000,1.337500,-2.734549</Translation>
-        <Scale>1.000000,1.000000,1.000000</Scale>
-        <Rotation>0.000000,0.000000,0.000000</Rotation>
-    </Object>
     <Object Color="1.000000,1.000000,1.000000" Name="object1" Type="dir_light">
         <Translation>-4.861843,0.529167,1.082620</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>

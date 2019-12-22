@@ -16,6 +16,11 @@ inline bool SameHemisphere(const XMFLOAT3 &w, const XMFLOAT3 &wp) {
 	return w.z * wp.z > 0;
 }
 
+inline bool SameHemisphereWithNormal(const XMFLOAT3& w)
+{
+	return w.z > 0;
+}
+
 // BSDF Inline Functions
 inline float CosTheta(const XMFLOAT3 &w) { return w.z; }
 inline float Cos2Theta(const XMFLOAT3 &w) { return w.z * w.z; }

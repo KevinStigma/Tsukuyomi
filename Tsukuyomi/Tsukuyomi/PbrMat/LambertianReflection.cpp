@@ -7,6 +7,8 @@ LambertianReflection::LambertianReflection(const Spectrum &R):BxDF(BxDFType(BSDF
 
 Spectrum LambertianReflection::f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const
 {
+	if (!(SameHemisphere(wo, wi)&&SameHemisphereWithNormal(wo)))
+		return Spectrum();
 	return R * MathHelper::InvPi;
 }
 

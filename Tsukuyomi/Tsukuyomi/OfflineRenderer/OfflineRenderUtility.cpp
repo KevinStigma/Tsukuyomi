@@ -176,3 +176,16 @@ Spectrum UniformSampleOneLight(const IntersectInfo& it)
 	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
 	return (float)lights.size() * EstimateDirect(it, uScattering, sel_light, uLight);
 }
+
+Spectrum UniformSampleAllLights(const IntersectInfo& it)
+{
+	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
+	Spectrum l;
+	for (int i = 0; i < lights.size(); i++)
+	{
+		XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
+		XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
+		l += EstimateDirect(it, uScattering, lights[i], uLight);
+	}
+	return l / (float)lights.size();
+}

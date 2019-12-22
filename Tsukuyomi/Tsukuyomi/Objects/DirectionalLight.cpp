@@ -22,7 +22,7 @@ XMFLOAT3 DirectionalLight::getWorldDir()
 
 Spectrum DirectionalLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
 {
-	*wi = getWorldDir();
+	*wi = MathHelper::NegativeFloat3(getWorldDir());
 	*pdf = 1.0f;
 	XMFLOAT3 pOutside(ref.pos.x + world_radius * 2.0 * wi->x, 
 		ref.pos.y + world_radius * 2.0 * wi->y,
