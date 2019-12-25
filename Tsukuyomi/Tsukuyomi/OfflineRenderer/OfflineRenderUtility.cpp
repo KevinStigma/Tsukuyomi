@@ -110,7 +110,7 @@ XMMATRIX computeMatrixToWorldFromLocal(XMFLOAT3 n)
 	if (std::fabs(n.x) > std::fabs(n.y))
 		Nt = XMVector3Normalize(XMVectorSet(n.z, 0, -n.x, 0.0));
 	else
-		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.x, 0.0));
+		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.y, 0.0));
 	Nb = XMVector3Cross(N, Nt);
 	XMMATRIX mat;
 	mat.r[0] = Nt;
