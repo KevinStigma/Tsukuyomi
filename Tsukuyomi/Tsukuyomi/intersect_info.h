@@ -13,4 +13,5 @@ struct IntersectInfo
 	bool isSurfaceInteraction()const { return obj != nullptr; }
 	Ray spawnRay(const XMFLOAT3& d)const;
 	Ray spawnRayTo(const XMFLOAT3& p1, const XMFLOAT3& p2)const;
+	Spectrum Le(const XMFLOAT3& w)const;
 };

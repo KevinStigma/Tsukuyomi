@@ -1,4 +1,5 @@
 #include "AreaLight.h"
+#include "../intersect_info.h"
 
 AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 color):Light(name, t, s, r, color)
 {
@@ -20,6 +21,16 @@ AreaLight::~AreaLight()
 void AreaLight::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
 	mesh->render(context, renderer);
+}
+
+Spectrum AreaLight::L(const IntersectInfo &it, const XMFLOAT3& w)const
+{
+	return MathHelper::DotFloat3(it.normal, w) > 0.0f ? Spectrum(color.x, color.y, color.z) : Spectrum();
+}
+
+Spectrum AreaLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
+{
+	return Spectrum();
 }
 
 void AreaLight::setScale(XMFLOAT3 s)
