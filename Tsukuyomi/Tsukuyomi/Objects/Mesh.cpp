@@ -8,6 +8,12 @@
 #include <iostream>
 #include <fstream>
 
+XMFLOAT2 UniformSampleTriangle(XMFLOAT2 u)
+{
+	float u0 = sqrtf(u.x);
+	return XMFLOAT2(1.0 - u0, u.y * u0);
+}
+
 Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
 {
 	loadObjMesh(file_path);
@@ -69,6 +75,42 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	}
 }
 
+IntersectInfo Mesh::sample(XMFLOAT2 u)const
+{
+	float r = generateRandomFloat();
+	int index = accumula_areas.size() - 1;
+	for (int i = 0; i < accumula_areas.size()/3; i++)
+		if (r <= accumula_areas[i])
+		{
+			index = i;
+			break;
+		}
+
+	u = UniformSampleTriangle(u);
+	XMFLOAT3 p1, p2, p3;
+	p1 = getTriangleVertex(int(shape.mesh.indices[index * 3]));
+	p2 = getTriangleVertex(int(shape.mesh.indices[index * 3 + 1]));
+	p3 = getTriangleVertex(int(shape.mesh.indices[index * 3 + 2]));
+	IntersectInfo it;
+
+	it.pos = XMFLOAT3(
+		u.x * p1.x + u.y * p2.x + (1.0f - u.x - u.y) * p3.x,
+		u.x * p1.y + u.y * p2.y + (1.0f - u.x - u.y) * p3.y,
+		u.x * p1.z + u.y * p2.z + (1.0f - u.x - u.y) * p3.z
+	);
+	XMFLOAT3 n1, n2, n3;
+	n1 = getTriangleNormal(int(shape.mesh.indices[index * 3]));
+	n2 = getTriangleNormal(int(shape.mesh.indices[index * 3 + 1]));
+	n3 = getTriangleNormal(int(shape.mesh.indices[index * 3 + 2]));
+
+	it.normal = MathHelper::NormalizeFloat3(XMFLOAT3(
+		u.x * n1.x + u.y * n2.x + (1.0f - u.x - u.y) * n3.x,
+		u.x * n1.y + u.y * n2.y + (1.0f - u.x - u.y) * n3.y,
+		u.x * n1.z + u.y * n2.z + (1.0f - u.x - u.y) * n3.z
+	));
+	return it;
+}
+
 void Mesh::loadObjMesh(const std::string& obj_path)
 {
 	if (obj_path.length() == 0)
@@ -89,6 +131,7 @@ void Mesh::loadObjMesh(const std::string& obj_path)
 	if (shape.mesh.normals.size() == 0)
 		constructNormals();
 	computeBoundingBox();
+	computeArea();
 	std::cout << "load " << obj_path << " successfully!" << std::endl;
 }
 
@@ -143,6 +186,31 @@ void Mesh::computeBoundingBox()
 	center.y /= num_vertices;
 	center.z /= num_vertices;
 	boundingBox.center = center;
+}
+
+float Mesh::computeArea()
+{
+	int num_faces = shape.mesh.indices.size() / 3;
+	auto & indices = shape.mesh.indices;
+	area = 0.0f;
+	accumula_areas.resize(num_faces, 0.0);
+	for (int i = 0; i < num_faces; i++)
+	{
+		XMFLOAT3 v1 = getTriangleVertex(indices[i * 3]);
+		XMFLOAT3 v2 = getTriangleVertex(indices[i * 3 + 1]);
+		XMFLOAT3 v3 = getTriangleVertex(indices[i * 3 + 2]);
+		float cur_area = MathHelper::TriangleArea(v1, v2, v3);
+		if (i == 0)
+			accumula_areas[i] = cur_area;
+		else
+			accumula_areas[i] = accumula_areas[i - 1] + cur_area;
+		area += cur_area;
+	}
+
+	for (int i = 0; i < accumula_areas.size(); i++)
+		accumula_areas[i] /= area;
+	accumula_areas[num_faces - 1] = 1.0f;
+	return area;
 }
 
 void Mesh::generateBuffers(ID3D11Device* device)
@@ -239,6 +307,18 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 		return true;
 	}
 	return false;
+}
+
+XMFLOAT3 Mesh::getTriangleVertex(int index)const
+{
+	auto& verts = shape.mesh.positions;
+	return XMFLOAT3(verts[index*3], verts[index * 3+1], verts[index * 3+2]);
+}
+
+XMFLOAT3 Mesh::getTriangleNormal(int index)const
+{
+	auto& norms = shape.mesh.normals;
+	return XMFLOAT3(norms[index * 3], norms[index * 3 + 1], norms[index * 3 + 2]);
 }
 
 void Mesh::constructNormals()

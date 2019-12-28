@@ -169,6 +169,21 @@ public:
 	{
 		return sqrtf(DotFloat3(l,l));
 	}
+
+	static float TriangleArea(const XMFLOAT3 & v1, const XMFLOAT3& v2, const XMFLOAT3& v3)
+	{
+		double a = Float3Length(XMFLOAT3(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z));
+		double b = Float3Length(XMFLOAT3(v1.x - v3.x, v1.y - v3.y, v1.z - v3.z));
+		double c = Float3Length(XMFLOAT3(v3.x - v2.x, v3.y - v2.y, v3.z - v2.z));
+		double pp = (a + b + c) / 2.0;
+		double s1 = sqrt(fabs(pp));
+		double s2 = sqrt(fabs(pp - a));
+		double s3 = sqrt(fabs(pp - b));
+		double s4 = sqrt(fabs(pp - c));
+		double s = s1 * s2 * s3 * s4;
+		return s;
+	}
+
 };
 
 struct Ray

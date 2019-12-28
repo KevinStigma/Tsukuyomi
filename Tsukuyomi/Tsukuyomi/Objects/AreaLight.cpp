@@ -30,7 +30,11 @@ Spectrum AreaLight::L(const IntersectInfo &it, const XMFLOAT3& w)const
 
 Spectrum AreaLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
 {
-	return Spectrum();
+	IntersectInfo it = mesh->sample(uSample);
+	*wi = MathHelper::NormalizeFloat3(XMFLOAT3(it.pos.x - ref.pos.x, it.pos.y - ref.pos.y, it.pos.z - ref.pos.z));
+	*pdf = mesh->Pdf();
+	vt.setup(ref.pos, it.pos);
+	return L(it, XMFLOAT3(-wi->x, -wi->y, -wi->z));
 }
 
 void AreaLight::setScale(XMFLOAT3 s)
