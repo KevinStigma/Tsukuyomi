@@ -21,7 +21,7 @@ public:
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	std::string getMeshPath() { return mesh_path; }
-	bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
+	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
 	BxDF* getPbrMat() { return bxdf; }
 	IntersectInfo sample(XMFLOAT2 u)const;

@@ -232,7 +232,7 @@ void Mesh::generateBuffers(ID3D11Device* device)
 	for (int i = 0; i < num_vertex; i++)
 	{
 		Basic32 v(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
-			normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2], 0, 0);
+				normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2], 0, 0);
 		if (m_hasTex)
 		{
 			v.tex.x = texs[i * 2];

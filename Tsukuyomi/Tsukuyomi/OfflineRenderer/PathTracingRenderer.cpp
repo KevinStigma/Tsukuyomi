@@ -30,7 +30,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 480, j = 360;
+			int i = 395, j = 606;
 #endif
 			Spectrum color = sample_pixel(camera, i, j, width, height);
 			//std::cout << i << " " << j << std::endl;
@@ -58,6 +58,8 @@ Spectrum PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int wid
 	{
 		sample_x = x + ((rand() % 100) / 100.0f);
 		sample_y = y + ((rand() % 100) / 100.0f);
+		//sample_x = x;
+		//sample_y = y;
 		Ray ray = camera->getRay(sample_x / width, sample_y / height);
 		color = color + Li(ray);
 	}

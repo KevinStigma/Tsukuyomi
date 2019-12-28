@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "Objects/Object.h"
 #include "Objects/Mesh.h"
+#include "Objects/Sphere.h"
 #include "Objects/Camera.h"
 #include "Objects/PointLight.h"
 #include "Objects/DirectionalLight.h"

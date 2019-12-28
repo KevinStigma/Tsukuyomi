@@ -42,7 +42,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 		}
 	}
 
-	// sample BSDF with multiple imortance sampling
+	// sample BSDF with multiple importance sampling
 	if (!light->isDelta())
 	{
 		Spectrum f;
@@ -187,5 +187,5 @@ Spectrum UniformSampleAllLights(const IntersectInfo& it)
 		XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
 		l += EstimateDirect(it, uScattering, lights[i], uLight);
 	}
-	return l / (float)lights.size();
+	return l;
 }

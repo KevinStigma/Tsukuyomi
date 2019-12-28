@@ -30,7 +30,12 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
 		obj_name = genNewObjectName();
-	Mesh* mesh = new Mesh(obj_name, obj_path, t, s, r);
+	int index = obj_path.rfind('/');
+	Mesh*mesh = nullptr;
+	if(obj_path.substr(index + 1, obj_path.size() - index) == "sphere.obj")
+		mesh = new Sphere(obj_name, obj_path, t, s, r);
+	else
+		mesh = new Mesh(obj_name, obj_path, t, s, r);
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count()-1);

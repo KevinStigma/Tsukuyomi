@@ -39,8 +39,12 @@ float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& inf
 		if (obj->getType() != MESH)
 			continue;
 		float t;
-		if (((Mesh*)obj)->is_intersect(ray, t, info) && (min_t < 0.0f || t < min_t))
+		IntersectInfo it;
+		if (((Mesh*)obj)->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+		{
 			min_t = t;
+			info = it;
+		}
 	}
 	return min_t;
 }

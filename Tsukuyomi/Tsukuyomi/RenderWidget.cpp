@@ -101,8 +101,8 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 	{
 		float diff_x = (cur_pos.x() - lastMousePos.x()) * 0.001;
 		float diff_y = (lastMousePos.y() - cur_pos.y()) * 0.001;
-		camera.walkRight(diff_x);
-		camera.walkUp(diff_y);
+		camera.walkRight(diff_x * g_pGlobalSys->getMoveSpeed()*500.0);
+		camera.walkUp(diff_y * g_pGlobalSys->getMoveSpeed() * 500.0);
 	}
 	else if (touchType == -1)
 	{
