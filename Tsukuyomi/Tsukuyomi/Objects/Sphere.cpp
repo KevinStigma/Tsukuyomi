@@ -27,7 +27,7 @@ IntersectInfo Sphere::sample(XMFLOAT2 u)const
 	XMVECTOR world_normal = XMVector3Normalize(XMVector3TransformNormal(pObj, world_mat));
 	XMStoreFloat3(&it.normal, world_normal);
 	float ratio = radius / XMVectorGetX(XMVector3Length(pObj));
-	XMVectorMultiply(pObj, XMVectorSet(ratio, ratio, ratio, ratio));
+	pObj = XMVectorMultiply(pObj, XMVectorSet(ratio, ratio, ratio, ratio));
 	XMVECTOR world_pos = XMVector3TransformCoord(pObj, world_mat);
 	XMStoreFloat3(&it.pos, world_pos);
 	return it;
