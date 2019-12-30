@@ -1,4 +1,13 @@
 #include "Sphere.h"
+#include <algorithm>
+
+XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
+	float z = 1 - 2 * u.x;
+	float r = sqrtf(std::max<float>(0.0f, 1.0f - z * z));
+	float phi = 2 * MathHelper::Pi * u.y;
+	return XMFLOAT3(r * std::cos(phi), r * std::sin(phi), z);
+}
+
 
 Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Mesh(name,file_path,r,s,r)
 {
@@ -8,6 +17,20 @@ Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, 
 Sphere::~Sphere()
 {
 	Mesh::~Mesh();
+}
+
+IntersectInfo Sphere::sample(XMFLOAT2 u)const
+{
+	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
+	XMVECTOR pObj= XMVectorSet(radius * uni_sample_coord.x, radius * uni_sample_coord.y, radius * uni_sample_coord.z, 0.0f);
+	IntersectInfo it;
+	XMVECTOR world_normal = XMVector3Normalize(XMVector3TransformNormal(pObj, world_mat));
+	XMStoreFloat3(&it.normal, world_normal);
+	float ratio = radius / XMVectorGetX(XMVector3Length(pObj));
+	XMVectorMultiply(pObj, XMVectorSet(ratio, ratio, ratio, ratio));
+	XMVECTOR world_pos = XMVector3TransformCoord(pObj, world_mat);
+	XMStoreFloat3(&it.pos, world_pos);
+	return it;
 }
 
 bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
