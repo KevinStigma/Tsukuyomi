@@ -1,6 +1,7 @@
 #pragma once
 #include "Light.h"
 #include "Mesh.h"
+#include "Sphere.h"
 #include <LightHelper.h>
 
 class IntersectInfo;

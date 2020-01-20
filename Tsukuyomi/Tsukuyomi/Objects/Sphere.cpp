@@ -31,6 +31,7 @@ IntersectInfo Sphere::sample(XMFLOAT2 u)const
 	offset = XMVectorMultiply(offset, XMVectorSet(ratio, ratio, ratio, ratio));
 	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(boundingBox.center.x, boundingBox.center.y, boundingBox.center.z, 1.0), offset);
 	XMStoreFloat3(&it.pos, world_pos);
+	// std::cout << "center " << boundingBox.center.x << " " << boundingBox.center.y << " " << boundingBox.center.z << std::endl;
 	return it;
 }
 

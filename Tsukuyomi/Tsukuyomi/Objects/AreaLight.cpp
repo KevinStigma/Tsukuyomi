@@ -3,7 +3,11 @@
 
 AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 color):Light(name, t, s, r, color)
 {
-	mesh = new Mesh("", mesh_path, t, s, r);
+	int index = mesh_path.rfind('/');
+	if (mesh_path.substr(index + 1, mesh_path.size() - index) == "sphere.obj")
+		mesh = new Sphere("", mesh_path, t, s, r);
+	else
+		mesh = new Mesh("", mesh_path, t, s, r);
 	type = AREA_LIGHT;
 	Material mat;
 	mat.Ambient = XMFLOAT4(color.x, color.y, color.z, 1.0);
@@ -25,7 +29,15 @@ void AreaLight::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 Spectrum AreaLight::L(const IntersectInfo &it, const XMFLOAT3& w)const
 {
-	return MathHelper::DotFloat3(it.normal, w) > 0.0f ? Spectrum(color.x, color.y, color.z) : Spectrum();
+	/*
+	std::cout << "666666666666666" << std::endl;
+	std::cout << it.normal.x << " " << it.normal.y << " " << it.normal.z << std::endl;
+	std::cout << it.pos.x << " " << it.pos.y << " " << it.pos.z << std::endl;
+	std::cout << w.x << " " << w.y << " " << w.z << std::endl;
+	*/
+	float val = MathHelper::DotFloat3(it.normal, w);
+	//std::cout << val << std::endl;
+	return val > 0.0f ? Spectrum(color.x, color.y, color.z) : Spectrum();
 }
 
 Spectrum AreaLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)

@@ -93,21 +93,26 @@ IntersectInfo Mesh::sample(XMFLOAT2 u)const
 	p3 = getTriangleVertex(int(shape.mesh.indices[index * 3 + 2]));
 	IntersectInfo it;
 
-	it.pos = XMFLOAT3(
+	XMVECTOR pos = XMVectorSet(
 		u.x * p1.x + u.y * p2.x + (1.0f - u.x - u.y) * p3.x,
 		u.x * p1.y + u.y * p2.y + (1.0f - u.x - u.y) * p3.y,
-		u.x * p1.z + u.y * p2.z + (1.0f - u.x - u.y) * p3.z
+		u.x * p1.z + u.y * p2.z + (1.0f - u.x - u.y) * p3.z,
+		1.0f
 	);
+	XMStoreFloat3(&it.pos,  XMVector3TransformCoord(pos, world_mat));
+
 	XMFLOAT3 n1, n2, n3;
 	n1 = getTriangleNormal(int(shape.mesh.indices[index * 3]));
 	n2 = getTriangleNormal(int(shape.mesh.indices[index * 3 + 1]));
 	n3 = getTriangleNormal(int(shape.mesh.indices[index * 3 + 2]));
 
-	it.normal = MathHelper::NormalizeFloat3(XMFLOAT3(
+	XMVECTOR nor = XMVector3Normalize(XMVectorSet(
 		u.x * n1.x + u.y * n2.x + (1.0f - u.x - u.y) * n3.x,
 		u.x * n1.y + u.y * n2.y + (1.0f - u.x - u.y) * n3.y,
-		u.x * n1.z + u.y * n2.z + (1.0f - u.x - u.y) * n3.z
-	));
+		u.x * n1.z + u.y * n2.z + (1.0f - u.x - u.y) * n3.z,
+		0.0f));
+
+	XMStoreFloat3(&it.normal, XMVector3TransformNormal(nor, rot_mat));
 	return it;
 }
 

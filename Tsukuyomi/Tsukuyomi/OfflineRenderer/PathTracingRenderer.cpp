@@ -21,7 +21,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	start = clock();
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
-//#define DEBUG_PATHTRACING
+#define DEBUG_PATHTRACING
 #ifndef DEBUG_PATHTRACING
 	#pragma omp parallel for num_threads(8)
 	for (int i = 0; i < width; i++)
@@ -30,12 +30,11 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 467, j = 222;
+			int i = 507, j = 286;
 #endif
 			Spectrum color = sample_pixel(camera, i, j, width, height);
-			//std::cout << i << " " << j << std::endl;
-			//std::cout << color.r << " " << color.g << " " << color.b << std::endl;
-			image.setPixelColor(QPoint(i, height - 1 - j), QColor(color.r*255, color.g*255,  color.b*255));
+			color = Spectrum::Clamp(color);
+			image.setPixelColor(QPoint(i, height - 1 - j), QColor(color.r * 255, color.g * 255, color.b * 255));
 #ifndef DEBUG_PATHTRACING
 		}
 	}

@@ -11,5 +11,5 @@ protected:
 	Spectrum Li(const Ray& ray);
 	Spectrum sample_pixel(Camera* camera, int x, int y, int width, int height);
 	int sample_count = 16;
-	int max_bounce = 5;
+	int max_bounce = 1;
 };

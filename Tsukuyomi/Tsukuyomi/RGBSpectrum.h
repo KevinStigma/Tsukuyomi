@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "MathHelper/MathHelper.h"
 
 struct RGBSpectrum
 {
@@ -107,6 +108,10 @@ struct RGBSpectrum
 		return YWeight[0] * r + YWeight[1] * g + YWeight[2] * b;
 	}
 
+	static RGBSpectrum Clamp(RGBSpectrum c)
+	{
+		return RGBSpectrum(MathHelper::Clamp(c.r, 0.0f, 1.0f), MathHelper::Clamp(c.g, 0.0f, 1.0f), MathHelper::Clamp(c.b, 0.0f, 1.0f));
+	}
 	float r, g, b;
 };
 
