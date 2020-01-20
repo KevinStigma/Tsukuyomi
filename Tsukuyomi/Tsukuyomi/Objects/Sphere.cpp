@@ -23,13 +23,13 @@ IntersectInfo Sphere::sample(XMFLOAT2 u)const
 {
 	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
 	float r = Radius();
-	XMVECTOR pObj = XMVectorSet(r * uni_sample_coord.x, r * uni_sample_coord.y, r * uni_sample_coord.z, 0.0f);
+	XMVECTOR offset = XMVectorSet(r * uni_sample_coord.x, r * uni_sample_coord.y, r * uni_sample_coord.z, 0.0f);
 	IntersectInfo it;
-	XMVECTOR world_normal = XMVector3Normalize(XMVector3TransformNormal(pObj, world_mat));
+	XMVECTOR world_normal = XMVector3Normalize(offset);
 	XMStoreFloat3(&it.normal, world_normal);
-	float ratio = r / XMVectorGetX(XMVector3Length(pObj));
-	pObj = XMVectorMultiply(pObj, XMVectorSet(ratio, ratio, ratio, ratio));
-	XMVECTOR world_pos = XMVector3TransformCoord(pObj, world_mat);
+	float ratio = r / XMVectorGetX(XMVector3Length(offset));
+	offset = XMVectorMultiply(offset, XMVectorSet(ratio, ratio, ratio, ratio));
+	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(boundingBox.center.x, boundingBox.center.y, boundingBox.center.z, 1.0), offset);
 	XMStoreFloat3(&it.pos, world_pos);
 	return it;
 }
