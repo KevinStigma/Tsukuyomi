@@ -21,7 +21,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	start = clock();
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
-#define DEBUG_PATHTRACING
+//#define DEBUG_PATHTRACING
 #ifndef DEBUG_PATHTRACING
 	#pragma omp parallel for num_threads(8)
 	for (int i = 0; i < width; i++)
