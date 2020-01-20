@@ -26,7 +26,7 @@ public:
 	BxDF* getPbrMat() { return bxdf; }
 	virtual IntersectInfo sample(XMFLOAT2 u)const;
 	virtual float Area() { return area; }
-	float Pdf() { return 1.0f / area; }
+	virtual float Pdf() { return 1.0f / area; }
 protected:
 	Material mat;
 	void computeBoundingBox();

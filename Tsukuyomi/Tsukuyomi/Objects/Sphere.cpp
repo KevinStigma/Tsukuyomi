@@ -9,9 +9,9 @@ XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
 }
 
 
-Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Mesh(name,file_path,r,s,r)
+Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Mesh(name,file_path,t,s,r)
 {
-	radius = (boundingBox.top.x - boundingBox.bottom.x) * 0.5;
+	origin_radius = (boundingBox.top.x - boundingBox.bottom.x) * 0.5;
 }
 
 Sphere::~Sphere()
@@ -22,11 +22,12 @@ Sphere::~Sphere()
 IntersectInfo Sphere::sample(XMFLOAT2 u)const
 {
 	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
-	XMVECTOR pObj= XMVectorSet(radius * uni_sample_coord.x, radius * uni_sample_coord.y, radius * uni_sample_coord.z, 0.0f);
+	float r = Radius();
+	XMVECTOR pObj = XMVectorSet(r * uni_sample_coord.x, r * uni_sample_coord.y, r * uni_sample_coord.z, 0.0f);
 	IntersectInfo it;
 	XMVECTOR world_normal = XMVector3Normalize(XMVector3TransformNormal(pObj, world_mat));
 	XMStoreFloat3(&it.normal, world_normal);
-	float ratio = radius / XMVectorGetX(XMVector3Length(pObj));
+	float ratio = r / XMVectorGetX(XMVector3Length(pObj));
 	pObj = XMVectorMultiply(pObj, XMVectorSet(ratio, ratio, ratio, ratio));
 	XMVECTOR world_pos = XMVector3TransformCoord(pObj, world_mat);
 	XMStoreFloat3(&it.pos, world_pos);
@@ -40,7 +41,8 @@ bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 	XMFLOAT3 diff_vec(ray.origin.x - center.x, ray.origin.y - center.y, ray.origin.z - center.z);
 	float tmp_val = MathHelper::DotFloat3(ray.direction, diff_vec);
 	float dir_dot_dir = MathHelper::DotFloat3(ray.direction, ray.direction);
-	float val = tmp_val * tmp_val - dir_dot_dir*(MathHelper::DotFloat3(diff_vec, diff_vec) - radius * radius);
+	float r = Radius();
+	float val = tmp_val * tmp_val - dir_dot_dir*(MathHelper::DotFloat3(diff_vec, diff_vec) - r * r);
 
 	float inv_dot = 1 / dir_dot_dir;
 	if (val < 0)

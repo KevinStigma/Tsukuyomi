@@ -30,7 +30,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 395, j = 606;
+			int i = 467, j = 222;
 #endif
 			Spectrum color = sample_pixel(camera, i, j, width, height);
 			//std::cout << i << " " << j << std::endl;
@@ -85,9 +85,7 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 					L += (beta* light->Le(ray));
 			}
 			else
-			{
-				// le for area light
-			}
+				L += beta * it.Le(MathHelper::NegativeFloat3(ray.direction));
 		}
 
 		if (!it.isSurfaceInteraction() || bounce >= max_bounce)

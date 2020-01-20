@@ -7,7 +7,9 @@ public:
 	~Sphere();
 	bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	virtual IntersectInfo sample(XMFLOAT2 u)const;
-	float Area() { return 4.0 * MathHelper::Pi * radius * radius; }
+	float Area() { float r = Radius();  return 4.0 * MathHelper::Pi * r * r; }
+	float Pdf() { return 1.0f / Area(); }
+	float Radius()const { return (scale.x * (boundingBox.top.x - boundingBox.bottom.x) * 0.5); }
 protected:
-	float radius;
+	float origin_radius;
 };

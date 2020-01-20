@@ -73,9 +73,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 			if (light_it.isSurfaceInteraction())
 			{
 				if (light_it.obj->getType() == AREA_LIGHT)
-				{
-
-				}
+					li = light_it.Le(MathHelper::NegativeFloat3(wi));
 			}
 			else
 				li = light->Le(ray);

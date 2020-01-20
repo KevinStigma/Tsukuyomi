@@ -36,14 +36,21 @@ float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& inf
 	for (int i = 0; i < objs.size(); i++)
 	{
 		Object* obj = objs[i];
-		if (obj->getType() != MESH)
+		if (obj->getType() != MESH && obj->getType() != AREA_LIGHT)
 			continue;
 		float t;
 		IntersectInfo it;
-		if (((Mesh*)obj)->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+		Mesh* mesh = nullptr;
+		if (obj->getType() == AREA_LIGHT)
+			mesh = dynamic_cast<AreaLight*>(obj)->getMesh();
+		else
+			mesh = dynamic_cast<Mesh*>(obj);
+		if (mesh->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
 		{
 			min_t = t;
 			info = it;
+			if (obj->getType() == AREA_LIGHT)
+				info.obj = obj;
 		}
 	}
 	return min_t;
