@@ -4,6 +4,7 @@
 #include "../Vertex.h"
 #include "../D3DRenderer.h"
 #include "../PbrMat/LambertianReflection.h"
+#include "../Accelerate/Triangle.h"
 #include "GlobalSys.h"
 #include <iostream>
 #include <fstream>
@@ -266,6 +267,22 @@ void Mesh::generateBuffers(ID3D11Device* device)
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &indices[0];
 	device->CreateBuffer(&ibd, &iinitData, &indexBuffer);
+}
+
+std::vector<Primitive*> Mesh::getAllPrimitives()
+{
+	std::vector<Primitive*> primitives;
+	int num_faces = shape.mesh.indices.size() / 3;
+	auto & indices = shape.mesh.indices;
+	for (int i = 0; i < num_faces; i++)
+	{
+		XMFLOAT3 v1 = getTriangleVertex(indices[i * 3]);
+		XMFLOAT3 v2 = getTriangleVertex(indices[i * 3 + 1]);
+		XMFLOAT3 v3 = getTriangleVertex(indices[i * 3 + 2]);
+		Triangle* triangle = new Triangle(this, v1, v2, v3);
+		primitives.push_back(triangle);
+	}
+	return primitives;
 }
 
 bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)

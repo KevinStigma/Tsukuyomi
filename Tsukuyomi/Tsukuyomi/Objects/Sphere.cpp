@@ -1,4 +1,5 @@
 #include "Sphere.h"
+#include "../Accelerate/PrimSphere.h"
 #include <algorithm>
 
 XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
@@ -74,5 +75,13 @@ bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 	is_info.pos = XMFLOAT3(ray.origin.x + t * ray.direction.x, ray.origin.y + t * ray.direction.y, ray.origin.z + t * ray.direction.z);
 	is_info.normal = MathHelper::NormalizeFloat3(XMFLOAT3(is_info.pos.x - center.x, is_info.pos.y - center.y, is_info.pos.z - center.z));
 	return true;
+}
+
+std::vector<Primitive*> Sphere::getAllPrimitives()
+{
+	std::vector<Primitive*> prims;
+	PrimSphere* s = new PrimSphere(this, origin_radius, XMFLOAT3(0.0f, 0.0f, 0.0f));
+	prims.push_back(s);
+	return prims;
 }
 

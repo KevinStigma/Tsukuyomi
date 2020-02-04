@@ -119,6 +119,9 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Accelerate\Primitive.cpp" />
+    <ClCompile Include="Accelerate\PrimSphere.cpp" />
+    <ClCompile Include="Accelerate\Triangle.cpp" />
     <ClCompile Include="Axis\RotAxis.cpp" />
     <ClCompile Include="Axis\TransAxis.cpp" />
     <ClCompile Include="common.cpp" />
@@ -167,6 +170,9 @@
     <QtRcc Include="Tsukuyomi.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Accelerate\Primitive.h" />
+    <ClInclude Include="Accelerate\PrimSphere.h" />
+    <ClInclude Include="Accelerate\Triangle.h" />
     <ClInclude Include="Axis\RotAxis.h" />
     <ClInclude Include="Axis\TransAxis.h" />
     <ClInclude Include="common.h" />

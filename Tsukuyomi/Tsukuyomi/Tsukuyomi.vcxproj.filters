@@ -55,6 +55,9 @@
     <Filter Include="OfflineRenderer">
       <UniqueIdentifier>{77ae43af-34c5-40c6-b790-e126afaf13a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Accelerate">
+      <UniqueIdentifier>{92f18039-d357-4702-86f8-7d4d4bfe30ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,6 +170,15 @@
     </ClCompile>
     <ClCompile Include="Objects\Sphere.cpp">
       <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Accelerate\Primitive.cpp">
+      <Filter>Accelerate</Filter>
+    </ClCompile>
+    <ClCompile Include="Accelerate\Triangle.cpp">
+      <Filter>Accelerate</Filter>
+    </ClCompile>
+    <ClCompile Include="Accelerate\PrimSphere.cpp">
+      <Filter>Accelerate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +307,15 @@
     </ClInclude>
     <ClInclude Include="Objects\Sphere.h">
       <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Accelerate\Primitive.h">
+      <Filter>Accelerate</Filter>
+    </ClInclude>
+    <ClInclude Include="Accelerate\Triangle.h">
+      <Filter>Accelerate</Filter>
+    </ClInclude>
+    <ClInclude Include="Accelerate\PrimSphere.h">
+      <Filter>Accelerate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

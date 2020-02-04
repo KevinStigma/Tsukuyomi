@@ -5,6 +5,7 @@
 #include "../intersect_info.h"
 
 class BxDF;
+class Primitive;
 
 class Mesh :public Object
 {
@@ -20,6 +21,7 @@ public:
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
+	virtual std::vector<Primitive*> getAllPrimitives();
 	std::string getMeshPath() { return mesh_path; }
 	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
