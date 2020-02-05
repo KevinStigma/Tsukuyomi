@@ -145,7 +145,7 @@ void Mesh::writeObj(const std::string& obj_path)
 {
 	std::ofstream fout(obj_path.c_str());
 	int count = shape.mesh.positions.size() / 3;
-	auto& center = boundingBox.center;
+	XMFLOAT3 center = boundingBox.getCenter();
 	for (int i = 0; i < count; i++)
 	{
 		fout << "v " << shape.mesh.positions[i * 3] - center.x << " " << shape.mesh.positions[i * 3 + 1] - center.y << " " << shape.mesh.positions[i * 3 + 2] - center.z << std::endl;
@@ -169,16 +169,11 @@ void Mesh::computeBoundingBox()
 	boundingBox.top.x = boundingBox.bottom.x = shape.mesh.positions[0];
 	boundingBox.top.y = boundingBox.bottom.y = shape.mesh.positions[1];
 	boundingBox.top.z = boundingBox.bottom.z = shape.mesh.positions[2];
-	XMFLOAT3 center(0.0f, 0.0f, 0.0f);
 	for (int i = 0; i < num_vertices; i++)
 	{
 		float x = shape.mesh.positions[i * 3];
 		float y = shape.mesh.positions[i * 3 + 1];
 		float z = shape.mesh.positions[i * 3 + 2];
-
-		center.x += x;
-		center.y += y;
-		center.z += z;
 
 		boundingBox.top.x = std::max(boundingBox.top.x, x);
 		boundingBox.top.y = std::max(boundingBox.top.y, y);
@@ -188,10 +183,6 @@ void Mesh::computeBoundingBox()
 		boundingBox.bottom.y = std::min(boundingBox.bottom.y, y);
 		boundingBox.bottom.z = std::min(boundingBox.bottom.z, z);
 	}
-	center.x /= num_vertices;
-	center.y /= num_vertices;
-	center.z /= num_vertices;
-	boundingBox.center = center;
 }
 
 float Mesh::computeArea()

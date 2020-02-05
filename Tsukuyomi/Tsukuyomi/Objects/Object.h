@@ -14,8 +14,16 @@ enum ObjectType {EMPTY, MESH, POINT_LIGHT, CAM, DIR_LIGHT, AREA_LIGHT};
 
 struct BoundingBox
 {
-	XMFLOAT3 top, bottom, center;
-	BoundingBox():top(1.0, 1.0, 1.0), bottom(-1.0, -1.0, -1.0), center(0.0, 0.0, 0.0){}
+	XMFLOAT3 top, bottom;
+	BoundingBox();
+	XMFLOAT3 getCenter()const {
+		return XMFLOAT3((top.x + bottom.x)*0.5f, (top.y + bottom.y)*0.5f, (top.z + bottom.z)*0.5f);
+	}
+
+	float getCenterValFromDim(int dim)const {
+		return (getTopFromDim(dim) + getBottomFromDim(dim))*0.5f;
+	}
+	float surfaceArea();
 	bool inBox(XMFLOAT3 v)
 	{
 		if (bottom.x <= v.x&&top.x >= v.x&&bottom.y <= v.y&&top.y >= v.y&&bottom.z <= v.z&&top.z >= v.z)
@@ -23,6 +31,9 @@ struct BoundingBox
 		return false;
 	}
 
+	int maximumExtent();
+	float getTopFromDim(int dim)const;
+	float getBottomFromDim(int dim)const;
 	static BoundingBox Union(BoundingBox&b1, BoundingBox&b2)
 	{
 		BoundingBox b;

@@ -956,7 +956,7 @@ void D3DRenderer::renderBoundingBox(Object* object)
 	float xl = bb.top.x - bb.bottom.x;
 	float yl = bb.top.y - bb.bottom.y;
 	float zl = bb.top.z - bb.bottom.z;
-	XMFLOAT3 c = bb.center;
+	XMFLOAT3 c = bb.getCenter();
 	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->getWorldMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{

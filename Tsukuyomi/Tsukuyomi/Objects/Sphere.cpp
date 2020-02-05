@@ -9,7 +9,6 @@ XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
 	return XMFLOAT3(r * std::cos(phi), r * std::sin(phi), z);
 }
 
-
 Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Mesh(name,file_path,t,s,r)
 {
 	origin_radius = (boundingBox.top.x - boundingBox.bottom.x) * 0.5;
@@ -30,9 +29,9 @@ IntersectInfo Sphere::sample(XMFLOAT2 u)const
 	XMStoreFloat3(&it.normal, world_normal);
 	float ratio = r / XMVectorGetX(XMVector3Length(offset));
 	offset = XMVectorMultiply(offset, XMVectorSet(ratio, ratio, ratio, ratio));
-	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(boundingBox.center.x, boundingBox.center.y, boundingBox.center.z, 1.0), offset);
+	XMFLOAT3 center = boundingBox.getCenter();
+	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(center.x, center.y, center.z, 1.0), offset);
 	XMStoreFloat3(&it.pos, world_pos);
-	// std::cout << "center " << boundingBox.center.x << " " << boundingBox.center.y << " " << boundingBox.center.z << std::endl;
 	return it;
 }
 

@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <limits>
 #include <DirectXMath.h>
 
 using namespace DirectX;

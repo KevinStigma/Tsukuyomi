@@ -5,6 +5,56 @@
 #include "Mesh.h"
 #include <iostream>
 
+BoundingBox::BoundingBox()
+{
+	const float minF = (std::numeric_limits<float>::lowest)();
+	const float maxF = (std::numeric_limits<float>::max)();
+	bottom = XMFLOAT3(maxF, maxF, maxF);
+	top = XMFLOAT3(minF, minF, minF);
+}
+
+float BoundingBox::surfaceArea()
+{
+	float x_extend = top.x - bottom.x;
+	float y_extend = top.y - bottom.y;
+	float z_extend = top.z - bottom.z;
+	return (x_extend * y_extend + y_extend * z_extend + x_extend * z_extend)*2.0;
+}
+
+int BoundingBox::maximumExtent()
+{
+	float x_extend = top.x - bottom.x;
+	float y_extend = top.y - bottom.y;
+	float z_extend = top.z - bottom.z;
+	float max_extend = std::max<float>(x_extend, std::max<float>(y_extend, z_extend));
+	if (max_extend == x_extend)
+		return 0;
+	else if (max_extend == y_extend)
+		return 1;
+	else
+		return 2;
+}
+
+float BoundingBox::getTopFromDim(int dim)const
+{
+	if (dim == 0)
+		return top.x;
+	else if (dim == 1)
+		return top.y;
+	else
+		return top.z;
+}
+
+float BoundingBox::getBottomFromDim(int dim)const
+{
+	if (dim == 0)
+		return bottom.x;
+	else if (dim == 1)
+		return bottom.y;
+	else
+		return bottom.z;
+}
+
 Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)
 {
 	name = obj_name;
