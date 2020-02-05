@@ -23,6 +23,18 @@ struct BoundingBox
 		return false;
 	}
 
+	static BoundingBox Union(BoundingBox&b1, BoundingBox&b2)
+	{
+		BoundingBox b;
+		b.bottom = XMFLOAT3(std::min<float>(b1.bottom.x, b2.bottom.x),
+			std::min<float>(b1.bottom.y, b2.bottom.y),
+			std::min<float>(b1.bottom.z, b2.bottom.z));
+		b.top = XMFLOAT3(std::max<float>(b1.top.x, b2.top.x),
+			std::max<float>(b1.top.y, b2.top.y),
+			std::max<float>(b1.top.z, b2.top.z));
+		return b;
+	}
+
 };
 
 class Object

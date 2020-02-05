@@ -383,3 +383,13 @@ void Mesh::constructNormals()
 		normals[i * 3 + 2] = nor.z;
 	}
 }
+
+Mesh* getMesh(Object* obj)
+{
+	Mesh* mesh = nullptr;
+	if (obj->getType() == AREA_LIGHT)
+		mesh = dynamic_cast<AreaLight*>(obj)->getMesh();
+	else if (obj->getType() == MESH)
+		mesh = dynamic_cast<Mesh*>(obj);
+	return mesh;
+}

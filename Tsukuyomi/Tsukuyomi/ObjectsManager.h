@@ -10,6 +10,7 @@
 #include "Objects/DirectionalLight.h"
 #include "Objects/AreaLight.h"
 #include "ObjectsListWidget.h"
+#include "Accelerate/BVHManager.h"
 
 class ObjectManager
 {
@@ -24,7 +25,6 @@ public:
 	Object* createNewObjectOfDirectionalLight(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0));
 	Object* createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0));
 	Object* getObjectFromName(std::string name);
-	void generateBoundingVolumeHieratchies();
 	std::vector<Light*> getAllLights();
 	bool removeObject(std::string name);
 	bool changeObjectName(std::string old_name, std::string new_name);
@@ -36,6 +36,7 @@ public:
 	std::vector<Object*> getAllObjects();
 	Camera* getRenderCamera();
 protected:
+	BVHManager bvhManager;
 	std::string genNewObjectName();
 	std::unordered_map<std::string, Object*> objects;
 	ObjectsListWidget* listview = nullptr;

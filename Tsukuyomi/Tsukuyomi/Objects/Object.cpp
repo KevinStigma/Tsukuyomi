@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "../D3DRenderer.h"
 #include "../GlobalSys.h"
+#include "Mesh.h"
 #include <iostream>
 
 Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)

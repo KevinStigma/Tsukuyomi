@@ -119,6 +119,8 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Accelerate\BVHBuildNode.cpp" />
+    <ClCompile Include="Accelerate\BVHManager.cpp" />
     <ClCompile Include="Accelerate\Primitive.cpp" />
     <ClCompile Include="Accelerate\PrimSphere.cpp" />
     <ClCompile Include="Accelerate\Triangle.cpp" />
@@ -170,6 +172,8 @@
     <QtRcc Include="Tsukuyomi.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Accelerate\BVHBuildNode.h" />
+    <ClInclude Include="Accelerate\BVHManager.h" />
     <ClInclude Include="Accelerate\Primitive.h" />
     <ClInclude Include="Accelerate\PrimSphere.h" />
     <ClInclude Include="Accelerate\Triangle.h" />

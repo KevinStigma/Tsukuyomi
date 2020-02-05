@@ -21,6 +21,7 @@ void ObjectManager::clear()
 	objects.clear();
 	listview->clear();
 	curSelObject = nullptr;
+	bvhManager.destroyBoundingVolumeHieratches();
 }
 
 Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r)
@@ -310,25 +311,4 @@ std::vector<Object*> ObjectManager::getAllObjects()
 		objs.push_back(item.second);
 	}
 	return objs;
-}
-
-
-void ObjectManager::generateBoundingVolumeHieratchies()
-{
-	auto objs = getAllObjects();
-	//allocate all primivies
-	std::vector<Primitive*> primitives;
-	for (int i = 0; i < objs.size(); i++)
-	{
-		Object* obj = objs[i];
-		if (obj->getType() != MESH && obj->getType() != AREA_LIGHT)
-			continue;
-		Mesh* mesh = nullptr;
-		if (obj->getType() == AREA_LIGHT)
-			mesh = dynamic_cast<AreaLight*>(obj)->getMesh();
-		else
-			mesh = dynamic_cast<Mesh*>(obj);
-		std::vector<Primitive*> mesh_ps = mesh->getAllPrimitives();
-		primitives.insert(primitives.end(), mesh_ps.begin(), mesh_ps.end());
-	}
 }

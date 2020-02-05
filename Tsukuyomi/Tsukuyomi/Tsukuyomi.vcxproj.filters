@@ -180,6 +180,12 @@
     <ClCompile Include="Accelerate\PrimSphere.cpp">
       <Filter>Accelerate</Filter>
     </ClCompile>
+    <ClCompile Include="Accelerate\BVHManager.cpp">
+      <Filter>Accelerate</Filter>
+    </ClCompile>
+    <ClCompile Include="Accelerate\BVHBuildNode.cpp">
+      <Filter>Accelerate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -315,6 +321,12 @@
       <Filter>Accelerate</Filter>
     </ClInclude>
     <ClInclude Include="Accelerate\PrimSphere.h">
+      <Filter>Accelerate</Filter>
+    </ClInclude>
+    <ClInclude Include="Accelerate\BVHManager.h">
+      <Filter>Accelerate</Filter>
+    </ClInclude>
+    <ClInclude Include="Accelerate\BVHBuildNode.h">
       <Filter>Accelerate</Filter>
     </ClInclude>
   </ItemGroup>

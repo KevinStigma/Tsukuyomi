@@ -41,3 +41,5 @@ protected:
 	ID3D11Buffer* vertexBuffer = nullptr;
 	ID3D11Buffer* indexBuffer = nullptr;
 };
+
+extern Mesh* getMesh(Object* obj);
