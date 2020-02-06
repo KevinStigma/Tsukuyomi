@@ -24,6 +24,12 @@ void BVHManager::generateBoundingVolumeHieratchies()
 	BVHBuildNode* root = recursiveBuild(0, primitives.size(), &totalnodes, ordered_prims);
 	primitives.assign(ordered_prims.begin(), ordered_prims.end());
 
+	//flatten BVH tree
+	linear_nodes.resize(totalnodes);
+	int offset = 0;
+	flattenBVHTree(root, &offset);
+
+	destroyBVHBuildNodes(root);
 }
 
 void BVHManager::destroyBoundingVolumeHieratches()
@@ -33,6 +39,7 @@ void BVHManager::destroyBoundingVolumeHieratches()
 		SAFE_DELETE(primitives[i]);
 	}
 	primitives.clear();
+	linear_nodes.clear();
 }
 
 
@@ -118,6 +125,23 @@ int BVHManager::partitionPrimitivesWithSAH(int start, int end, int dim, Bounding
 	}
 }
 
+void BVHManager::destroyBVHBuildNodes(BVHBuildNode* root)
+{
+	if (!root)
+		return;
+	if (root->nPrimitives > 0)
+	{
+		SAFE_DELETE(root);
+	}
+	else
+	{
+		destroyBVHBuildNodes(root->children[0]);
+		destroyBVHBuildNodes(root->children[1]);
+		SAFE_DELETE(root);
+	}
+
+}
+
 BVHBuildNode* BVHManager::recursiveBuild(int start, int end, int* totalnodes, std::vector<Primitive*>& ordered_prims)
 {
 	BVHBuildNode* node = nullptr;
@@ -157,4 +181,25 @@ BVHBuildNode* BVHManager::createLeafNode(int start, int end, int* totalnodes, st
 	BVHBuildNode*node = new BVHBuildNode;
 	node->initLeaf(firstPrimOffset, end - start, bounds);
 	return node;
+}
+
+int BVHManager::flattenBVHTree(BVHBuildNode* node, int* offset)
+{
+	LinearBVHNode& lnode = linear_nodes[*offset];
+	lnode.boundingbox = node->boundingbox;
+	int myOffset = (*offset)++;
+
+	if (node->nPrimitives > 0)
+	{
+		lnode.primitivesOffset = node->firstPrimeOffset;
+		lnode.nPrimitives = node->nPrimitives;
+	}
+	else
+	{
+		lnode.axis = node->splitAxis;
+		lnode.nPrimitives = 0;
+		flattenBVHTree(node->children[0], offset);
+		lnode.secondChildOfset = flattenBVHTree(node->children[1], offset);
+	}
+	return myOffset;
 }
