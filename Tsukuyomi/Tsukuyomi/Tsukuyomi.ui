@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>logo.png</normaloff>logo.png</iconset>
+    <normaloff>C:/Users/linyimap/.designer/backup/logo.png</normaloff>C:/Users/linyimap/.designer/backup/logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="RenderWidget" name="render_widget" native="true">
@@ -538,6 +538,9 @@
    </property>
   </action>
   <action name="actionshowBVH">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>showBVH</string>
    </property>

@@ -66,6 +66,11 @@ void Tsukuyomi::on_actiongenBVH_triggered()
 	g_pGlobalSys->generateBVH();
 }
 
+void Tsukuyomi::on_actionshowBVH_triggered()
+{
+	g_pGlobalSys->render_paras.renderBVH = ui.actionshowBVH->isChecked();
+}
+
 void Tsukuyomi::on_actionNormalDebug_triggered()
 {
 	ui.actionNormalDebug->setChecked(true);

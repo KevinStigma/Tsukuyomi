@@ -9,4 +9,5 @@ enum OfflineRenderType {
 struct RenderParas
 {
 	OfflineRenderType offline_render_type = PATH_TRACING;
+	bool renderBVH = false;
 };

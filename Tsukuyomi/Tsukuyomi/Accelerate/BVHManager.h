@@ -15,6 +15,7 @@ public:
 	void generateBoundingVolumeHieratchies();
 	void destroyBoundingVolumeHieratches();
 	void updatePrimitivesBoundingBoxes();
+	std::vector<LinearBVHNode> getBvhNodes() { return linear_nodes; }
 protected:
 	int partitionPrimitivesWithSAH(int start, int end, int dim, BoundingBox& bounds);
 	int partitionPrimitivesWithEquallySizedSubsets(int start, int end,int dim);
@@ -25,5 +26,5 @@ protected:
 	std::vector<Primitive*> primitives;
 	BucketInfo buckets[nBuckets];
 	std::vector<LinearBVHNode> linear_nodes;
-	int maxPrimsInNode = 255;
+	int maxPrimsInNode = 150;
 };

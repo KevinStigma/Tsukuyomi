@@ -36,10 +36,12 @@ protected:
 	void initMaterials();
 	void renderRulerLlines();
 	void renderSelObjFlag();
+	void renderBVH();
 	void renderFrustum(FXMMATRIX trans_mat);
 	void renderWireFrameSphere(Object * obj);
 	void renderDirectionalLight(Object* obj);
 	void renderBoundingBox(Object* object);
+	void renderBoundingBox(BoundingBox bb, XMFLOAT4 color);
 	void renderCoordAxis(Object* obj);
 	void renderRotAxis(Object* obj);
 	void createRulerLlinesVertexBuffer();

@@ -85,7 +85,7 @@ public:
             TsukuyomiClass->setObjectName(QString::fromUtf8("TsukuyomiClass"));
         TsukuyomiClass->resize(1170, 754);
         QIcon icon;
-        icon.addFile(QString::fromUtf8("logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8("C:/Users/linyimap/.designer/backup/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
         actionLoad_Mesh = new QAction(TsukuyomiClass);
         actionLoad_Mesh->setObjectName(QString::fromUtf8("actionLoad_Mesh"));
@@ -120,6 +120,7 @@ public:
         actiongenBVH->setObjectName(QString::fromUtf8("actiongenBVH"));
         actionshowBVH = new QAction(TsukuyomiClass);
         actionshowBVH->setObjectName(QString::fromUtf8("actionshowBVH"));
+        actionshowBVH->setCheckable(true);
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         render_widget = new RenderWidget(centralWidget);

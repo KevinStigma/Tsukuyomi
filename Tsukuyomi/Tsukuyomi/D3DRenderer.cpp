@@ -214,6 +214,7 @@ void D3DRenderer::renderScene()
 	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	renderRulerLlines();
+	renderBVH();
 
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
@@ -242,6 +243,19 @@ void D3DRenderer::renderSelObjFlag()
 			renderRotAxis(sel_obj);
 	}
 }
+
+void D3DRenderer::renderBVH()
+{
+	if (!g_pGlobalSys->render_paras.renderBVH)
+		return;
+	auto bvh_nodes = g_pGlobalSys->objectManager.getBVHManager()->getBvhNodes();
+	XMFLOAT4 color;
+	for each (auto node in bvh_nodes)
+	{
+		renderBoundingBox(node.boundingbox, color);
+	}
+}
+
 
 void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 {
@@ -958,6 +972,39 @@ void D3DRenderer::renderBoundingBox(Object* object)
 	float zl = bb.top.z - bb.bottom.z;
 	XMFLOAT3 c = bb.getCenter();
 	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->getWorldMatrix();
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		XMMATRIX WVP;
+		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(world_matrix);
+		basicEffect->SetTexTransform(XMMatrixIdentity());
+		basicEffect->SetWorldViewProj(WVP);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(24, 0, 0);
+	}
+}
+
+void D3DRenderer::renderBoundingBox(BoundingBox bb, XMFLOAT4 color)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	ID3D11DeviceContext * context = m_pImmediateContext;
+	context->IASetVertexBuffers(0, 1, &m_pBoundingBoxVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pBoundingBoxIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosColor);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->SimpleColorTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	float xl = bb.top.x - bb.bottom.x;
+	float yl = bb.top.y - bb.bottom.y;
+	float zl = bb.top.z - bb.bottom.z;
+	XMFLOAT3 c = bb.getCenter();
+	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
