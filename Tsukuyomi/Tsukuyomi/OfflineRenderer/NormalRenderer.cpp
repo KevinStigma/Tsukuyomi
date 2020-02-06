@@ -27,7 +27,7 @@ void NormalRenderer::start_render(Camera* camera, int height)
 		{
 			Ray ray = camera->getRay((i + 0.5f) / width, (j + 0.5f) / height);
 			IntersectInfo info;
-			g_pGlobalSys->cast_ray_to_get_intersection(ray, info);
+			g_pGlobalSys->cast_ray_to_get_intersection(ray, info, false);
 			if (!info.obj)
 				image.setPixelColor(QPoint(i, height - 1 - j), QColor(0, 0, 0));
 			else

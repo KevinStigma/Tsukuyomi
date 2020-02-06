@@ -10,12 +10,13 @@ class Primitive;
 class Mesh :public Object
 {
 public:
-	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0));
+	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr);
 	~Mesh();
 	void writeObj(const std::string& obj_path);
 	void loadObjMesh(const std::string & obj_path);
 	void constructNormals();
 	bool isEmpty();
+	Object* getAreaLight() { return area_light; };
 	XMFLOAT3 getTriangleVertex(int index)const;
 	XMFLOAT3 getTriangleNormal(int index)const;
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
@@ -37,6 +38,7 @@ protected:
 	float area;
 	std::string mesh_path = "";
 	BxDF* bxdf=nullptr;
+	Object* area_light;
 	std::vector<float> accumula_areas;
 	ID3D11Buffer* vertexBuffer = nullptr;
 	ID3D11Buffer* indexBuffer = nullptr;

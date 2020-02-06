@@ -29,29 +29,87 @@ OfflineRenderer* GlobalSys::generateOfflineRenderer()
 	return renderer;
 }
 
-float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info)
+float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info, bool use_accel)
 {
-	auto objs = objectManager.getAllObjects();
-	float min_t = -1.0f;
-	for (int i = 0; i < objs.size(); i++)
+	if (!use_accel)
 	{
-		Object* obj = objs[i];
-		Mesh* mesh = getMesh(obj);
-		if (!mesh)
-			continue;
-		float t;
-		IntersectInfo it;
-		if (mesh->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+		auto objs = objectManager.getAllObjects();
+		float min_t = -1.0f;
+		for (int i = 0; i < objs.size(); i++)
 		{
-			min_t = t;
-			info = it;
-			if (obj->getType() == AREA_LIGHT)
-				info.obj = obj;
+			Object* obj = objs[i];
+			Mesh* mesh = getMesh(obj);
+			if (!mesh)
+				continue;
+			float t;
+			IntersectInfo it;
+			if (mesh->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+			{
+				min_t = t;
+				info = it;
+				if (obj->getType() == AREA_LIGHT)
+					info.obj = obj;
+			}
 		}
+		return min_t;
 	}
-	return min_t;
-}
+	else
+	{
+		float min_t = -1.0f;
+		auto bvh_nodes = objectManager.getBVHManager()->getBvhNodes();
+		std::stack<int> nodesToVisit;
+		int cur_node_index = 0;
+		while (true)
+		{
+			LinearBVHNode node = bvh_nodes[cur_node_index];
+			if (node.boundingbox.isIntersect(ray, XMMatrixIdentity()))
+			{
+				if (node.nPrimitives > 0)
+				{
+					for (int i = 0; i < node.nPrimitives; i++)
+					{
+						float t=-1.0f;
+						Primitive* p = objectManager.getBVHManager()->getPrimitive(node.primitivesOffset + i);
+						IntersectInfo it;
+						if (p->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+						{
+							min_t = t;
+							info = it;
+							if (p->getParent()->getAreaLight())
+								info.obj = p->getParent()->getAreaLight();
+						}
+					}
+					if (nodesToVisit.empty())
+						break;
+					cur_node_index = nodesToVisit.top();
+					nodesToVisit.pop();
+				}
+				else
+				{
+					if(ray.dirIsNeg(node.axis))
+					{
+						nodesToVisit.push(cur_node_index + 1);
+						cur_node_index = node.secondChildOfset;
 
+					}
+					else
+					{
+						nodesToVisit.push(node.secondChildOfset);
+						cur_node_index++;
+					}
+				}
+			}
+			else
+			{
+				if (nodesToVisit.empty())
+					break;
+				cur_node_index = nodesToVisit.top();
+				nodesToVisit.pop();
+			}
+		}
+		return min_t;
+	}
+}
 
 void GlobalSys::generateBVH()
 {

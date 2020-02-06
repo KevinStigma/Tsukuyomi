@@ -15,7 +15,7 @@ XMFLOAT2 UniformSampleTriangle(XMFLOAT2 u)
 	return XMFLOAT2(1.0 - u0, u.y * u0);
 }
 
-Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):Object(name, t, s, r)
+Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al):Object(name, t, s, r), area_light(al)
 {
 	loadObjMesh(file_path);
 	type = MESH;
@@ -270,7 +270,11 @@ std::vector<Primitive*> Mesh::getAllPrimitives()
 		XMFLOAT3 v1 = getTriangleVertex(indices[i * 3]);
 		XMFLOAT3 v2 = getTriangleVertex(indices[i * 3 + 1]);
 		XMFLOAT3 v3 = getTriangleVertex(indices[i * 3 + 2]);
-		Triangle* triangle = new Triangle(this, v1, v2, v3);
+
+		XMFLOAT3 n1 = getTriangleNormal(indices[i * 3]);
+		XMFLOAT3 n2 = getTriangleNormal(indices[i * 3 + 1]);
+		XMFLOAT3 n3 = getTriangleNormal(indices[i * 3 + 2]);
+		Triangle* triangle = new Triangle(this, v1, v2, v3, n1, n2, n3);
 		primitives.push_back(triangle);
 	}
 	return primitives;

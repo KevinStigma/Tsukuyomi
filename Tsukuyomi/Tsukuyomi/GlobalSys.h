@@ -17,7 +17,7 @@ public:
 	~GlobalSys();
 	float getMoveSpeed();
 	OfflineRenderer* generateOfflineRenderer();
-	float cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info);
+	float cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info, bool use_accel=true);
 	void generateBVH();
 	RenderParas render_paras;
 	ObjectManager objectManager;

@@ -5,9 +5,9 @@ AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOA
 {
 	int index = mesh_path.rfind('/');
 	if (mesh_path.substr(index + 1, mesh_path.size() - index) == "sphere.obj")
-		mesh = new Sphere("", mesh_path, t, s, r);
+		mesh = new Sphere("", mesh_path, t, s, r, this);
 	else
-		mesh = new Mesh("", mesh_path, t, s, r);
+		mesh = new Mesh("", mesh_path, t, s, r, this);
 	type = AREA_LIGHT;
 	Material mat;
 	mat.Ambient = XMFLOAT4(color.x, color.y, color.z, 1.0);
@@ -21,7 +21,6 @@ AreaLight::~AreaLight()
 	SAFE_DELETE(mesh);
 }
 
-
 void AreaLight::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
 	mesh->render(context, renderer);
@@ -29,14 +28,7 @@ void AreaLight::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 Spectrum AreaLight::L(const IntersectInfo &it, const XMFLOAT3& w)const
 {
-	/*
-	std::cout << "666666666666666" << std::endl;
-	std::cout << it.normal.x << " " << it.normal.y << " " << it.normal.z << std::endl;
-	std::cout << it.pos.x << " " << it.pos.y << " " << it.pos.z << std::endl;
-	std::cout << w.x << " " << w.y << " " << w.z << std::endl;
-	*/
 	float val = MathHelper::DotFloat3(it.normal, w);
-	//std::cout << val << std::endl;
 	return val > 0.0f ? Spectrum(color.x, color.y, color.z) : Spectrum();
 }
 

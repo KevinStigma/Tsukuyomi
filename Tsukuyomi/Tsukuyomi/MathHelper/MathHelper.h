@@ -192,9 +192,11 @@ struct Ray
 	XMFLOAT3 direction;
 	Ray(XMFLOAT3 o=XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 d=XMFLOAT3(0.0, 0.0, 0.0)):origin(o), direction(d){}
 	Ray(const Ray& r) :origin(r.origin), direction(r.direction){}
+	bool dirIsNeg(int dim)const;
 	XMFLOAT3 getExtendPos(float t)const { return XMFLOAT3(origin.x + t * direction.x, origin.y + t * direction.y, origin.z + t * direction.z); }
 	Ray transform(XMMATRIX trans_mat)const;
 	bool is_intersect_triangle(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c, float& t, float &beta, float& gama)const;
+	bool is_intersect_sphere(XMFLOAT3 c, float r, float& t)const;
 };
 
 #endif // MATHHELPER_H

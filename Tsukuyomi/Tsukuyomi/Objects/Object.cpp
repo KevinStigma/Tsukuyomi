@@ -55,6 +55,58 @@ float BoundingBox::getBottomFromDim(int dim)const
 		return bottom.z;
 }
 
+bool BoundingBox::isIntersect(const Ray&ray, XMMATRIX world_mat)
+{
+	XMVECTOR v;
+	Ray transed_ray = ray.transform(XMMatrixInverse(&v, world_mat));
+	if (inBox(transed_ray.origin))
+		return true;
+	float t1, t2;
+	XMFLOAT3 p1, p2;
+	if (abs(transed_ray.direction.x) > 0.0f)
+	{
+		t1 = (bottom.x - transed_ray.origin.x) / transed_ray.direction.x;
+		t2 = (top.x - transed_ray.origin.x) / transed_ray.direction.x;
+		p1 = transed_ray.getExtendPos(t1);
+		p2 = transed_ray.getExtendPos(t2);
+		p1.x = bottom.x;
+		p2.x = top.x;
+		if ((t1 > 0.0 &&inBox(p1)) || (t2 > 0.0 && inBox(p2)))
+		{
+			return true;
+		}
+	}
+
+	if (abs(transed_ray.direction.y) > 0.0f)
+	{
+		t1 = (bottom.y - transed_ray.origin.y) / transed_ray.direction.y;
+		t2 = (top.y - transed_ray.origin.y) / transed_ray.direction.y;
+		p1 = transed_ray.getExtendPos(t1);
+		p2 = transed_ray.getExtendPos(t2);
+		p1.y = bottom.y;
+		p2.y = top.y;
+		if ((t1 > 0.0 &&inBox(p1)) || (t2 > 0.0 && inBox(p2)))
+		{
+			return true;
+		}
+	}
+
+	if (abs(transed_ray.direction.z) > 0.0f)
+	{
+		t1 = (bottom.z - transed_ray.origin.z) / transed_ray.direction.z;
+		t2 = (top.z - transed_ray.origin.z) / transed_ray.direction.z;
+		p1 = transed_ray.getExtendPos(t1);
+		p2 = transed_ray.getExtendPos(t2);
+		p1.z = bottom.z;
+		p2.z = top.z;
+		if ((t1 > 0.0 &&inBox(p1)) || (t2 > 0.0 && inBox(p2)))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 Object::Object(std::string obj_name, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r):translation(t), scale(s), rotation(r)
 {
 	name = obj_name;
@@ -131,46 +183,5 @@ void Object::genereateWorldMatrix()
 bool Object::is_intersect_bounding_box(const Ray&ray)
 {
 	XMMATRIX world_mat = getWorldMatrix();
-	XMVECTOR v;
-	Ray transed_ray = ray.transform(XMMatrixInverse(&v, world_mat));
-	if (boundingBox.inBox(transed_ray.origin))
-		return true;
-	float t1, t2;
-	XMFLOAT3 p1, p2;
-	if (abs(transed_ray.direction.x) > 0.0f)
-	{
-		t1 = (boundingBox.bottom.x - transed_ray.origin.x) / transed_ray.direction.x;
-		t2 = (boundingBox.top.x - transed_ray.origin.x) / transed_ray.direction.x;
-		p1 = transed_ray.getExtendPos(t1);
-		p2 = transed_ray.getExtendPos(t2);
-		p1.x = boundingBox.bottom.x;
-		p2.x = boundingBox.top.x;
-		if ((t1 > 0.0 &&boundingBox.inBox(p1)) || (t2 > 0.0 && boundingBox.inBox(p2)))
-			return true;
-	}
-
-	if (abs(transed_ray.direction.y) > 0.0f)
-	{
-		t1 = (boundingBox.bottom.y - transed_ray.origin.y) / transed_ray.direction.y;
-		t2 = (boundingBox.top.y - transed_ray.origin.y) / transed_ray.direction.y;
-		p1 = transed_ray.getExtendPos(t1);
-		p2 = transed_ray.getExtendPos(t2);
-		p1.y = boundingBox.bottom.y;
-		p2.y = boundingBox.top.y;
-		if ((t1 > 0.0 &&boundingBox.inBox(p1)) || (t2 > 0.0 && boundingBox.inBox(p2)))
-			return true;
-	}
-
-	if (abs(transed_ray.direction.z) > 0.0f)
-	{
-		t1 = (boundingBox.bottom.z - transed_ray.origin.z) / transed_ray.direction.z;
-		t2 = (boundingBox.top.z - transed_ray.origin.z) / transed_ray.direction.z;
-		p1 = transed_ray.getExtendPos(t1);
-		p2 = transed_ray.getExtendPos(t2);
-		p1.z = boundingBox.bottom.z;
-		p2.z = boundingBox.top.z;
-		if ((t1 > 0.0 &&boundingBox.inBox(p1)) || (t2 > 0.0 && boundingBox.inBox(p2)))
-			return true;
-	}
-	return false;
+	return boundingBox.isIntersect(ray, world_mat);
 }

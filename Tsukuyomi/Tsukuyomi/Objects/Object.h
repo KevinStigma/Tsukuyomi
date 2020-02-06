@@ -31,6 +31,7 @@ struct BoundingBox
 		return false;
 	}
 
+	bool isIntersect(const Ray&ray, XMMATRIX world_mat);
 	int maximumExtent();
 	float getTopFromDim(int dim)const;
 	float getBottomFromDim(int dim)const;

@@ -16,6 +16,7 @@ public:
 	void destroyBoundingVolumeHieratches();
 	void updatePrimitivesBoundingBoxes();
 	std::vector<LinearBVHNode> getBvhNodes() { return linear_nodes; }
+	Primitive* getPrimitive(int index) { return primitives[index]; }
 protected:
 	int partitionPrimitivesWithSAH(int start, int end, int dim, BoundingBox& bounds);
 	int partitionPrimitivesWithEquallySizedSubsets(int start, int end,int dim);

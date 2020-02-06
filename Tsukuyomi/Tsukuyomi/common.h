@@ -9,6 +9,7 @@
 #include <sstream>
 #include <algorithm>
 #include <limits>
+#include <stack>
 #include <DirectXMath.h>
 
 using namespace DirectX;

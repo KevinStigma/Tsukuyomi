@@ -91,6 +91,16 @@ Ray Ray::transform(XMMATRIX trans_mat) const
 	return Ray(new_origin, new_dir);
 }
 
+bool Ray::dirIsNeg(int dim)const
+{
+	if (dim == 0)
+		return direction.x < 0.0f;
+	else if (dim == 1)
+		return direction.y < 0.0f;
+	else
+		return direction.z < 0.0f;
+}
+
 // a , b,  c, we want to get intersect point o
 // o = e + td
 // o = a + (b-a) * beta + (c-a) * gama
@@ -122,5 +132,39 @@ bool Ray::is_intersect_triangle(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c, float& t, fl
 		XMVectorSet(a.z - b.z, a.z - c.z, a.z - origin.z, 0.0f),
 		XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f));
 	t = XMVectorGetX(XMMatrixDeterminant(D)) / det;
+	return true;
+}
+
+bool Ray::is_intersect_sphere(XMFLOAT3 c, float r, float& t)const
+{
+	XMFLOAT3 center = c;
+	XMFLOAT3 diff_vec(origin.x - center.x, origin.y - center.y, origin.z - center.z);
+	float tmp_val = MathHelper::DotFloat3(direction, diff_vec);
+	float dir_dot_dir = MathHelper::DotFloat3(direction, direction);
+	float val = tmp_val * tmp_val - dir_dot_dir * (MathHelper::DotFloat3(diff_vec, diff_vec) - r * r);
+
+	float inv_dot = 1 / dir_dot_dir;
+	if (val < 0)
+		return false;
+	else if (fabs(val - 0.0) < 1e-6)
+	{
+		t = -tmp_val * inv_dot;
+		if (t < 0)
+			return false;
+	}
+	else
+	{
+		val = sqrt(val);
+		float t1 = (-tmp_val + val)*inv_dot;
+		float t2 = (-tmp_val - val)*inv_dot;
+		if (t1 < 0 && t2 < 0)
+			return false;
+		else if (t1 < 0)
+			t = t2;
+		else if (t2 < 0)
+			t = t1;
+		else
+			t = std::min<float>(t1, t2);
+	}
 	return true;
 }
