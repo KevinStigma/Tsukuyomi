@@ -291,6 +291,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color);
 		}
 	}
+	bvhManager.generateBoundingVolumeHieratchies();
 }
 
 Camera* ObjectManager::getRenderCamera()

@@ -436,8 +436,16 @@
     </widget>
     <addaction name="menuOfflineRender"/>
    </widget>
+   <widget class="QMenu" name="menuAccel">
+    <property name="title">
+     <string>Accel</string>
+    </property>
+    <addaction name="actiongenBVH"/>
+    <addaction name="actionshowBVH"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
+   <addaction name="menuAccel"/>
    <addaction name="menuRenderOption"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -522,6 +530,16 @@
    </property>
    <property name="text">
     <string>Whitted</string>
+   </property>
+  </action>
+  <action name="actiongenBVH">
+   <property name="text">
+    <string>genBVH</string>
+   </property>
+  </action>
+  <action name="actionshowBVH">
+   <property name="text">
+    <string>showBVH</string>
    </property>
   </action>
  </widget>

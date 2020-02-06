@@ -25,5 +25,5 @@ protected:
 	std::vector<Primitive*> primitives;
 	BucketInfo buckets[nBuckets];
 	std::vector<LinearBVHNode> linear_nodes;
-	int maxPrimsInNode = 20;
+	int maxPrimsInNode = 255;
 };

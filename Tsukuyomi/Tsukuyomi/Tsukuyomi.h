@@ -23,6 +23,7 @@ public slots:
 	void on_actionWhitted_triggered();
 	void on_actionPathTracing_triggered();
 	void on_actionExit_triggered();
+	void on_actiongenBVH_triggered();
 	void on_actionCamera_triggered();
 	void on_actionPointLight_triggered();
 	void on_actionDirectionalLight_triggered();

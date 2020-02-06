@@ -51,3 +51,9 @@ float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& inf
 	}
 	return min_t;
 }
+
+
+void GlobalSys::generateBVH()
+{
+	objectManager.getBVHManager()->generateBoundingVolumeHieratchies();
+}

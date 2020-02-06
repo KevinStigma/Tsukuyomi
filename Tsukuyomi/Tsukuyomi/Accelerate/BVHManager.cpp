@@ -30,6 +30,8 @@ void BVHManager::generateBoundingVolumeHieratchies()
 	flattenBVHTree(root, &offset);
 
 	destroyBVHBuildNodes(root);
+
+	std::cout << "generate BVH successfully! nodes:" << linear_nodes.size() << " primitives:" << primitives.size() << std::endl;
 }
 
 void BVHManager::destroyBoundingVolumeHieratches()
@@ -94,12 +96,15 @@ int BVHManager::partitionPrimitivesWithSAH(int start, int end, int dim, Bounding
 				b1 = BoundingBox::Union(b1, buckets[j].bounds);
 				count1 += buckets[j].count;
 			}
-			cost[i] = 0.125f + (count0*b0.surfaceArea() + count1 * b1.surfaceArea()) / bounds.surfaceArea();
+			float val0 = count0 ? count0 * b0.surfaceArea() : 0.0f;
+			float val1 = count1 ? count1 * b1.surfaceArea() : 0.0f;
+
+			cost[i] = 0.125f + (val0 + val1) / bounds.surfaceArea();
 		}
 
 		float min_cost = cost[0];
 		int min_ind = 0;
-		for (int i = 0; i < BVHManager::nBuckets; i++)
+		for (int i = 0; i < BVHManager::nBuckets -1; i++)
 		{
 			if (cost[i] < min_cost)
 			{

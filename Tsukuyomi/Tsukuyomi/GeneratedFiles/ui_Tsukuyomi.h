@@ -44,6 +44,8 @@ public:
     QAction *actionNormalDebug;
     QAction *actionPathTracing;
     QAction *actionWhitted;
+    QAction *actiongenBVH;
+    QAction *actionshowBVH;
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
@@ -73,6 +75,7 @@ public:
     QMenu *menuRenderOption;
     QMenu *menuOfflineRender;
     QMenu *menuType;
+    QMenu *menuAccel;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -113,6 +116,10 @@ public:
         actionWhitted->setObjectName(QString::fromUtf8("actionWhitted"));
         actionWhitted->setCheckable(true);
         actionWhitted->setChecked(false);
+        actiongenBVH = new QAction(TsukuyomiClass);
+        actiongenBVH->setObjectName(QString::fromUtf8("actiongenBVH"));
+        actionshowBVH = new QAction(TsukuyomiClass);
+        actionshowBVH->setObjectName(QString::fromUtf8("actionshowBVH"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         render_widget = new RenderWidget(centralWidget);
@@ -218,6 +225,8 @@ public:
         menuOfflineRender->setObjectName(QString::fromUtf8("menuOfflineRender"));
         menuType = new QMenu(menuOfflineRender);
         menuType->setObjectName(QString::fromUtf8("menuType"));
+        menuAccel = new QMenu(menuBar);
+        menuAccel->setObjectName(QString::fromUtf8("menuAccel"));
         TsukuyomiClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TsukuyomiClass);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -228,6 +237,7 @@ public:
 
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menuObjects->menuAction());
+        menuBar->addAction(menuAccel->menuAction());
         menuBar->addAction(menuRenderOption->menuAction());
         menu->addAction(actionLoad_Mesh);
         menu->addAction(actionLoad_Project);
@@ -244,6 +254,8 @@ public:
         menuType->addAction(actionNormalDebug);
         menuType->addAction(actionWhitted);
         menuType->addAction(actionPathTracing);
+        menuAccel->addAction(actiongenBVH);
+        menuAccel->addAction(actionshowBVH);
 
         retranslateUi(TsukuyomiClass);
 
@@ -265,6 +277,8 @@ public:
         actionNormalDebug->setText(QApplication::translate("TsukuyomiClass", "NormalDebug", nullptr));
         actionPathTracing->setText(QApplication::translate("TsukuyomiClass", "PathTracing", nullptr));
         actionWhitted->setText(QApplication::translate("TsukuyomiClass", "Whitted", nullptr));
+        actiongenBVH->setText(QApplication::translate("TsukuyomiClass", "genBVH", nullptr));
+        actionshowBVH->setText(QApplication::translate("TsukuyomiClass", "showBVH", nullptr));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", nullptr));
         sx_lineEdit->setInputMask(QString());
         sx_lineEdit->setText(QString());
@@ -296,6 +310,7 @@ public:
         menuRenderOption->setTitle(QApplication::translate("TsukuyomiClass", "Options", nullptr));
         menuOfflineRender->setTitle(QApplication::translate("TsukuyomiClass", "OfflineRender", nullptr));
         menuType->setTitle(QApplication::translate("TsukuyomiClass", "Type", nullptr));
+        menuAccel->setTitle(QApplication::translate("TsukuyomiClass", "Accel", nullptr));
     } // retranslateUi
 
 };

@@ -35,6 +35,7 @@ public:
 	void updateFromProject(std::string file_path);
 	std::vector<Object*> getAllObjects();
 	Camera* getRenderCamera();
+	BVHManager* getBVHManager() { return &bvhManager; }
 protected:
 	BVHManager bvhManager;
 	std::string genNewObjectName();

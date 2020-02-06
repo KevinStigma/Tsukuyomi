@@ -61,6 +61,11 @@ void Tsukuyomi::on_actionExit_triggered()
 	qApp->quit();
 }
 
+void Tsukuyomi::on_actiongenBVH_triggered()
+{
+	g_pGlobalSys->generateBVH();
+}
+
 void Tsukuyomi::on_actionNormalDebug_triggered()
 {
 	ui.actionNormalDebug->setChecked(true);
