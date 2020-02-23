@@ -34,7 +34,10 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 #endif
 			Spectrum color = sample_pixel(camera, i, j, width, height);
 			color = Spectrum::Clamp(color);
-			image.setPixelColor(QPoint(i, height - 1 - j), QColor(color.r * 255, color.g * 255, color.b * 255));
+			int r = int(MathHelper::Clamp<float>(pow(color.r, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
+			int g = int(MathHelper::Clamp<float>(pow(color.g, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
+			int b = int(MathHelper::Clamp<float>(pow(color.b, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
+			image.setPixelColor(QPoint(i, height - 1 - j), QColor(r, g, b));
 #ifndef DEBUG_PATHTRACING
 		}
 	}
