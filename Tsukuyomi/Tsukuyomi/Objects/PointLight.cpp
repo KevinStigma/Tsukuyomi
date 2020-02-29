@@ -17,5 +17,5 @@ Spectrum PointLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFL
 	*pdf = 1.0f;
 	vt.setup(pos, ref.pos);
 	float v = MathHelper::DotFloat3(diff, diff);
-	return Spectrum(color.x, color.y, color.z) / 1.0f;
+	return Spectrum(color.x, color.y, color.z) / MathHelper::DotFloat3(diff, diff);
 }

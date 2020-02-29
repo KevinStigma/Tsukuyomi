@@ -165,6 +165,16 @@ public:
 		return XMFLOAT3(-a.x,-a.y,-a.z);
 	}
 
+	static XMFLOAT3 AddFloat3(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return XMFLOAT3(b.x + a.x, b.y + a.y, b.z + a.z);
+	}
+
+	static float TriangleFilterEval(float x_diff, float y_diff, float radius)
+	{
+		return std::max<float>(0.0, 1.0 - fabs(x_diff)/radius) * std::max<float>(0.0, 1.0 - fabs(y_diff) / radius);
+	}
+
 	static float Float3Length(const XMFLOAT3 & l)
 	{
 		return sqrtf(DotFloat3(l,l));

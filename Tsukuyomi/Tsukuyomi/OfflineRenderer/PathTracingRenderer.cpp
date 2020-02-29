@@ -30,13 +30,16 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 507, j = 286;
+			int i = 310, j = height -1 - 538;
 #endif
-			Spectrum color = sample_pixel(camera, i, j, width, height);
-			color = Spectrum::Clamp(color);
-			int r = int(MathHelper::Clamp<float>(pow(color.r, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
-			int g = int(MathHelper::Clamp<float>(pow(color.g, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
-			int b = int(MathHelper::Clamp<float>(pow(color.b, 0.4545f)*255.0f + 0.5f, 0.0, 255.0));
+			Pixel p = sample_pixel(camera, i, j, width, height);
+			XMFLOAT3 rgb = Spectrum::XYZToRGB(p.xyz);
+			rgb.x /= p.filterWeightSum;
+			rgb.y /= p.filterWeightSum;
+			rgb.z /= p.filterWeightSum;
+			int r = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.x) *255.0f + 0.5f, 0.0, 255.0));
+			int g = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.y) *255.0f + 0.5f, 0.0, 255.0));
+			int b = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.z) *255.0f + 0.5f, 0.0, 255.0));
 			image.setPixelColor(QPoint(i, height - 1 - j), QColor(r, g, b));
 #ifndef DEBUG_PATHTRACING
 		}
@@ -50,23 +53,24 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	std::cout << "Has output " << path.toStdString() << " successfully!" << std::endl;
 }
 
-Spectrum PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int width, int height)
+Pixel PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int width, int height)
 {
 	srand(time(0));
 	float sample_x = 0.0f;
 	float sample_y = 0.0f;
-	Spectrum color;
+	Spectrum r;
+	Pixel p;
 	for (int i = 0; i < sample_count; i++)
 	{
 		sample_x = x + ((rand() % 100) / 100.0f);
 		sample_y = y + ((rand() % 100) / 100.0f);
-		//sample_x = x;
-		//sample_y = y;
+		float w = MathHelper::TriangleFilterEval(sample_x - x, sample_y - y, 0.5f);
 		Ray ray = camera->getRay(sample_x / width, sample_y / height);
-		color = color + Li(ray);
+		Spectrum radiance = Li(ray);
+		p.xyz = MathHelper::AddFloat3(p.xyz, Spectrum::RGBToXYZ((radiance * w).getFloat3()));
+		p.filterWeightSum += w;
 	}
-	color = color / (float)sample_count;
-	return color;
+	return p;
 }
 
 Spectrum PathTracingRenderer::Li(const Ray& r)

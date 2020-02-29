@@ -22,7 +22,7 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 	if (!isEmpty())
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
 	mat = g_pGlobalSys->renderer->getMaterials()[0];
-	bxdf = new LambertianReflection(Spectrum(0.5,0.5,0.5));
+	bxdf = new LambertianReflection(Spectrum(0.725000, 0.710000, 0.680000));
 }
 
 Mesh::~Mesh()
