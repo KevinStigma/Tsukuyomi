@@ -61,7 +61,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 			float weight = 1.0;
 			if (!sampledSpecular)
 			{
-				light_pdf = 1.0;
+				light_pdf = light->Pdf_Li(it, wi);
 				if (light_pdf == 0.0)
 					return ld;
 				weight = PowerHeuristic(1, scattering_pdf, 1, light_pdf);
@@ -172,7 +172,10 @@ Spectrum UniformSampleOneLight(const IntersectInfo& it)
 	Light* sel_light = lights[rand() % (lights.size())];
 	XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
 	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
+	//XMFLOAT2 uScattering(0.5f, 0.5f);
+	//XMFLOAT2 uLight(0.5f, 0.5f);
 	float light_count = g_pGlobalSys->objectManager.getLightsCountParameter();
+	//std::cout << uLight.x << " " << uLight.y << " " << uScattering.x << " " << uScattering.y << std::endl;
 	return light_count * EstimateDirect(it, uScattering, sel_light, uLight);
 }
 

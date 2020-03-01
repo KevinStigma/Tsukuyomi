@@ -52,6 +52,11 @@ Spectrum AreaLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLO
 	return L(it, XMFLOAT3(-wi->x, -wi->y, -wi->z));
 }
 
+float AreaLight::Pdf_Li(const IntersectInfo & ref, const XMFLOAT3& wi)
+{
+	return mesh->Pdf(ref, wi);
+}
+
 void AreaLight::setScale(XMFLOAT3 s)
 {
 	Light::setScale(s);

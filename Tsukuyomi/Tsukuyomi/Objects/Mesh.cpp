@@ -118,6 +118,22 @@ IntersectInfo Mesh::sample(XMFLOAT2 u, float& area)const
 	return it;
 }
 
+float Mesh::Pdf(const IntersectInfo & ref, const XMFLOAT3& wi)
+{
+	Ray ray = ref.spawnRay(wi);
+	IntersectInfo it;
+	float t;
+	if (is_intersect(ray, t, it))
+	{
+		float pdf = MathHelper::DistanceSquared(ref.pos, it.pos) / (fabs(MathHelper::DotFloat3(ref.normal, MathHelper::NegativeFloat3(wi))) * it.tri_area);
+		if (std::isnan(pdf))
+			return 0.0f;
+		return pdf;
+	}
+	else
+		return 0.0f;
+}
+
 void Mesh::loadObjMesh(const std::string& obj_path)
 {
 	if (obj_path.length() == 0)
@@ -321,6 +337,7 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 				is_info.pos = ray.getExtendPos(t);
 				is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
 				is_info.bxdf = getPbrMat();
+				is_info.tri_area = MathHelper::TriangleArea(vertices[0], vertices[1], vertices[2]);;
 				XMStoreFloat3(&is_info.normal, XMVector3Normalize(normals[0] + (normals[1] - normals[0])*beta + (normals[2] - normals[0])*gama));
 			}
 		}

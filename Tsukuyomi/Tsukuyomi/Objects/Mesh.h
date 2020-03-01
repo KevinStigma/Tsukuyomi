@@ -31,6 +31,7 @@ public:
 	virtual IntersectInfo sample(XMFLOAT2 u, float& area)const;
 	virtual float Area() { return area; }
 	virtual float Pdf() { return 1.0f / area; }
+	virtual float Pdf(const IntersectInfo & ref, const XMFLOAT3& wi);
 protected:
 	Material mat;
 	void computeBoundingBox();

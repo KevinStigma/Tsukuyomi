@@ -8,6 +8,7 @@ struct IntersectInfo
 	XMFLOAT3 normal;
 	XMFLOAT3 pos;
 	XMFLOAT3 wo;
+	float tri_area;
 	BxDF* bxdf=nullptr;
 	Object* obj=nullptr;
 	bool isSurfaceInteraction()const { return obj != nullptr; }

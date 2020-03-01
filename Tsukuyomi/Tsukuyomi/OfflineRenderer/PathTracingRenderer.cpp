@@ -30,7 +30,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 482, j = height -1 - 605;
+			int i = 470, j = height - 1 - 578;
 #endif
 			Pixel p = sample_pixel(camera, i, j, width, height);
 			XMFLOAT3 rgb = Spectrum::XYZToRGB(p.xyz);
@@ -67,7 +67,9 @@ Pixel PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int width,
 	{
 		sample_x = x + ((rand() % 100) / 100.0f);
 		sample_y = y + ((rand() % 100) / 100.0f);
-		float w = MathHelper::TriangleFilterEval(sample_x - x, sample_y - y, 0.5f);
+		//sample_x = x + 0.5;
+		//sample_y = y + 0.5;
+		float w = MathHelper::TriangleFilterEval(sample_x - x - 0.5f, sample_y - y - 0.5f, 0.5f);
 		Ray ray = camera->getRay(sample_x / width, sample_y / height);
 		Spectrum radiance = Li(ray);
 		p.xyz = MathHelper::AddFloat3(p.xyz, Spectrum::RGBToXYZ((radiance * w).getFloat3()));

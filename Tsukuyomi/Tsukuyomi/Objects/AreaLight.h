@@ -14,6 +14,7 @@ public:
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	virtual Spectrum L(const IntersectInfo &it, const XMFLOAT3& w)const;
 	virtual Spectrum sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt);
+	float Pdf_Li(const IntersectInfo & ref, const XMFLOAT3& wi);
 	Mesh* getMesh() { return mesh; }
 	void setScale(XMFLOAT3 s);
 	void setRotation(XMFLOAT3 r);
