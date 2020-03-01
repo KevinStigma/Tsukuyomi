@@ -170,6 +170,12 @@ public:
 		return XMFLOAT3(b.x + a.x, b.y + a.y, b.z + a.z);
 	}
 
+	static float DistanceSquared(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		XMFLOAT3 diff(a.x - b.x, a.y - b.y, a.z - b.z);
+		return DotFloat3(diff, diff);
+	}
+
 	static float TriangleFilterEval(float x_diff, float y_diff, float radius)
 	{
 		return std::max<float>(0.0, 1.0 - fabs(x_diff)/radius) * std::max<float>(0.0, 1.0 - fabs(y_diff) / radius);

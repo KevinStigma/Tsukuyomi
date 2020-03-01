@@ -76,7 +76,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	}
 }
 
-IntersectInfo Mesh::sample(XMFLOAT2 u)const
+IntersectInfo Mesh::sample(XMFLOAT2 u, float& area)const
 {
 	float r = generateRandomFloat();
 	int index = accumula_areas.size() - 1;
@@ -92,6 +92,7 @@ IntersectInfo Mesh::sample(XMFLOAT2 u)const
 	p1 = getTriangleVertex(int(shape.mesh.indices[index * 3]));
 	p2 = getTriangleVertex(int(shape.mesh.indices[index * 3 + 1]));
 	p3 = getTriangleVertex(int(shape.mesh.indices[index * 3 + 2]));
+	area = MathHelper::TriangleArea(p1, p2, p3);
 	IntersectInfo it;
 
 	XMVECTOR pos = XMVectorSet(
@@ -278,6 +279,12 @@ std::vector<Primitive*> Mesh::getAllPrimitives()
 		primitives.push_back(triangle);
 	}
 	return primitives;
+}
+
+// return tirangle num
+int Mesh::getComponentNum()
+{
+	return shape.mesh.indices.size() / 3;
 }
 
 bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)

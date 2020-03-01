@@ -19,7 +19,7 @@ Sphere::~Sphere()
 	Mesh::~Mesh();
 }
 
-IntersectInfo Sphere::sample(XMFLOAT2 u)const
+IntersectInfo Sphere::sample(XMFLOAT2 u, float&area)const
 {
 	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
 	float r = Radius();
@@ -32,6 +32,7 @@ IntersectInfo Sphere::sample(XMFLOAT2 u)const
 	XMFLOAT3 center = boundingBox.getCenter();
 	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(center.x, center.y, center.z, 1.0), offset);
 	XMStoreFloat3(&it.pos, world_pos);
+	area = Area();
 	return it;
 }
 

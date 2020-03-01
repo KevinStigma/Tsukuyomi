@@ -35,7 +35,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 					ld += f * li / light_pdf;
 				else
 				{
-					float weight = PowerHeuristic(1.0, scattering_pdf, 1.0, light_pdf);
+					float weight = PowerHeuristic(1, light_pdf, 1, scattering_pdf);
 					ld += f * li * weight / light_pdf;
 				}
 			}
@@ -64,7 +64,7 @@ Spectrum EstimateDirect(const IntersectInfo& it, XMFLOAT2 uScattering, Light* li
 				light_pdf = 1.0;
 				if (light_pdf == 0.0)
 					return ld;
-				weight = PowerHeuristic(1.0, scattering_pdf, 1.0, light_pdf);
+				weight = PowerHeuristic(1, scattering_pdf, 1, light_pdf);
 			}
 			IntersectInfo light_it;
 			Ray ray = it.spawnRay(wi);
@@ -172,7 +172,8 @@ Spectrum UniformSampleOneLight(const IntersectInfo& it)
 	Light* sel_light = lights[rand() % (lights.size())];
 	XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
 	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
-	return (float)lights.size() * EstimateDirect(it, uScattering, sel_light, uLight);
+	float light_count = g_pGlobalSys->objectManager.getLightsCountParameter();
+	return light_count * EstimateDirect(it, uScattering, sel_light, uLight);
 }
 
 Spectrum UniformSampleAllLights(const IntersectInfo& it)

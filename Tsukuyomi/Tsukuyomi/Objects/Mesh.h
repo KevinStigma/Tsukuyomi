@@ -27,7 +27,8 @@ public:
 	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
 	BxDF* getPbrMat() { return bxdf; }
-	virtual IntersectInfo sample(XMFLOAT2 u)const;
+	virtual int getComponentNum();
+	virtual IntersectInfo sample(XMFLOAT2 u, float& area)const;
 	virtual float Area() { return area; }
 	virtual float Pdf() { return 1.0f / area; }
 protected:

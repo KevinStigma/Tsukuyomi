@@ -30,13 +30,16 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 310, j = height -1 - 538;
+			int i = 482, j = height -1 - 605;
 #endif
 			Pixel p = sample_pixel(camera, i, j, width, height);
 			XMFLOAT3 rgb = Spectrum::XYZToRGB(p.xyz);
-			rgb.x /= p.filterWeightSum;
-			rgb.y /= p.filterWeightSum;
-			rgb.z /= p.filterWeightSum;
+			if (p.filterWeightSum > 0.0)
+			{
+				rgb.x /= p.filterWeightSum;
+				rgb.y /= p.filterWeightSum;
+				rgb.z /= p.filterWeightSum;
+			}
 			int r = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.x) *255.0f + 0.5f, 0.0, 255.0));
 			int g = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.y) *255.0f + 0.5f, 0.0, 255.0));
 			int b = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.z) *255.0f + 0.5f, 0.0, 255.0));

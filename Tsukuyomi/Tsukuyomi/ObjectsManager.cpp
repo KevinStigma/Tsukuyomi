@@ -116,6 +116,21 @@ std::vector<Light*> ObjectManager::getAllLights()
 	return lights;
 }
 
+int ObjectManager::getLightsCountParameter()
+{
+	std::vector<Light*> lights = getAllLights();
+	int count = 0;
+	for (int i = 0; i < lights.size(); i++)
+	{
+		Light* light = lights[i];
+		if (light->getType() == AREA_LIGHT)
+			count += dynamic_cast<AreaLight*>(light)->getMesh()->getComponentNum();
+		else
+			count++;
+	}
+	return count;
+}
+
 Object* ObjectManager::getObjectFromName(std::string name)
 {
 	if (objects.find(name) == objects.end())

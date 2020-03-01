@@ -26,6 +26,7 @@ public:
 	Object* createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0));
 	Object* getObjectFromName(std::string name);
 	std::vector<Light*> getAllLights();
+	int getLightsCountParameter();
 	bool removeObject(std::string name);
 	bool changeObjectName(std::string old_name, std::string new_name);
 	void setListView(ObjectsListWidget* qlistview) { listview = qlistview; }

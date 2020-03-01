@@ -129,7 +129,8 @@ struct RGBSpectrum
 	}
 
 	static float GammaCorrect(float value) {
-		if (value <= 0.0031308f) return 12.92f * value;
+		if (value <= 0.0031308f) 
+			return 12.92f * value;
 		return 1.055f * std::pow(value, (float)(1.f / 2.4f)) - 0.055f;
 	}
 };
