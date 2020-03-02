@@ -9,7 +9,7 @@ class IntersectInfo;
 class AreaLight :public Light
 {
 public:
-	AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 color = XMFLOAT3(1.0, 1.0, 1.0));
+	AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 color = XMFLOAT3(1.0, 1.0, 1.0), BxDF*bxdf=nullptr);
 	~AreaLight();
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	virtual Spectrum L(const IntersectInfo &it, const XMFLOAT3& w)const;

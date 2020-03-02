@@ -10,7 +10,7 @@ class Primitive;
 class Mesh :public Object
 {
 public:
-	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr);
+	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr, BxDF*bxdf=nullptr);
 	~Mesh();
 	void writeObj(const std::string& obj_path);
 	void loadObjMesh(const std::string & obj_path);

@@ -17,3 +17,9 @@ std::string LambertianReflection::toString() const
 {
 	return "LambertianRef";
 }
+
+
+std::string LambertianReflection::getKdString()
+{
+	return std::to_string(R.r) + "," + std::to_string(R.g) + "," + std::to_string(R.b);
+}

@@ -15,14 +15,17 @@ XMFLOAT2 UniformSampleTriangle(XMFLOAT2 u)
 	return XMFLOAT2(1.0 - u0, u.y * u0);
 }
 
-Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al):Object(name, t, s, r), area_light(al)
+Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, BxDF*pbr_mat):Object(name, t, s, r), area_light(al)
 {
 	loadObjMesh(file_path);
 	type = MESH;
 	if (!isEmpty())
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
 	mat = g_pGlobalSys->renderer->getMaterials()[0];
-	bxdf = new LambertianReflection(Spectrum(0.725000, 0.710000, 0.680000));
+	if (!pbr_mat)
+		bxdf = new LambertianReflection(Spectrum(0.725000, 0.710000, 0.680000));
+	else
+		bxdf = pbr_mat;
 }
 
 Mesh::~Mesh()
