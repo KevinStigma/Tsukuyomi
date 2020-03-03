@@ -31,6 +31,7 @@ struct BoundingBox
 		return false;
 	}
 
+	XMMATRIX getTransMatrix()const { XMFLOAT3 c = getCenter(); return XMMatrixTranslation(c.x, c.y, c.z); }
 	bool isIntersect(const Ray&ray, XMMATRIX world_mat);
 	int maximumExtent();
 	float getTopFromDim(int dim)const;

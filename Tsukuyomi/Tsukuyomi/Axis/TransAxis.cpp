@@ -13,7 +13,7 @@ XMMATRIX TransAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 	assert(axis_type >= 0 && axis_type <= 2);
 	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
-	return scale_mat * axisTrans * obj->getTransMatrix();
+	return scale_mat * axisTrans*obj->getBoundingBox().getTransMatrix() * obj->getTransMatrix();
 }
 
 XMMATRIX TransAxis::getAxisLocalTransform(AXIS axis_type)
@@ -49,7 +49,7 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 	for (int i = 0; i < 3; i++)
 	{
 		XMMATRIX axisTrans = getAxisLocalTransform(AXIS(i));
-		XMMATRIX world_mat = axisTrans * obj->getTransMatrix();
+		XMMATRIX world_mat = axisTrans * obj->getBoundingBox().getTransMatrix()* obj->getTransMatrix();
 		XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
 		Ray trans_ray = ray.transform(inv_world_mat);
 		float t = rayCylinderIntersection(trans_ray, cylinder_radius * scale, cylinder_length * scale);

@@ -106,6 +106,7 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 		XMFLOAT3 wo(-ray.direction.x, -ray.direction.y, -ray.direction.z), wi;
 		float pdf;
 		BxDFType flags;
+		wo = transVectorToLocalFromWorld(it.normal, wo);
 		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(generateRandomFloat(), generateRandomFloat()), &pdf, &flags);
 		wi = transVectorToWorldFromLocal(it.normal, wi);
 		if (f.isBlack() || pdf == 0.0f)

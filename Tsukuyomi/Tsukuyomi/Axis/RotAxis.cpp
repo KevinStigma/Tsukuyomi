@@ -14,7 +14,7 @@ XMMATRIX RotAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 {
 	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
-	return scale_mat * axisTrans * obj->getRotMatrix() * obj->getTransMatrix();
+	return scale_mat * axisTrans * obj->getRotMatrix() * obj->getBoundingBox().getTransMatrix() * obj->getTransMatrix();
 }
 
 XMMATRIX RotAxis::getAxisLocalTransform(AXIS axis_type)
@@ -40,7 +40,7 @@ int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj, float &t)
 	for (int i = 0; i < 3; i++)
 	{
 		XMMATRIX axisTrans = getAxisLocalTransform(AXIS(i));
-		XMMATRIX world_mat = axisTrans * rot_mat * obj->getTransMatrix();
+		XMMATRIX world_mat = axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix()* obj->getTransMatrix();
 		XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
 		Ray trans_ray = ray.transform(inv_world_mat);
 		float t1 = rayCircleIntersection(trans_ray, large_radius * scale);
