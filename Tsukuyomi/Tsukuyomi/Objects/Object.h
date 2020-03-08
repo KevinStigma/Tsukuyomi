@@ -65,7 +65,7 @@ public:
 	std::string getTranslationText();
 	std::string getScaleText();
 	std::string getRotationText();
-	const BoundingBox & getBoundingBox() { return boundingBox; }
+	virtual const BoundingBox & getBoundingBox() { return boundingBox; }
 	virtual void genereateWorldMatrix();
 	XMMATRIX getWorldMatrix() { return world_mat; }
 	XMMATRIX getRotMatrix() { return rot_mat; }

@@ -16,6 +16,7 @@ public:
 	virtual Spectrum sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt);
 	float Pdf_Li(const IntersectInfo & ref, const XMFLOAT3& wi);
 	Mesh* getMesh() { return mesh; }
+	const BoundingBox & getBoundingBox() { return mesh->getBoundingBox(); }
 	void setScale(XMFLOAT3 s);
 	void setRotation(XMFLOAT3 r);
 	void setTranslation(XMFLOAT3 t);
