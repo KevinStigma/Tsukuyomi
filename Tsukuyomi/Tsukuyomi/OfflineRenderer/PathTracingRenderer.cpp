@@ -19,8 +19,11 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	std::cout << "start path tracing!" << std::endl;
 	clock_t start, finish;
 	start = clock();
+	srand(time(0));
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
+	std::string filename = generateRandomId();
+	createOutputFile("./Data/RenderResults/" + filename + ".txt");
 //#define DEBUG_PATHTRACING
 #ifndef DEBUG_PATHTRACING
 	#pragma omp parallel for num_threads(8)
@@ -30,8 +33,9 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 470, j = height - 1 - 578;
+			int i = 515, j = height - 1 - 449;
 #endif
+			outputStr("begin pixel:" + std::to_string(i) + " " + std::to_string(j));
 			Pixel p = sample_pixel(camera, i, j, width, height);
 			XMFLOAT3 rgb = Spectrum::XYZToRGB(p.xyz);
 			if (p.filterWeightSum > 0.0)
@@ -43,6 +47,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 			int r = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.x) *255.0f + 0.5f, 0.0, 255.0));
 			int g = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.y) *255.0f + 0.5f, 0.0, 255.0));
 			int b = int(MathHelper::Clamp<float>(Spectrum::GammaCorrect(rgb.z) *255.0f + 0.5f, 0.0, 255.0));
+			outputStr("RGB: "+std::to_string(r) + " " + std::to_string(g) + " " + std::to_string(b));
 			image.setPixelColor(QPoint(i, height - 1 - j), QColor(r, g, b));
 #ifndef DEBUG_PATHTRACING
 		}
@@ -51,14 +56,14 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	finish = clock();
 	double totaltime = (double)(finish - start) / CLOCKS_PER_SEC;
 	std::cout << "total time:" << totaltime << "seconds" << std::endl;
-	QString path = QString("./Data/RenderResults/") + QString(generateRandomId().c_str()) + ".png";
+	QString path = QString("./Data/RenderResults/") + QString(filename.c_str()) + ".png";
 	image.save(path);
+	endOutputFile();
 	std::cout << "Has output " << path.toStdString() << " successfully!" << std::endl;
 }
 
 Pixel PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int width, int height)
 {
-	srand(time(0));
 	float sample_x = 0.0f;
 	float sample_y = 0.0f;
 	Spectrum r;
@@ -67,15 +72,26 @@ Pixel PathTracingRenderer::sample_pixel(Camera* camera, int x, int y, int width,
 	{
 		sample_x = x + ((rand() % 100) / 100.0f);
 		sample_y = y + ((rand() % 100) / 100.0f);
-		//sample_x = x + 0.5;
-		//sample_y = y + 0.5;
-		float w = MathHelper::TriangleFilterEval(sample_x - x - 0.5f, sample_y - y - 0.5f, 0.5f);
+		outputStr("  sample:" + std::to_string(sample_x) + " " + std::to_string(sample_y));
+		float w = MathHelper::TriangleFilterEval(sample_x - x - 0.5f, sample_y - y - 0.5f, 1.0f);
 		Ray ray = camera->getRay(sample_x / width, sample_y / height);
 		Spectrum radiance = Li(ray);
 		p.xyz = MathHelper::AddFloat3(p.xyz, Spectrum::RGBToXYZ((radiance * w).getFloat3()));
 		p.filterWeightSum += w;
 	}
 	return p;
+}
+
+Spectrum PathTracingRenderer::UniformSampleOneLight(const IntersectInfo& it)
+{
+	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
+	Light* sel_light = lights[rand() % (lights.size())];
+	XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
+	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
+	outputStr("      sample one light, ulight:" + std::to_string(uLight.x) + " "+ std::to_string(uLight.y)+
+		" scattering:"+ std::to_string(uScattering.x)+" "+ std::to_string(uScattering.y));
+	float light_count = g_pGlobalSys->objectManager.getLightsCountParameter();
+	return light_count * EstimateDirect(it, uScattering, sel_light, uLight);
 }
 
 Spectrum PathTracingRenderer::Li(const Ray& r)
@@ -85,6 +101,7 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 	Ray ray(r);
 	for (int bounce = 0; bounce < max_bounce; bounce++)
 	{
+		outputStr("    bounce:" + std::to_string(bounce)+":");
 		IntersectInfo it;
 		g_pGlobalSys->cast_ray_to_get_intersection(ray, it);
 		if (bounce == 0 || specularBounce)
@@ -102,12 +119,15 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 		if (!it.isSurfaceInteraction() || bounce >= max_bounce)
 			break;
 		L += beta * UniformSampleOneLight(it);
-
+		outputStr("      L:" + std::to_string(L.r) + " " + std::to_string(L.g) + " " + std::to_string(L.b));
 		XMFLOAT3 wo(-ray.direction.x, -ray.direction.y, -ray.direction.z), wi;
 		float pdf;
 		BxDFType flags;
 		wo = transVectorToLocalFromWorld(it.normal, wo);
-		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(generateRandomFloat(), generateRandomFloat()), &pdf, &flags);
+		float f1 = generateRandomFloat(), f2 = generateRandomFloat();
+		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(f1, f2), &pdf, &flags);
+		outputStr("      sample f:" + std::to_string(f.r) + " " + std::to_string(f.g) + " " + std::to_string(f.b)
+		+" "+std::to_string(f1)+" "+std::to_string(f2));
 		wi = transVectorToWorldFromLocal(it.normal, wi);
 		if (f.isBlack() || pdf == 0.0f)
 			break;

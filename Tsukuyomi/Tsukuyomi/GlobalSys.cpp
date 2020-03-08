@@ -43,7 +43,7 @@ float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& inf
 				continue;
 			float t;
 			IntersectInfo it;
-			if (mesh->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+			if (mesh->is_intersect(ray, t, it) && (t>0.0f)&& (min_t < 0.0f || t < min_t))
 			{
 				min_t = t;
 				info = it;
@@ -71,7 +71,7 @@ float GlobalSys::cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& inf
 						float t=-1.0f;
 						Primitive* p = objectManager.getBVHManager()->getPrimitive(node.primitivesOffset + i);
 						IntersectInfo it;
-						if (p->is_intersect(ray, t, it) && (min_t < 0.0f || t < min_t))
+						if (p->is_intersect(ray, t, it) && (t>0.0f)&& (min_t < 0.0f || t < min_t))
 						{
 							min_t = t;
 							info = it;

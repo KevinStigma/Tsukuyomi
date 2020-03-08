@@ -178,7 +178,7 @@ public:
 
 	static float TriangleFilterEval(float x_diff, float y_diff, float radius)
 	{
-		return std::max<float>(0.0, 1.0 - fabs(x_diff)/radius) * std::max<float>(0.0, 1.0 - fabs(y_diff) / radius);
+		return std::max<float>(0.0, radius - fabs(x_diff)) * std::max<float>(0.0, radius - fabs(y_diff));
 	}
 
 	static float Float3Length(const XMFLOAT3 & l)

@@ -124,7 +124,7 @@ XMFLOAT3 transVectorToLocalFromWorld(XMFLOAT3 n, XMFLOAT3 v)
 	XMVECTOR local_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
 	XMFLOAT3 local_v;
 	XMStoreFloat3(&local_v, local_V);
-	return local_v;
+	return MathHelper::NormalizeFloat3(local_v);
 }
 
 XMFLOAT3 transVectorToWorldFromLocal(XMFLOAT3 n, XMFLOAT3 v)
@@ -133,7 +133,7 @@ XMFLOAT3 transVectorToWorldFromLocal(XMFLOAT3 n, XMFLOAT3 v)
 	XMVECTOR world_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), mat);
 	XMFLOAT3 world_v;
 	XMStoreFloat3(&world_v, world_V);
-	return world_v;
+	return MathHelper::NormalizeFloat3(world_v);
 }
 
 std::vector<XMFLOAT3> transVectorsToLocalFromWorld(XMFLOAT3 n, std::vector<XMFLOAT3> vs)
@@ -164,19 +164,6 @@ std::vector<XMFLOAT3> transVectorsToWorldFromLocal(XMFLOAT3 n, std::vector<XMFLO
 		world_vs.push_back(world_v);
 	}
 	return world_vs;
-}
-
-Spectrum UniformSampleOneLight(const IntersectInfo& it)
-{
-	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
-	Light* sel_light = lights[rand() % (lights.size())];
-	XMFLOAT2 uScattering(generateRandomFloat(), generateRandomFloat());
-	XMFLOAT2 uLight(generateRandomFloat(), generateRandomFloat());
-	//XMFLOAT2 uScattering(0.5f, 0.5f);
-	//XMFLOAT2 uLight(0.5f, 0.5f);
-	float light_count = g_pGlobalSys->objectManager.getLightsCountParameter();
-	//std::cout << uLight.x << " " << uLight.y << " " << uScattering.x << " " << uScattering.y << std::endl;
-	return light_count * EstimateDirect(it, uScattering, sel_light, uLight);
 }
 
 Spectrum UniformSampleAllLights(const IntersectInfo& it)

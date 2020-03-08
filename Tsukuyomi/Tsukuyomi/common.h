@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 #include <limits>
 #include <stack>
 #include <DirectXMath.h>

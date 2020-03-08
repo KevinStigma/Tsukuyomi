@@ -52,7 +52,6 @@ XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat)
 
 std::string generateRandomId(int len)
 {
-	srand(time(0));
 	int table_len = strlen(table);
 	std::string str = "";
 	for (int i = 0; i < len; i++)
