@@ -34,6 +34,7 @@ public:
 	Object* getCurSelObject() { return curSelObject; }
 	void setCurSelObject(std::string name);
 	void exportProject(std::string file_path);
+	void outputSphereMesh();
 	void exportMaterial(BxDF*bxdf, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc);
 	void updateFromProject(std::string file_path);
 	std::vector<Object*> getAllObjects();

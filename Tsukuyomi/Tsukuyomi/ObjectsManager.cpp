@@ -206,6 +206,12 @@ void ObjectManager::exportMaterial(BxDF*bxdf, tinyxml2::XMLElement* parent, tiny
 	parent->InsertEndChild(mat_element);
 }
 
+void ObjectManager::outputSphereMesh()
+{
+	Sphere* s = dynamic_cast<Sphere*>(getObjectFromName("s"));
+	s->outputSphereMesh();
+}
+
 void ObjectManager::exportProject(std::string file_path)
 {
 	using namespace tinyxml2;

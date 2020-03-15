@@ -34,22 +34,14 @@ Spectrum AreaLight::L(const IntersectInfo &it, const XMFLOAT3& w)const
 
 Spectrum AreaLight::sample_li(const IntersectInfo & ref, XMFLOAT2 uSample, XMFLOAT3* wi, float* pdf, VisibilityTester& vt)
 {
-	float area;
-	IntersectInfo it = mesh->sample(uSample, area);
-	*wi = MathHelper::NormalizeFloat3(XMFLOAT3(it.pos.x - ref.pos.x, it.pos.y - ref.pos.y, it.pos.z - ref.pos.z));
-	vt.setup(ref.pos, it.pos);
-	if (MathHelper::Float3Length(*wi) == 0.0)
-		*pdf = 0.0f;
-	else
-	{
-		*pdf = 1.0f / area;
-		// Convert from area measure, as returned by the Sample() call
-		// above, to solid angle measure.
-		*pdf *= MathHelper::DistanceSquared(ref.pos, it.pos) / fabs(MathHelper::DotFloat3(it.normal, MathHelper::NegativeFloat3(*wi)));
-		if (std::isinf(*pdf)) *pdf = 0.f;
+	IntersectInfo pShape = mesh->sample(ref, uSample, pdf);
+	if (*pdf == 0 || (MathHelper::DistanceSquared(pShape.pos, ref.pos) == 0.0)) {
+		*pdf = 0;
+		return 0.f;
 	}
-
-	return L(it, XMFLOAT3(-wi->x, -wi->y, -wi->z));
+	*wi = MathHelper::NormalizeFloat3(XMFLOAT3(pShape.pos.x - ref.pos.x, pShape.pos.y - ref.pos.y, pShape.pos.z - ref.pos.z));
+	vt.setup(ref.pos, pShape.pos);
+	return L(pShape, XMFLOAT3(-wi->x, -wi->y, -wi->z));
 }
 
 float AreaLight::Pdf_Li(const IntersectInfo & ref, const XMFLOAT3& wi)

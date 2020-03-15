@@ -121,6 +121,24 @@ IntersectInfo Mesh::sample(XMFLOAT2 u, float& area)const
 	return it;
 }
 
+IntersectInfo Mesh::sample(const IntersectInfo&ref, XMFLOAT2 u, float*pdf)const
+{
+	float area;
+	IntersectInfo it = sample(u, area);
+	XMFLOAT3 wi(it.pos.x - ref.pos.x, it.pos.y - ref.pos.y, it.pos.z - ref.pos.z);
+	if (MathHelper::Float3Length(wi) == 0.0)
+		*pdf = 0;
+	else {
+		*pdf = 1 / area;
+		wi = MathHelper::NormalizeFloat3(wi);
+		// Convert from area measure, as returned by the Sample() call
+		// above, to solid angle measure.
+		*pdf *= (MathHelper::DistanceSquared(ref.pos, it.pos) / MathHelper::DotFloat3(it.normal, MathHelper::NegativeFloat3(wi)));
+		if (std::isinf(*pdf)) *pdf = 0.f;
+	}
+	return it;
+}
+
 float Mesh::Pdf(const IntersectInfo & ref, const XMFLOAT3& wi)
 {
 	Ray ray = ref.spawnRay(wi);

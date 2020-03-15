@@ -28,7 +28,8 @@ public:
 	void setMaterial(Material new_mat) { mat = new_mat; }
 	BxDF* getPbrMat() { return bxdf; }
 	virtual int getComponentNum();
-	virtual IntersectInfo sample(XMFLOAT2 u, float& area)const;
+	IntersectInfo sample(XMFLOAT2 u, float& area)const;
+	virtual IntersectInfo sample(const IntersectInfo&ref,  XMFLOAT2 u, float*pdf)const;
 	virtual float Area() { return area; }
 	virtual float Pdf() { return 1.0f / area; }
 	virtual float Pdf(const IntersectInfo & ref, const XMFLOAT3& wi);

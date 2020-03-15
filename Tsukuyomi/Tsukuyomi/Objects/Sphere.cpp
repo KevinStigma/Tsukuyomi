@@ -19,7 +19,7 @@ Sphere::~Sphere()
 	Mesh::~Mesh();
 }
 
-IntersectInfo Sphere::sample(XMFLOAT2 u, float&area)const
+IntersectInfo Sphere::sample(const IntersectInfo&ref, XMFLOAT2 u, float*pdf)const
 {
 	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
 	float r = Radius();
@@ -32,7 +32,7 @@ IntersectInfo Sphere::sample(XMFLOAT2 u, float&area)const
 	XMFLOAT3 center = boundingBox.getCenter();
 	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(center.x, center.y, center.z, 1.0), offset);
 	XMStoreFloat3(&it.pos, world_pos);
-	area = Area();
+	*pdf = 1.0/ Area();
 	return it;
 }
 
@@ -58,5 +58,31 @@ std::vector<Primitive*> Sphere::getAllPrimitives()
 	PrimSphere* s = new PrimSphere(this, origin_radius, XMFLOAT3(0.0f, 0.0f, 0.0f));
 	prims.push_back(s);
 	return prims;
+}
+
+void Sphere::outputSphereMesh()
+{
+	std::ofstream out("sphere.obj");
+	auto mesh = getMesh();
+	float r = origin_radius;
+	for (int i = 0; i < mesh->positions.size() / 3; i++)
+	{
+		float x = mesh->positions[i * 3];
+		float y = mesh->positions[i * 3+1];
+		float z = mesh->positions[i * 3+2];
+		out << "v " << x / origin_radius << " " << y/origin_radius << " " << z/origin_radius << std::endl;
+		x = mesh->normals[i * 3];
+		y = mesh->normals[i * 3 + 1];
+		z = mesh->normals[i * 3 + 2];
+		out << "vn " << x << " " << y << " " << z << std::endl;
+	}
+	for (int i = 0; i < mesh->indices.size() / 3; i++)
+	{
+		int a = mesh->indices[i * 3]+1;
+		int b = mesh->indices[i * 3+1]+1;
+		int c = mesh->indices[i * 3+2]+1;
+		out << "f " << a << "//" << a << " " << b << "//" << b << " " << c << "//" << c << std::endl;
+	}
+	out.close();
 }
 
