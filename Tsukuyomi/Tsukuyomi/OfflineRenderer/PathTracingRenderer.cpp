@@ -33,7 +33,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 152, j = 441;
+			int i = 720, j = height - 1 - 86;
 #endif
 			outputStr("begin pixel:" + std::to_string(i) + " " + std::to_string(j));
 			Pixel p = sample_pixel(camera, i, j, width, height);

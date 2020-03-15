@@ -140,6 +140,25 @@ std::vector<Primitive*> Sphere::getAllPrimitives()
 	return prims;
 }
 
+float UniformConePdf(float cosThetaMax) {
+	return 1.0f / (2 * MathHelper::Pi * (1.0f - cosThetaMax));
+}
+
+float Sphere::Pdf(const IntersectInfo & ref, const XMFLOAT3& wi)
+{
+	XMFLOAT3 pCenter = translation;;
+	// Return uniform PDF if point is inside sphere
+	float radius = Radius();
+	float distance_val = MathHelper::DistanceSquared(ref.pos, pCenter);
+	if (distance_val <= radius * radius)
+		return Pdf();
+
+	// Compute general sphere PDF
+	float sinThetaMax2 = radius * radius / distance_val;
+	float cosThetaMax = std::sqrt(std::max(0.0f, 1 - sinThetaMax2));
+	return UniformConePdf(cosThetaMax);
+}
+
 void Sphere::outputSphereMesh()
 {
 	std::ofstream out("sphere.obj");

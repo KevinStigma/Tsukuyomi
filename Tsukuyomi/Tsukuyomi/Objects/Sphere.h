@@ -11,7 +11,7 @@ public:
 	std::vector<Primitive*> getAllPrimitives();
 	float Area() const { float r = Radius();  return 4.0 * MathHelper::Pi * r * r; }
 	float Pdf() { return 1.0f / Area(); }
-	float Pdf(const IntersectInfo & ref, const XMFLOAT3& wi) { return Pdf(); }
+	float Pdf(const IntersectInfo & ref, const XMFLOAT3& wi);
 	int getComponentNum() { return 1; }
 	float Radius()const { return (scale.x * origin_radius); }
 protected:
