@@ -71,9 +71,9 @@ public:
 	XMMATRIX getRotMatrix() { return rot_mat; }
 	XMMATRIX getTransMatrix() { return trans_mat; }
 	XMMATRIX getScaleMatrix() { return scale_mat; }
-	XMFLOAT3 getTranslation() { return translation; }
-	XMFLOAT3 getRotation() { return rotation; }
-	XMFLOAT3 getScale() { return scale; }
+	XMFLOAT3 getTranslation()const { return translation; }
+	XMFLOAT3 getRotation()const { return rotation; }
+	XMFLOAT3 getScale()const { return scale; }
 	virtual void setScale(XMFLOAT3 s);
 	virtual void setRotation(XMFLOAT3 r);
 	virtual void setTranslation(XMFLOAT3 t);

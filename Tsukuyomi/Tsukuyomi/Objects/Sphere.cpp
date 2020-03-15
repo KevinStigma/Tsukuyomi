@@ -19,20 +19,100 @@ Sphere::~Sphere()
 	Mesh::~Mesh();
 }
 
+void CoordinateSystem(const XMFLOAT3 &v1, XMFLOAT3 *v2,
+	XMFLOAT3 *v3) {
+	if (std::abs(v1.x) > std::abs(v1.y))
+	{
+		float v = 1.0f / std::sqrtf(v1.x * v1.x + v1.z * v1.z);
+		*v2 = XMFLOAT3(-v1.z*v, 0, v1.x*v);
+	}
+	else
+	{
+		float v = 1.0f / std::sqrt(v1.y * v1.y + v1.z * v1.z);
+		*v2 = XMFLOAT3(0, v1.z * v, -v1.y * v);
+	}
+	*v3 = MathHelper::Cross(v1, *v2);
+}
+
 IntersectInfo Sphere::sample(const IntersectInfo&ref, XMFLOAT2 u, float*pdf)const
 {
-	XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
-	float r = Radius();
-	XMVECTOR offset = XMVectorSet(r * uni_sample_coord.x, r * uni_sample_coord.y, r * uni_sample_coord.z, 0.0f);
+	XMFLOAT3 center = translation;
+
+	// Sample uniformly on sphere if $\pt{}$ is inside it
+	float radius = Radius();
+	float v = MathHelper::DistanceSquared(ref.pos, center);
+	if (v <= radius * radius) {
+		XMFLOAT3 uni_sample_coord = UniformSampleSphere(u);
+		float r = Radius();
+		XMVECTOR offset = XMVectorSet(r * uni_sample_coord.x, r * uni_sample_coord.y, r * uni_sample_coord.z, 0.0f);
+		IntersectInfo it;
+		XMVECTOR world_normal = XMVector3Normalize(offset);
+		XMStoreFloat3(&it.normal, world_normal);
+		float ratio = r / XMVectorGetX(XMVector3Length(offset));
+		offset = XMVectorMultiply(offset, XMVectorSet(ratio, ratio, ratio, ratio));
+		XMFLOAT3 center = boundingBox.getCenter();
+		XMVECTOR world_pos = XMVectorAdd(XMVectorSet(center.x, center.y, center.z, 1.0), offset);
+		XMStoreFloat3(&it.pos, world_pos);
+		XMFLOAT3 wi(it.pos.x - ref.pos.x, it.pos.y - ref.pos.y , it.pos.z - ref.pos.z);
+		if (MathHelper::Float3Length(wi) == 0.0)
+			*pdf = 0;
+		else {
+			// Convert from area measure returned by Sample() call above to
+			// solid angle measure.
+			*pdf = 1.0 / Area();
+			wi = MathHelper::NormalizeFloat3(wi);
+			*pdf *= MathHelper::DistanceSquared(ref.pos, it.pos) / MathHelper::DotFloat3(it.normal, MathHelper::NegativeFloat3(wi));
+		}
+		if (std::isinf(*pdf)) *pdf = 0.f;
+		return it;
+	}
+
+	// Sample sphere uniformly inside subtended cone
+
+	// Compute coordinate system for sphere sampling
+	float dc = MathHelper::Distance(ref.pos, center);
+	float invDc = 1 / dc;
+	XMFLOAT3 wc = XMFLOAT3((center.x - ref.pos.x)*invDc, (center.y - ref.pos.y)*invDc, (center.z - ref.pos.z)*invDc);
+	XMFLOAT3 wcX, wcY;
+	CoordinateSystem(wc, &wcX, &wcY);
+
+	// Compute $\theta$ and $\phi$ values for sample in cone
+	float sinThetaMax = radius * invDc;
+	float sinThetaMax2 = sinThetaMax * sinThetaMax;
+	float invSinThetaMax = 1 / sinThetaMax;
+	float cosThetaMax = std::sqrtf(std::max<float>(0.f, 1 - sinThetaMax2));
+
+	float cosTheta = (cosThetaMax - 1) * u.x + 1.0f;
+	float sinTheta2 = 1 - cosTheta * cosTheta;
+
+	if (sinThetaMax2 < 0.00068523f /* sin^2(1.5 deg) */) {
+		/* Fall back to a Taylor series expansion for small angles, where
+		   the standard approach suffers from severe cancellation errors */
+		sinTheta2 = sinThetaMax2 * u.x;
+		cosTheta = std::sqrtf(1 - sinTheta2);
+	}
+
+	// Compute angle $\alpha$ from center of sphere to sampled point on surface
+	float cosAlpha = sinTheta2 * invSinThetaMax +
+		cosTheta * std::sqrtf(std::max(0.f, 1.f - sinTheta2 * invSinThetaMax * invSinThetaMax));
+	float sinAlpha = std::sqrtf(std::max(0.f, 1.f - cosAlpha * cosAlpha));
+	float phi = u.y * 2.f * MathHelper::Pi;
+
+	// Compute surface normal and sampled point on sphere
+	XMFLOAT3 nWorld = MathHelper::SphericalDirection(sinAlpha, cosAlpha, phi,
+		MathHelper::NegativeFloat3(wcX), 
+		MathHelper::NegativeFloat3 (wcY),
+		MathHelper::NegativeFloat3(wc));
+	XMFLOAT3 pWorld = XMFLOAT3(center.x + nWorld.x * radius,center.y + nWorld.y * radius,center.z + nWorld.z * radius);
+
+	// Return _Interaction_ for sampled point on sphere
 	IntersectInfo it;
-	XMVECTOR world_normal = XMVector3Normalize(offset);
-	XMStoreFloat3(&it.normal, world_normal);
-	float ratio = r / XMVectorGetX(XMVector3Length(offset));
-	offset = XMVectorMultiply(offset, XMVectorSet(ratio, ratio, ratio, ratio));
-	XMFLOAT3 center = boundingBox.getCenter();
-	XMVECTOR world_pos = XMVectorAdd(XMVectorSet(center.x, center.y, center.z, 1.0), offset);
-	XMStoreFloat3(&it.pos, world_pos);
-	*pdf = 1.0/ Area();
+	it.pos = pWorld;
+	it.normal = MathHelper::NormalizeFloat3(nWorld);
+
+	// Uniform cone PDF.
+	*pdf = 1 / (2 * MathHelper::Pi * (1 - cosThetaMax));
+
 	return it;
 }
 

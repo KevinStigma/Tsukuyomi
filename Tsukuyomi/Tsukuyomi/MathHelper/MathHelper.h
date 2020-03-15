@@ -160,6 +160,23 @@ public:
 		return a.x*b.x + a.y*b.y + a.z*b.z;
 	}
 
+	static XMFLOAT3 Cross(const XMFLOAT3 &v1, const XMFLOAT3 &v2) {
+		double v1x = v1.x, v1y = v1.y, v1z = v1.z;
+		double v2x = v2.x, v2y = v2.y, v2z = v2.z;
+		return XMFLOAT3((v1y * v2z) - (v1z * v2y), (v1z * v2x) - (v1x * v2z),
+			(v1x * v2y) - (v1y * v2x));
+	}
+
+	static XMFLOAT3 SphericalDirection(float sinTheta, float cosTheta, float phi,
+		const XMFLOAT3 &x, const XMFLOAT3 &y,
+		const XMFLOAT3 &z) {
+		float v1 = sinTheta * std::cos(phi);
+		float v2 = sinTheta * std::sin(phi);
+		return XMFLOAT3(v1*x.x + v2*y.x + cosTheta*z.x,
+		v1*x.y + v2 * y.y + cosTheta * z.y,
+		v1*x.z + v2 * y.z + cosTheta * z.z);
+	}
+
 	static XMFLOAT3 NegativeFloat3(const XMFLOAT3& a)
 	{
 		return XMFLOAT3(-a.x,-a.y,-a.z);
@@ -174,6 +191,11 @@ public:
 	{
 		XMFLOAT3 diff(a.x - b.x, a.y - b.y, a.z - b.z);
 		return DotFloat3(diff, diff);
+	}
+
+	static float Distance(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return sqrtf(DistanceSquared(a,b));
 	}
 
 	static float TriangleFilterEval(float x_diff, float y_diff, float radius)
