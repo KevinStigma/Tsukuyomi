@@ -30,6 +30,9 @@ public slots:
 	void on_actionDirectionalLight_triggered();
 	void on_actionAreaLight_triggered();
 	void on_renderButton_clicked();
+	void on_sampleComboBox_currentIndexChanged(int);
+	void on_depthcomboBox_currentIndexChanged(int);
+	void on_writeFilecheckBox_stateChanged(int state);
 	void on_transButton_clicked(bool checked);
 	void on_rotButton_clicked(bool checked);
 

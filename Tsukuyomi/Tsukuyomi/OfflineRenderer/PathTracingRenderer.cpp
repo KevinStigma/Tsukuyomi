@@ -23,10 +23,14 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
 	std::string filename = generateRandomId();
+	write = g_pGlobalSys->render_paras.writeFile;
 	createOutputFile("./Data/RenderResults/" + filename + ".txt");
+	sample_count = g_pGlobalSys->render_paras.sampleCount;
+	max_bounce = g_pGlobalSys->render_paras.depth;
 //#define DEBUG_PATHTRACING
 #ifndef DEBUG_PATHTRACING
-	#pragma omp parallel for num_threads(8)
+	int thread_count = write ? 1 : 8;
+	#pragma omp parallel for num_threads(thread_count)
 	for (int i = 0; i < width; i++)
 	{
 		for (int j = 0; j < height; j++)

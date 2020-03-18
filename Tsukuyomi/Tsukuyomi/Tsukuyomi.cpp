@@ -167,6 +167,24 @@ void Tsukuyomi::on_renderButton_clicked()
 	}
 }
 
+void Tsukuyomi::on_sampleComboBox_currentIndexChanged(int ind)
+{
+	g_pGlobalSys->render_paras.sampleCount = atoi(ui.sampleComboBox->currentText().toStdString().c_str());
+	std::cout << "sample count " << g_pGlobalSys->render_paras.sampleCount << std::endl;
+}
+
+void Tsukuyomi::on_depthcomboBox_currentIndexChanged(int id)
+{
+	g_pGlobalSys->render_paras.depth = atoi(ui.depthcomboBox->currentText().toStdString().c_str());
+	std::cout << "depth " << g_pGlobalSys->render_paras.depth << std::endl;
+}
+
+void Tsukuyomi::on_writeFilecheckBox_stateChanged(int state)
+{
+	g_pGlobalSys->render_paras.writeFile = state;
+	std::cout << g_pGlobalSys->render_paras.writeFile << std::endl;
+}
+
 void Tsukuyomi::on_transButton_clicked(bool checked)
 {
 	if (checked)
