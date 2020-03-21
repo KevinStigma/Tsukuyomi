@@ -2,6 +2,7 @@
 #include <string>
 #include <LightHelper.h>
 #include "Object.h"
+#include "../PbrMat/PbrMat.h"
 #include "../intersect_info.h"
 
 class BxDF;
@@ -10,7 +11,7 @@ class Primitive;
 class Mesh :public Object
 {
 public:
-	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr, BxDF*bxdf=nullptr);
+	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr, PbrMat*pbr_mat=nullptr);
 	~Mesh();
 	void writeObj(const std::string& obj_path);
 	void loadObjMesh(const std::string & obj_path);
@@ -26,7 +27,7 @@ public:
 	std::string getMeshPath() { return mesh_path; }
 	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(Material new_mat) { mat = new_mat; }
-	BxDF* getPbrMat() { return bxdf; }
+	PbrMat* getPbrMat() { return pbrMat; }
 	virtual int getComponentNum();
 	IntersectInfo sample(XMFLOAT2 u, float& area)const;
 	virtual IntersectInfo sample(const IntersectInfo&ref,  XMFLOAT2 u, float*pdf)const;
@@ -40,7 +41,7 @@ protected:
 	tinyobj::shape_t shape;
 	float area;
 	std::string mesh_path = "";
-	BxDF* bxdf=nullptr;
+	PbrMat* pbrMat=nullptr;
 	Object* area_light;
 	std::vector<float> accumula_areas;
 	ID3D11Buffer* vertexBuffer = nullptr;

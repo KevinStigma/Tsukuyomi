@@ -1,6 +1,8 @@
 #include "PathTracingRenderer.h"
 #include "../intersect_info.h"
 #include "OfflineRenderUtility.h"
+#include "../BxDFs/BxDFType.h"
+#include "../PbrMat/BSDF.h"
 #include "GlobalSys.h"
 #include <QImage>
 
@@ -37,7 +39,7 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 		{	
 #endif
 #ifdef DEBUG_PATHTRACING
-			int i = 720, j = height - 1 - 86;
+			int i = 480, j = height - 1 - 360;
 #endif
 			outputStr("begin pixel:" + std::to_string(i) + " " + std::to_string(j));
 			Pixel p = sample_pixel(camera, i, j, width, height);
@@ -117,22 +119,23 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 					L += (beta* light->Le(ray));
 			}
 			else
+			{
 				L += beta * it.Le(MathHelper::NegativeFloat3(ray.direction));
+			}
 		}
 
 		if (!it.isSurfaceInteraction() || bounce >= max_bounce)
 			break;
+		it.ComputeScatteringFunctions();
 		L += beta * UniformSampleOneLight(it);
 		outputStr("      L:" + std::to_string(L.r) + " " + std::to_string(L.g) + " " + std::to_string(L.b));
 		XMFLOAT3 wo(-ray.direction.x, -ray.direction.y, -ray.direction.z), wi;
 		float pdf;
 		BxDFType flags;
-		wo = transVectorToLocalFromWorld(it.normal, wo);
 		float f1 = generateRandomFloat(), f2 = generateRandomFloat();
-		Spectrum f = it.bxdf->sample_f(wo, &wi, XMFLOAT2(f1, f2), &pdf, &flags);
+		Spectrum f = it.bsdf->Sample_f(wo, &wi, XMFLOAT2(f1, f2), &pdf, BSDF_ALL, &flags);
 		outputStr("      sample f:" + std::to_string(f.r) + " " + std::to_string(f.g) + " " + std::to_string(f.b)
 		+" "+std::to_string(f1)+" "+std::to_string(f2));
-		wi = transVectorToWorldFromLocal(it.normal, wi);
 		if (f.isBlack() || pdf == 0.0f)
 			break;
 		beta *= (f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf);

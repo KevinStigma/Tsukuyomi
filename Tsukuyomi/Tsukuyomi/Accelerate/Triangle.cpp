@@ -49,7 +49,6 @@ bool Triangle::is_intersect(const Ray& ray, float&t, IntersectInfo& it)
 		it.obj = parent;
 		it.pos = ray.getExtendPos(t);
 		it.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
-		it.bxdf = parent->getPbrMat();
 		XMStoreFloat3(&it.normal, XMVector3Normalize(n[0] + (n[1] - n[0])*beta + (n[2] - n[0])*gama));
 		return true;
 	}

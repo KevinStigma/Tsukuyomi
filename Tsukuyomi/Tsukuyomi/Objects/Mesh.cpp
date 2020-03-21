@@ -3,7 +3,7 @@
 #include "../Effects/Effects.h"
 #include "../Vertex.h"
 #include "../D3DRenderer.h"
-#include "../BxDFs/LambertianReflection.h"
+#include "../PbrMat/Matte.h"
 #include "../Accelerate/Triangle.h"
 #include "GlobalSys.h"
 #include <iostream>
@@ -15,7 +15,7 @@ XMFLOAT2 UniformSampleTriangle(XMFLOAT2 u)
 	return XMFLOAT2(1.0 - u0, u.y * u0);
 }
 
-Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, BxDF*pbr_mat):Object(name, t, s, r), area_light(al)
+Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, PbrMat* pbr_mat):Object(name, t, s, r), area_light(al)
 {
 	loadObjMesh(file_path);
 	type = MESH;
@@ -23,16 +23,16 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
 	mat = g_pGlobalSys->renderer->getMaterials()[0];
 	if (!pbr_mat)
-		bxdf = new LambertianReflection(Spectrum(0.725000, 0.710000, 0.680000));
+		pbrMat = new MatteMaterial(Spectrum(0.725000, 0.710000, 0.680000), 0.0);
 	else
-		bxdf = pbr_mat;
+		pbrMat = pbr_mat;
 }
 
 Mesh::~Mesh()
 {
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
-	SAFE_DELETE(bxdf);
+	SAFE_DELETE(pbrMat);
 }
 
 bool Mesh::isEmpty()
@@ -357,8 +357,7 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 				is_info.obj = this;
 				is_info.pos = ray.getExtendPos(t);
 				is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
-				is_info.bxdf = getPbrMat();
-				is_info.tri_area = MathHelper::TriangleArea(vertices[0], vertices[1], vertices[2]);;
+				is_info.tri_area = MathHelper::TriangleArea(vertices[0], vertices[1], vertices[2]);
 				XMStoreFloat3(&is_info.normal, XMVector3Normalize(normals[0] + (normals[1] - normals[0])*beta + (normals[2] - normals[0])*gama));
 			}
 		}

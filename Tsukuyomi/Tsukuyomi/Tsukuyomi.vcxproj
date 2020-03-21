@@ -158,6 +158,7 @@
     <ClCompile Include="OfflineRenderer\OfflineRenderUtility.cpp" />
     <ClCompile Include="OfflineRenderer\PathTracingRenderer.cpp" />
     <ClCompile Include="PbrMat\BSDF.cpp" />
+    <ClCompile Include="PbrMat\Matte.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Axis\RotAxis.h" />
     <ClInclude Include="Axis\TransAxis.h" />
     <ClInclude Include="BxDFs\BxDF.h" />
+    <ClInclude Include="BxDFs\BxDFType.h" />
     <ClInclude Include="BxDFs\Fresnel.h" />
     <ClInclude Include="BxDFs\LambertianReflection.h" />
     <ClInclude Include="BxDFs\MicrofacetReflection.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="GlobalSys.h" />
     <ClInclude Include="Objects\Sphere.h" />
     <ClInclude Include="PbrMat\BSDF.h" />
+    <ClInclude Include="PbrMat\Matte.h" />
     <ClInclude Include="PbrMat\PbrMat.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="VisibilityTester.h" />

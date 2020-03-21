@@ -1,6 +1,6 @@
 #include "ObjectsManager.h"
-#include "BxDFs/LambertianReflection.h"
 #include <iostream>
+#include "PbrMat/Matte.h"
 
 ObjectManager::ObjectManager()
 {
@@ -24,7 +24,7 @@ void ObjectManager::clear()
 	bvhManager.destroyBoundingVolumeHieratches();
 }
 
-Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, BxDF* bxdf)
+Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, PbrMat* pbr_mat)
 {
 	if (obj_path == "")
 		return nullptr;
@@ -34,9 +34,9 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 	int index = obj_path.rfind('/');
 	Mesh*mesh = nullptr;
 	if(obj_path.substr(index + 1, obj_path.size() - index) == "sphere.obj")
-		mesh = new Sphere(obj_name, obj_path, t, s, r, nullptr, bxdf);
+		mesh = new Sphere(obj_name, obj_path, t, s, r, nullptr, pbr_mat);
 	else
-		mesh = new Mesh(obj_name, obj_path, t, s, r, nullptr, bxdf);
+		mesh = new Mesh(obj_name, obj_path, t, s, r, nullptr, pbr_mat);
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count()-1);
@@ -92,12 +92,12 @@ Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLO
 	return light;
 }
 
-Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c, BxDF*bxdf)
+Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c, PbrMat*pbr_mat)
 {
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
 		obj_name = genNewObjectName();
-	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c, bxdf);
+	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c, pbr_mat);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count() - 1);
@@ -191,18 +191,12 @@ void ObjectManager::renderAllObjects(ID3D11DeviceContext * context, D3DRenderer*
 	}
 }
 
-void ObjectManager::exportMaterial(BxDF*bxdf, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc)
+void ObjectManager::exportMaterial(PbrMat*mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc)
 {
-	if (!bxdf)
+	if (!mat)
 		return;
 	tinyxml2::XMLElement*mat_element = doc.NewElement("Material");
-	mat_element->SetAttribute("type", bxdf->toString().c_str());
-	if (bxdf->type == BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE))
-	{
-		//lambert ref
-		mat_element->SetAttribute("kd", dynamic_cast<LambertianReflection*>(bxdf)->getKdString().c_str());
-	}
-
+	mat->exportToXML(mat_element);
 	parent->InsertEndChild(mat_element);
 }
 
@@ -273,17 +267,18 @@ void ObjectManager::exportProject(std::string file_path)
 	std::cout << "Export " << file_path << " successfully!" << std::endl;
 }
 
-BxDF* loadPbrMat(tinyxml2::XMLElement* mat_elm)
+PbrMat* loadPbrMat(tinyxml2::XMLElement* mat_elm)
 {
 	if (!mat_elm)
 		return nullptr;
 	std::vector<std::string> strs;
-	if (std::string(mat_elm->Attribute("type")) == "LambertianRef")
+	if (std::string(mat_elm->Attribute("type")) == "Matte")
 	{
 		SplitString(std::string(mat_elm->Attribute("kd")), strs, ",");
 		Spectrum kd(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
-		LambertianReflection* lam_ref = new LambertianReflection(kd);
-		return lam_ref;
+		float sigma = stringToNum<float>(std::string(mat_elm->Attribute("sigma")));
+		MatteMaterial* matte = new MatteMaterial(kd, sigma);
+		return matte;
 	}
 	return nullptr;
 }
@@ -327,7 +322,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 		SplitString(rot_str, strs, ",");
 		XMFLOAT3 rotation(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		
-		BxDF* mat = loadPbrMat(mat_elm);
+		PbrMat* mat = loadPbrMat(mat_elm);
 		if (type == "mesh")
 		{
 			std::string mesh_path = express->Attribute("MeshPath");
@@ -357,7 +352,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 			std::string color_str = express->Attribute("Color");
 			SplitString(color_str, strs, ",");
 			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
-			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color);
+			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color, mat);
 		}
 	}
 	bvhManager.generateBoundingVolumeHieratchies();

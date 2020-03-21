@@ -7,12 +7,12 @@ class BSDF
 public:
 	// BSDF Public Methods
 	BSDF(const IntersectInfo &it, float eta = 1)
-		: eta(eta),
-		ns(0.0, 0.0, 0.0),
-		ng(0.0, 0.0, 0.0),
-		ss(0.0, 0.0, 0.0),
-		ts(0.0, 0.0, 0.0)
-	{}
+		: eta(eta), normal(it.normal)
+	{
+		l2w_mat = computeMatrixToWorldFromLocal(normal);
+		w2l_mat = computeMatrixToLocalFromWrold(normal);
+	}
+	~BSDF();
 
 	void Add(BxDF *b) {
 		bxdfs[nBxDFs++] = b;
@@ -21,10 +21,6 @@ public:
 	XMFLOAT3 WorldToLocal(const XMFLOAT3 &v) const;
 	XMFLOAT3 LocalToWorld(const XMFLOAT3 &v) const;
 	Spectrum f(const XMFLOAT3 &woW, const XMFLOAT3 &wiW,
-		BxDFType flags = BSDF_ALL) const;
-	Spectrum rho(int nSamples, const XMFLOAT2 *samples1, const XMFLOAT2 *samples2,
-		BxDFType flags = BSDF_ALL) const;
-	Spectrum rho(const XMFLOAT2 &wo, int nSamples, const XMFLOAT2 *samples,
 		BxDFType flags = BSDF_ALL) const;
 	Spectrum Sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &u,
 		float *pdf, BxDFType type = BSDF_ALL,
@@ -36,13 +32,13 @@ public:
 	// BSDF Public Data
 	const float eta;
 
+protected:
+	XMMATRIX computeMatrixToLocalFromWrold(XMFLOAT3 n);
+	XMMATRIX computeMatrixToWorldFromLocal(XMFLOAT3 n);
 private:
 	// BSDF Private Methods
-	~BSDF() {}
-
-	// BSDF Private Data
-	const XMFLOAT3 ns, ng;
-	const XMFLOAT3 ss, ts;
+	XMFLOAT3 normal;
+	XMMATRIX w2l_mat, l2w_mat; // local to world, world to local
 	int nBxDFs = 0;
 	static const int MaxBxDFs = 8;
 	BxDF *bxdfs[MaxBxDFs];

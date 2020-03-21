@@ -9,7 +9,7 @@ XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
 	return XMFLOAT3(r * std::cos(phi), r * std::sin(phi), z);
 }
 
-Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, BxDF*bxdf):Mesh(name,file_path,t,s,r, al, bxdf)
+Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, PbrMat*pbr_mat):Mesh(name,file_path,t,s,r, al, pbr_mat)
 {
 	origin_radius = (boundingBox.top.x - boundingBox.bottom.x) * 0.5;
 }
@@ -123,7 +123,6 @@ bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 	{
 		is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
 		is_info.obj = this;
-		is_info.bxdf = this->bxdf;
 		is_info.pos = XMFLOAT3(ray.origin.x + t * ray.direction.x, ray.origin.y + t * ray.direction.y, ray.origin.z + t * ray.direction.z);
 		is_info.normal = MathHelper::NormalizeFloat3(XMFLOAT3(is_info.pos.x - center.x, is_info.pos.y - center.y, is_info.pos.z - center.z));
 		return true;

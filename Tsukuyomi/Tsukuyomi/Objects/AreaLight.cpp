@@ -1,13 +1,13 @@
 #include "AreaLight.h"
 #include "../intersect_info.h"
 
-AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 color, BxDF*bxdf):Light(name, t, s, r, color)
+AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 color, PbrMat*pbr_mat):Light(name, t, s, r, color)
 {
 	int index = mesh_path.rfind('/');
 	if (mesh_path.substr(index + 1, mesh_path.size() - index) == "sphere.obj")
-		mesh = new Sphere("", mesh_path, t, s, r, this, bxdf);
+		mesh = new Sphere("", mesh_path, t, s, r, this, pbr_mat);
 	else
-		mesh = new Mesh("", mesh_path, t, s, r, this, bxdf);
+		mesh = new Mesh("", mesh_path, t, s, r, this, pbr_mat);
 	type = AREA_LIGHT;
 	Material mat;
 	mat.Ambient = XMFLOAT4(color.x, color.y, color.z, 1.0);

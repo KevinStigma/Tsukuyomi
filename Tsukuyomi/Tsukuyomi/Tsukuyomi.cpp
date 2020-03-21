@@ -143,10 +143,6 @@ void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 	}
 	else if (event->key() == Qt::Key::Key_0)
 	{
-		XMFLOAT3 v = transVectorToLocalFromWorld(XMFLOAT3(1,0,0), XMFLOAT3(1,0,0));
-		XMFLOAT3 v2 = transVectorToWorldFromLocal(XMFLOAT3(1, 0, 0), XMFLOAT3(1, 0, 0));
-		std::cout << v.x << " " << v.y << " " << v.z << std::endl;
-		std::cout << v2.x << " " << v2.y << " " << v2.z << std::endl;
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "intersect_info.h"
 #include "Objects/AreaLight.h"
+#include "PbrMat/BSDF.h"
 
 Ray IntersectInfo::spawnRay(const XMFLOAT3& d)const
 {
@@ -21,4 +22,27 @@ Spectrum IntersectInfo::Le(const XMFLOAT3& w)const
 	if (!obj||obj->getType()!=AREA_LIGHT)
 		return Spectrum();
 	return dynamic_cast<AreaLight*>(obj)->L(*this, w);
+}
+
+void IntersectInfo::ComputeScatteringFunctions()
+{
+	SAFE_DELETE(bsdf);
+	if (obj)
+	{
+		if (obj->getType() == MESH)
+		{
+			bsdf = new BSDF(*this);
+			dynamic_cast<Mesh*>(obj)->getPbrMat()->ComputeScatteringFunctions(this, false);
+		}
+		else if (obj->getType() == AREA_LIGHT)
+		{
+			bsdf = new BSDF(*this);
+			dynamic_cast<AreaLight*>(obj)->getMesh()->getPbrMat()->ComputeScatteringFunctions(this, false);
+		}
+	}
+}
+
+IntersectInfo::~IntersectInfo()
+{
+	SAFE_DELETE(bsdf);
 }

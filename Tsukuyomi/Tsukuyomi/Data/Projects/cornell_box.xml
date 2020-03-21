@@ -5,49 +5,49 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/wall3.obj" Name="back" Type="mesh">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/wall5.obj" Name="floor" Type="mesh">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/wall4.obj" Name="right" Type="mesh">
-        <Material type="LambertianRef" kd="0.140000,0.450000,0.091000"/>
+        <Material type="Matte" kd="0.140000,0.450000,0.091000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/wall2.obj" Name="ceil" Type="mesh">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/wall1.obj" Name="left" Type="mesh">
-        <Material type="LambertianRef" kd="0.630000,0.065000,0.050000"/>
+        <Material type="Matte" kd="0.630000,0.065000,0.050000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/1/lightsource.obj" Color="17.000000,12.000000,4.000000" Name="light" Type="area_light">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/box1.obj" Name="box1" Type="mesh">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/1/box2.obj" Name="box2" Type="mesh">
-        <Material type="LambertianRef" kd="0.725000,0.710000,0.680000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
