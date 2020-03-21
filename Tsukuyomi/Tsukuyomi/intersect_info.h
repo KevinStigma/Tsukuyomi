@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "PbrMat/BxDF.h"
+#include "BxDFs/BxDF.h"
 #include "Objects/Object.h"
 
 struct IntersectInfo

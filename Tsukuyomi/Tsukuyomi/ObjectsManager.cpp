@@ -1,5 +1,5 @@
 #include "ObjectsManager.h"
-#include "PbrMat/LambertianReflection.h"
+#include "BxDFs/LambertianReflection.h"
 #include <iostream>
 
 ObjectManager::ObjectManager()

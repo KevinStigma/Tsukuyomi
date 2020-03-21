@@ -3,7 +3,7 @@
 #include "../Effects/Effects.h"
 #include "../Vertex.h"
 #include "../D3DRenderer.h"
-#include "../PbrMat/LambertianReflection.h"
+#include "../BxDFs/LambertianReflection.h"
 #include "../Accelerate/Triangle.h"
 #include "GlobalSys.h"
 #include <iostream>
