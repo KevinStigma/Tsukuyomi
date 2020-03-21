@@ -13,8 +13,13 @@ public:
 			0.000640711f * x * x * x * x;
 	}
 	MicrofacetReflection(const Spectrum &R, const Fresnel*f, float alphax, float alphay);
+	~MicrofacetReflection();
+	XMFLOAT3 Sample_wh(const XMFLOAT3 &wo, const XMFLOAT2 &u)const;
 	Spectrum f(const XMFLOAT3 &wo, const XMFLOAT3 &wi)const;
 	float Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const;
+	float DistributionPdf(const XMFLOAT3 &wo, const XMFLOAT3 &wh) const;
+	Spectrum sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &sample, float *pdf, BxDFType *sampledType = nullptr) const;
+	std::string toString()const { return "MicrofacetReflection"; }
 
 protected:
 	float Lambda(const XMFLOAT3& w)const;

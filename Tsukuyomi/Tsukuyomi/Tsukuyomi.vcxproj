@@ -159,6 +159,7 @@
     <ClCompile Include="OfflineRenderer\PathTracingRenderer.cpp" />
     <ClCompile Include="PbrMat\BSDF.cpp" />
     <ClCompile Include="PbrMat\Matte.cpp" />
+    <ClCompile Include="PbrMat\Plastic.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="PbrMat\BSDF.h" />
     <ClInclude Include="PbrMat\Matte.h" />
     <ClInclude Include="PbrMat\PbrMat.h" />
+    <ClInclude Include="PbrMat\Plastic.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="VisibilityTester.h" />
     <QtMoc Include="ObjectsListWidget.h">

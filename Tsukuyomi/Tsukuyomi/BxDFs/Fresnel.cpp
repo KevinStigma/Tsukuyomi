@@ -4,7 +4,7 @@
 #include <../MathHelper/MathHelper.h>
 
 // BxDF Utility Functions
-float FrDielectric(float cosThetaI, float etaI, float etaT) {
+Spectrum FrDielectric(float cosThetaI, float etaI, float etaT) {
 	cosThetaI = MathHelper::Clamp(cosThetaI, -1.0f, 1.0f);
 	// Potentially swap indices of refraction
 	bool entering = cosThetaI > 0.f;
@@ -18,13 +18,14 @@ float FrDielectric(float cosThetaI, float etaI, float etaT) {
 	float sinThetaT = etaI / etaT * sinThetaI;
 
 	// Handle total internal reflection
-	if (sinThetaT >= 1) return 1;
+	if (sinThetaT >= 1) return Spectrum(1.0, 1.0, 1.0);
 	float cosThetaT = std::sqrt(std::max<float>(0.0f, 1 - sinThetaT * sinThetaT));
 	float Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) /
 		((etaT * cosThetaI) + (etaI * cosThetaT));
 	float Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) /
 		((etaI * cosThetaI) + (etaT * cosThetaT));
-	return (Rparl * Rparl + Rperp * Rperp) / 2;
+	float val = (Rparl * Rparl + Rperp * Rperp) / 2;
+	return Spectrum(val, val, val);
 }
 
 Spectrum FresnelDielectric::Evaluate(float cosThetaI) const {

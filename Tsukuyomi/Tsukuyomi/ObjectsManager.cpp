@@ -1,6 +1,7 @@
 #include "ObjectsManager.h"
 #include <iostream>
 #include "PbrMat/Matte.h"
+#include "PbrMat/Plastic.h"
 
 ObjectManager::ObjectManager()
 {
@@ -279,6 +280,17 @@ PbrMat* loadPbrMat(tinyxml2::XMLElement* mat_elm)
 		float sigma = stringToNum<float>(std::string(mat_elm->Attribute("sigma")));
 		MatteMaterial* matte = new MatteMaterial(kd, sigma);
 		return matte;
+	}
+	if (std::string(mat_elm->Attribute("type")) == "Plastic")
+	{
+		SplitString(std::string(mat_elm->Attribute("kd")), strs, ",");
+		Spectrum kd(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+		float rou = stringToNum<float>(std::string(mat_elm->Attribute("roughness")));
+		SplitString(std::string(mat_elm->Attribute("ks")), strs, ",");
+		Spectrum ks(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+		bool remap = stringToNum<int>(std::string(mat_elm->Attribute("remapRoughness")));
+		PlasticMaterial* plastic = new PlasticMaterial(kd, ks, rou, remap);
+		return plastic;
 	}
 	return nullptr;
 }

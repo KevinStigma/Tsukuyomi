@@ -7,6 +7,11 @@ MicrofacetReflection::MicrofacetReflection(const Spectrum &R, const Fresnel*f, f
 	fresnel = f;
 }
 
+MicrofacetReflection::~MicrofacetReflection()
+{
+	SAFE_DELETE(fresnel);
+}
+
 float MicrofacetReflection::D(const XMFLOAT3&wh)const
 {
 	float tan2Theta = Tan2Theta(wh);
@@ -63,4 +68,55 @@ float MicrofacetReflection::Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const
 	else
 		pdf = D(wh) * AbsCosTheta(wh);
 	return pdf / (4.0 * dot_wo_wh);
+}
+
+float MicrofacetReflection::DistributionPdf(const XMFLOAT3 &wo, const XMFLOAT3 &wh) const
+{
+	if (sampleVisibleArea)
+		return D(wh) * G1(wo) * fabs(MathHelper::DotFloat3(wo, wh)) / AbsCosTheta(wo);
+	else
+		return D(wh) * AbsCosTheta(wh);
+}
+
+XMFLOAT3 MicrofacetReflection::Sample_wh(const XMFLOAT3 &wo,const XMFLOAT2 &u)const
+{
+	XMFLOAT3 wh;
+	float pi = MathHelper::Pi;
+	float cosTheta = 0, phi = (2 * pi) * u.y;
+	if (alphax == alphay) {
+		float tanTheta2 = alphax * alphax * u.x / (1.0f - u.x);
+		cosTheta = 1 / std::sqrt(1 + tanTheta2);
+	}
+	else {
+		phi = std::atan(alphay / alphax * std::tan(2 * pi * u.y + .5f * pi));
+		if (u.y > .5f) 
+			phi += pi;
+		float sinPhi = std::sin(phi), cosPhi = std::cos(phi);
+		const float alphax2 = alphax * alphax, alphay2 = alphay * alphay;
+		const float alpha2 = 1.0 / (cosPhi * cosPhi / alphax2 + sinPhi * sinPhi / alphay2);
+		float tanTheta2 = alpha2 * u.x / (1 - u.x);
+		cosTheta = 1 / std::sqrt(1 + tanTheta2);
+	}
+	float sinTheta = std::sqrt(std::max<float>((float)0., (float)1. - cosTheta * cosTheta));
+	wh = MathHelper::SphericalDirection(sinTheta, cosTheta, phi);
+	if (!SameHemisphere(wo, wh)) 
+		wh = MathHelper::NegativeFloat3(wh);
+	return wh;
+}
+
+Spectrum MicrofacetReflection::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &sample, float *pdf, BxDFType *sampledType) const
+{
+	// Sample microfacet orientation $\wh$ and reflected direction $\wi$
+	if (wo.z == 0) 
+		return Spectrum();
+	XMFLOAT3 wh = Sample_wh(wo, sample);
+	if (MathHelper::DotFloat3(wo, wh) < 0) 
+		return Spectrum();   // Should be rare
+	*wi = MathHelper::Reflect(wo, wh);
+	if (!SameHemisphere(wo, *wi)) 
+		return Spectrum(0.f);
+
+	// Compute PDF of _wi_ for microfacet reflection
+	*pdf = DistributionPdf(wo, wh) / (4 * MathHelper::DotFloat3(wo, wh));
+	return f(wo, *wi);
 }

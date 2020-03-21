@@ -176,6 +176,9 @@ public:
 		v1*x.y + v2 * y.y + cosTheta * z.y,
 		v1*x.z + v2 * y.z + cosTheta * z.z);
 	}
+	static XMFLOAT3 SphericalDirection(float sinTheta, float cosTheta, float phi) {
+		return XMFLOAT3(sinTheta * std::cos(phi), sinTheta * std::sin(phi), cosTheta);
+	}
 
 	static XMFLOAT3 NegativeFloat3(const XMFLOAT3& a)
 	{
@@ -206,6 +209,11 @@ public:
 	static float Float3Length(const XMFLOAT3 & l)
 	{
 		return sqrtf(DotFloat3(l,l));
+	}
+
+	static XMFLOAT3 Reflect(const XMFLOAT3 &wo, const XMFLOAT3 &n) {
+		float dot = DotFloat3(wo, n);
+		return XMFLOAT3(-wo.x + 2 * dot * n.x, -wo.y + 2 * dot * n.y, -wo.z + 2 * dot * n.z);
 	}
 
 	static float TriangleArea(const XMFLOAT3 & v1, const XMFLOAT3& v2, const XMFLOAT3& v3)
