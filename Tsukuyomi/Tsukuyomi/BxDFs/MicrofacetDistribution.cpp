@@ -28,7 +28,7 @@ Float TrowbridgeReitzDistribution::D(const XMFLOAT3 &wh) const {
 	Float e =
 		(Cos2Phi(wh) / (alphax * alphax) + Sin2Phi(wh) / (alphay * alphay)) *
 		tan2Theta;
-	return 1 / (MathHelper::Pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
+	return 1.0f / (MathHelper::Pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
 }
 
 static void TrowbridgeReitzSample11(Float cosTheta, Float U1, Float U2,
@@ -98,8 +98,8 @@ static XMFLOAT3 TrowbridgeReitzSample(const XMFLOAT3 &wi, Float alpha_x,
 	return MathHelper::NormalizeFloat3(XMFLOAT3(-slope_x, -slope_y, 1.));
 }
 
-XMFLOAT3 TrowbridgeReitzDistribution::Sample_wh(const XMFLOAT3 &wo,
-	const XMFLOAT2 &u) const {
+XMFLOAT3 TrowbridgeReitzDistribution::Sample_wh(const XMFLOAT3 &wo, const XMFLOAT2 &u) const 
+{
 	XMFLOAT3 wh;
 	float pi = MathHelper::Pi;
 	if (!sampleVisibleArea) {

@@ -34,7 +34,7 @@ XMFLOAT3 BSDF::LocalToWorld(const XMFLOAT3 &v) const
 Spectrum BSDF::f(const XMFLOAT3 &woW, const XMFLOAT3 &wiW, BxDFType flags) const
 {
 	XMFLOAT3 wi = WorldToLocal(wiW), wo = WorldToLocal(woW);
-	if (wo.z == 0) return 0.;
+	if (wo.z == 0) return Spectrum(0);
 	bool reflect = MathHelper::DotFloat3(wiW, normal) *  MathHelper::DotFloat3(woW, normal) > 0.0;
 	Spectrum f(0.f);
 	for (int i = 0; i < nBxDFs; ++i)
@@ -70,13 +70,14 @@ Spectrum BSDF::Sample_f(const XMFLOAT3 &woWorld, XMFLOAT3 *wiWorld, const XMFLOA
 
 	// Sample chosen _BxDF_
 	XMFLOAT3 wi, wo = WorldToLocal(woWorld);
-	if (wo.z == 0) return 0.;
+	if (wo.z == 0) 
+		return Spectrum(0);
 	*pdf = 0;
 	if (sampledType) *sampledType = bxdf->type;
 	Spectrum f = bxdf->sample_f(wo, &wi, uRemapped, pdf, sampledType);
 	if (*pdf == 0) {
 		if (sampledType) *sampledType = BxDFType(0);
-		return 0;
+		return Spectrum(0);
 	}
 	*wiWorld = LocalToWorld(wi);
 

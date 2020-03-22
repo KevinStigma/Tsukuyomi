@@ -34,11 +34,14 @@ Float MicrofacetReflection::Pdf(const XMFLOAT3 &wo, const XMFLOAT3 &wi) const {
 Spectrum MicrofacetReflection::sample_f(const XMFLOAT3 &wo, XMFLOAT3 *wi, const XMFLOAT2 &u, Float *pdf, BxDFType *sampledType) const
 {
 	// Sample microfacet orientation $\wh$ and reflected direction $\wi$
-	if (wo.z == 0) return 0.;
+	if (wo.z == 0) 
+		return Spectrum(0.f);
 	XMFLOAT3 wh = distribution->Sample_wh(wo, u);
-	if (MathHelper::DotFloat3(wo, wh) < 0) return 0.;   // Should be rare
+	if (MathHelper::DotFloat3(wo, wh) < 0) 
+		return Spectrum(0.f);   // Should be rare
 	*wi = MathHelper::Reflect(wo, wh);
-	if (!SameHemisphere(wo, *wi)) return Spectrum(0.f);
+	if (!SameHemisphere(wo, *wi)) 
+		return Spectrum(0.f);
 
 	// Compute PDF of _wi_ for microfacet reflection
 	*pdf = distribution->Pdf(wo, wh) / (4 * MathHelper::DotFloat3(wo, wh));
