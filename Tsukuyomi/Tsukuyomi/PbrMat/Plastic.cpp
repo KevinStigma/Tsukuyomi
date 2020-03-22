@@ -15,9 +15,10 @@ void PlasticMaterial::ComputeScatteringFunctions(IntersectInfo *it, bool allowMu
 		// Create microfacet distribution _distrib_ for plastic material
 		float rough = roughness;
 		if (remapRoughness)
-			rough = MicrofacetReflection::RoughnessToAlpha(rough);
-		MicrofacetReflection *bsdf = new MicrofacetReflection(Ks, fresnel, rough, rough);
-		it->bsdf->Add(bsdf);
+			rough = TrowbridgeReitzDistribution::RoughnessToAlpha(rough);
+		MicrofacetDistribution *distrib = new TrowbridgeReitzDistribution(rough, rough);
+		BxDF *spec = new MicrofacetReflection(Ks, distrib, fresnel);
+		it->bsdf->Add(spec);
 	}
 }
 

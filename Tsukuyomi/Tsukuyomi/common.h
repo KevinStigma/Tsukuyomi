@@ -14,6 +14,7 @@
 #include <DirectXMath.h>
 
 using namespace DirectX;
+typedef float Float;
 
 enum AXIS { NO = -1, X = 0, Y = 1, Z = 2 };
 
@@ -31,4 +32,3 @@ Type stringToNum(const std::string& str)
 	iss >> num;
 	return num;
 }
-

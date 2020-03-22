@@ -198,6 +198,9 @@
     <ClCompile Include="PbrMat\Plastic.cpp">
       <Filter>PbrMat</Filter>
     </ClCompile>
+    <ClCompile Include="BxDFs\MicrofacetDistribution.cpp">
+      <Filter>BxDFs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="PbrMat\Plastic.h">
       <Filter>PbrMat</Filter>
+    </ClInclude>
+    <ClInclude Include="BxDFs\MicrofacetDistribution.h">
+      <Filter>BxDFs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

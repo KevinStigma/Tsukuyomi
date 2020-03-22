@@ -130,6 +130,7 @@
     <ClCompile Include="BxDFs\BxDF.cpp" />
     <ClCompile Include="BxDFs\Fresnel.cpp" />
     <ClCompile Include="BxDFs\LambertianReflection.cpp" />
+    <ClCompile Include="BxDFs\MicrofacetDistribution.cpp" />
     <ClCompile Include="BxDFs\MicrofacetReflection.cpp" />
     <ClCompile Include="BxDFs\OrenNayar.cpp" />
     <ClCompile Include="BxDFs\SpecularReflection.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="BxDFs\BxDFType.h" />
     <ClInclude Include="BxDFs\Fresnel.h" />
     <ClInclude Include="BxDFs\LambertianReflection.h" />
+    <ClInclude Include="BxDFs\MicrofacetDistribution.h" />
     <ClInclude Include="BxDFs\MicrofacetReflection.h" />
     <ClInclude Include="BxDFs\OrenNayar.h" />
     <ClInclude Include="BxDFs\SpecularReflection.h" />
