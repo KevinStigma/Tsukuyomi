@@ -17,18 +17,14 @@ int BSDF::NumComponents(BxDFType flags) const
 
 XMFLOAT3 BSDF::WorldToLocal(const XMFLOAT3 &v) const
 {
-	XMVECTOR local_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), w2l_mat);
-	XMFLOAT3 local_v;
-	XMStoreFloat3(&local_v, local_V);
-	return MathHelper::NormalizeFloat3(local_v);
+	return XMFLOAT3(MathHelper::DotFloat3(v, ss), MathHelper::DotFloat3(v, ts), MathHelper::DotFloat3(v, normal));
 }
 
 XMFLOAT3 BSDF::LocalToWorld(const XMFLOAT3 &v) const
 {
-	XMVECTOR world_V = XMVector3TransformNormal(XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0)), l2w_mat);
-	XMFLOAT3 world_v;
-	XMStoreFloat3(&world_v, world_V);
-	return MathHelper::NormalizeFloat3(world_v);
+	return XMFLOAT3(ss.x * v.x + ts.x * v.y + normal.x * v.z,
+		ss.y * v.x + ts.y * v.y + normal.y * v.z,
+		ss.z * v.x + ts.z * v.y + normal.z * v.z);
 }
 
 Spectrum BSDF::f(const XMFLOAT3 &woW, const XMFLOAT3 &wiW, BxDFType flags) const
@@ -116,41 +112,6 @@ float BSDF::Pdf(const XMFLOAT3 &woWorld, const XMFLOAT3 &wiWorld, BxDFType flags
 	float v = matchingComps > 0 ? pdf / matchingComps : 0.f;
 	return v;
 }
-
-XMMATRIX BSDF::computeMatrixToLocalFromWrold(XMFLOAT3 n)
-{
-	XMVECTOR Nt, Nb, N;
-	N = XMVectorSet(n.x, n.y, n.z, 0.0);
-	if (std::fabs(n.x) > std::fabs(n.y))
-		Nt = XMVector3Normalize(XMVectorSet(n.z, 0, -n.x, 0.0));
-	else
-		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.x, 0.0));
-	Nb = XMVector3Cross(N, Nt);
-	XMMATRIX mat;
-	mat.r[0] = Nt;
-	mat.r[1] = Nb;
-	mat.r[2] = N;
-	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
-	return XMMatrixTranspose(mat);
-}
-
-XMMATRIX BSDF::computeMatrixToWorldFromLocal(XMFLOAT3 n)
-{
-	XMVECTOR Nt, Nb, N;
-	N = XMVectorSet(n.x, n.y, n.z, 0.0);
-	if (std::fabs(n.x) > std::fabs(n.y))
-		Nt = XMVector3Normalize(XMVectorSet(n.z, 0, -n.x, 0.0));
-	else
-		Nt = XMVector3Normalize(XMVectorSet(0.0, -n.z, n.y, 0.0));
-	Nb = XMVector3Cross(N, Nt);
-	XMMATRIX mat;
-	mat.r[0] = Nt;
-	mat.r[1] = Nb;
-	mat.r[2] = N;
-	mat.r[3] = XMVectorSet(0.0, 0.0, 0.0, 1.f);
-	return mat;
-}
-
 
 std::string BSDF::ToString() const
 {

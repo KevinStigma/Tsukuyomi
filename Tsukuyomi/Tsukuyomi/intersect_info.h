@@ -9,6 +9,7 @@ struct IntersectInfo
 	XMFLOAT3 normal;
 	XMFLOAT3 pos;
 	XMFLOAT3 wo;
+	XMFLOAT3 dpdu;
 	float tri_area;
 	BSDF* bsdf=nullptr;
 	Object* obj=nullptr;

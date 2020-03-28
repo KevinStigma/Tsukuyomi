@@ -7,10 +7,9 @@ class BSDF
 public:
 	// BSDF Public Methods
 	BSDF(const IntersectInfo &it, float eta = 1)
-		: eta(eta), normal(it.normal)
+		: eta(eta), normal(it.normal), ss(it.dpdu)
 	{
-		l2w_mat = computeMatrixToWorldFromLocal(normal);
-		w2l_mat = computeMatrixToLocalFromWrold(normal);
+		ts = MathHelper::NormalizeFloat3(MathHelper::Cross(normal, ss));
 	}
 	~BSDF();
 
@@ -32,13 +31,9 @@ public:
 	// BSDF Public Data
 	const float eta;
 
-protected:
-	XMMATRIX computeMatrixToLocalFromWrold(XMFLOAT3 n);
-	XMMATRIX computeMatrixToWorldFromLocal(XMFLOAT3 n);
 private:
 	// BSDF Private Methods
-	XMFLOAT3 normal;
-	XMMATRIX w2l_mat, l2w_mat; // local to world, world to local
+	XMFLOAT3 normal, ss, ts;;
 	int nBxDFs = 0;
 	static const int MaxBxDFs = 8;
 	BxDF *bxdfs[MaxBxDFs];
