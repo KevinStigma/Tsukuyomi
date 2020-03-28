@@ -117,6 +117,14 @@ public:
 		return XMFLOAT3(pitch, yaw, roll);
 	}
 
+	static void CoordinateSystem(const XMFLOAT3 &v1, XMFLOAT3 *v2, XMFLOAT3 *v3) {
+		if (std::abs(v1.x) > std::abs(v1.y))
+			*v2 = MultFloat3(XMFLOAT3(-v1.z, 0, v1.x), 1.0 / std::sqrt(v1.x * v1.x + v1.z * v1.z));
+		else
+			*v2 = MultFloat3(XMFLOAT3(0, v1.z, -v1.y),  1.0 / std::sqrt(v1.y * v1.y + v1.z * v1.z));
+		*v3 = Cross(v1, *v2);
+	}
+
 	static XMFLOAT2 ConcentricSampleDisk(const XMFLOAT2 &u) {
 		// Map uniform random numbers to $[-1,1]^2$
 		XMFLOAT2 uOffset(2.f * u.x - 1.0f, 2.0f * u.y - 1.0f);
@@ -188,6 +196,16 @@ public:
 	static XMFLOAT3 AddFloat3(const XMFLOAT3& a, const XMFLOAT3& b)
 	{
 		return XMFLOAT3(b.x + a.x, b.y + a.y, b.z + a.z);
+	}
+
+	static XMFLOAT3 MinusFloat3(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return XMFLOAT3(-b.x + a.x, -b.y + a.y, -b.z + a.z);
+	}
+
+	static XMFLOAT3 MultFloat3(const XMFLOAT3& a, float n)
+	{
+		return XMFLOAT3(n * a.x, n* a.y, a.z * n);
 	}
 
 	static float DistanceSquared(const XMFLOAT3& a, const XMFLOAT3& b)

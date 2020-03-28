@@ -24,6 +24,22 @@ void Triangle::generateBoundingBox()
 	}
 }
 
+
+void Triangle::GetUVs(XMFLOAT2 uv[3]) const {
+	tinyobj::mesh_t* mesh = parent->getMesh();
+	if (mesh->texcoords.size()) {
+		int ind1 = mesh->indices[index*3], ind2 = mesh->indices[index * 3+1], ind3= mesh->indices[index * 3+2];
+		uv[0] = parent->getTriangleTexCoord(ind1);
+		uv[1] = parent->getTriangleTexCoord(ind2);
+		uv[2] = parent->getTriangleTexCoord(ind3);
+	}
+	else {
+		uv[0] = XMFLOAT2(0, 0);
+		uv[1] = XMFLOAT2(1, 0);
+		uv[2] = XMFLOAT2(1, 1);
+	}
+}
+
 bool Triangle::is_intersect(const Ray& ray, float&t, IntersectInfo& it)
 {
 	XMVECTOR v[3], n[3];
@@ -50,6 +66,10 @@ bool Triangle::is_intersect(const Ray& ray, float&t, IntersectInfo& it)
 		it.pos = ray.getExtendPos(t);
 		it.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
 		XMStoreFloat3(&it.normal, XMVector3Normalize(n[0] + (n[1] - n[0])*beta + (n[2] - n[0])*gama));
+
+		XMFLOAT3 dpdu, dpdv;
+		MathHelper::CoordinateSystem(MathHelper::NormalizeFloat3(it.normal), &dpdu, &dpdv);
+		it.dpdu = dpdu;
 		return true;
 	}
 	return false;

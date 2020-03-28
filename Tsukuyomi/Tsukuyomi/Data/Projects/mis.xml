@@ -5,14 +5,14 @@
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="1.000000,1.000000,1.000000" Name="l2" Type="area_light">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
+    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l2" Type="area_light">
+        <Material type="Matte" kd="0.0,0.0,0.0" sigma="0.0"/>
         <Translation>-3.750000,0.000000,0.000000</Translation>
         <Scale>0.033300,0.033300,0.033300</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="1.000000,1.000000,1.000000" Name="l4" Type="area_light">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
+    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l4" Type="area_light">
+        <Material type="Matte" kd="0.0,0.0,0.0" sigma="0.0"/>
         <Translation>3.750000,0.000000,0.000000</Translation>
         <Scale>0.900000,0.900000,0.900000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -35,8 +35,8 @@
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="1.000000,1.000000,1.000000" Name="l1" Type="area_light">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
+    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l1" Type="area_light">
+        <Material type="Matte" kd="0.0,0.0,0.0" sigma="0.0"/>
         <Translation>-1.250000,0.000000,0.000000</Translation>
         <Scale>0.100000,0.100000,0.100000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -47,14 +47,14 @@
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="1.000000,1.000000,1.000000" Name="l3" Type="area_light">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.0"/>
+    <Object MeshPath="D:/Tsukuyomi/Tsukuyomi/Tsukuyomi/Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l3" Type="area_light">
+        <Material type="Matte" kd="0.0,0.0,0.0" sigma="0.0"/>
         <Translation>1.250000,0.000000,0.000000</Translation>
         <Scale>0.300000,0.300000,0.300000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object Name="cam" Type="cam">
-        <Translation>0.000000,-1.016667,11.456267</Translation>
+        <Translation>0.000000,-1.0,15.0</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,3.141593,0.000000</Rotation>
     </Object>

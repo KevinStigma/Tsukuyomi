@@ -312,7 +312,7 @@ std::vector<Primitive*> Mesh::getAllPrimitives()
 		XMFLOAT3 n1 = getTriangleNormal(indices[i * 3]);
 		XMFLOAT3 n2 = getTriangleNormal(indices[i * 3 + 1]);
 		XMFLOAT3 n3 = getTriangleNormal(indices[i * 3 + 2]);
-		Triangle* triangle = new Triangle(this, v1, v2, v3, n1, n2, n3);
+		Triangle* triangle = new Triangle(this, v1, v2, v3, n1, n2, n3, i);
 		primitives.push_back(triangle);
 	}
 	return primitives;
@@ -380,6 +380,12 @@ XMFLOAT3 Mesh::getTriangleNormal(int index)const
 {
 	auto& norms = shape.mesh.normals;
 	return XMFLOAT3(norms[index * 3], norms[index * 3 + 1], norms[index * 3 + 2]);
+}
+
+XMFLOAT2 Mesh::getTriangleTexCoord(int index)const
+{
+	auto& texs = shape.mesh.texcoords;
+	return XMFLOAT2(texs[index * 3], texs[index * 3 + 1]);
 }
 
 void Mesh::constructNormals()

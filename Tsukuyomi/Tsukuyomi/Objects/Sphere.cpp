@@ -121,10 +121,12 @@ bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 	XMFLOAT3 center = getTranslation();
 	if (ray.is_intersect_sphere(center, Radius(), t))
 	{
+		float phiMax = MathHelper::Pi * 2.0;
 		is_info.wo = XMFLOAT3(-ray.direction.x, -ray.direction.y, -ray.direction.z);
 		is_info.obj = this;
 		is_info.pos = XMFLOAT3(ray.origin.x + t * ray.direction.x, ray.origin.y + t * ray.direction.y, ray.origin.z + t * ray.direction.z);
 		is_info.normal = MathHelper::NormalizeFloat3(XMFLOAT3(is_info.pos.x - center.x, is_info.pos.y - center.y, is_info.pos.z - center.z));
+		is_info.dpdu = XMFLOAT3(-phiMax * is_info.pos.y, phiMax * is_info.pos.x, 0.0);
 		return true;
 	}
 	else
