@@ -96,7 +96,7 @@ public:
     {
         if (TsukuyomiClass->objectName().isEmpty())
             TsukuyomiClass->setObjectName(QStringLiteral("TsukuyomiClass"));
-        TsukuyomiClass->resize(1170, 754);
+        TsukuyomiClass->resize(1134, 754);
         QIcon icon;
         icon.addFile(QStringLiteral("C:/Users/linyimap/.designer/backup/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
@@ -144,7 +144,7 @@ public:
         objectsListView->setGeometry(QRect(10, 30, 161, 471));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(830, 20, 311, 501));
+        tabWidget->setGeometry(QRect(830, 20, 281, 501));
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
         label_4 = new QLabel(tab_3);
@@ -236,10 +236,10 @@ public:
         depthcomboBox->setGeometry(QRect(90, 60, 69, 22));
         writeFilecheckBox = new QCheckBox(tab_2);
         writeFilecheckBox->setObjectName(QStringLiteral("writeFilecheckBox"));
-        writeFilecheckBox->setGeometry(QRect(180, 40, 91, 21));
+        writeFilecheckBox->setGeometry(QRect(30, 100, 91, 21));
         renderButton = new QPushButton(tab_2);
         renderButton->setObjectName(QStringLiteral("renderButton"));
-        renderButton->setGeometry(QRect(20, 110, 111, 41));
+        renderButton->setGeometry(QRect(10, 130, 111, 41));
         label_5 = new QLabel(tab_2);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setGeometry(QRect(20, 20, 54, 21));
@@ -257,7 +257,7 @@ public:
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1170, 23));
+        menuBar->setGeometry(QRect(0, 0, 1134, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menuObjects = new QMenu(menuBar);

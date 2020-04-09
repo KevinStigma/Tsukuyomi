@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1170</width>
+    <width>1134</width>
     <height>754</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
      <rect>
       <x>830</x>
       <y>20</y>
-      <width>311</width>
+      <width>281</width>
       <height>501</height>
      </rect>
     </property>
@@ -422,8 +422,8 @@
      <widget class="QCheckBox" name="writeFilecheckBox">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>40</y>
+        <x>30</x>
+        <y>100</y>
         <width>91</width>
         <height>21</height>
        </rect>
@@ -435,8 +435,8 @@
      <widget class="QPushButton" name="renderButton">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>110</y>
+        <x>10</x>
+        <y>130</y>
         <width>111</width>
         <height>41</height>
        </rect>
@@ -537,7 +537,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1170</width>
+     <width>1134</width>
      <height>23</height>
     </rect>
    </property>
