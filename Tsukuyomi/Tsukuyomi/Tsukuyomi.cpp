@@ -61,40 +61,6 @@ void Tsukuyomi::on_actionExit_triggered()
 	qApp->quit();
 }
 
-void Tsukuyomi::on_actiongenBVH_triggered()
-{
-	g_pGlobalSys->generateBVH();
-}
-
-void Tsukuyomi::on_actionshowBVH_triggered()
-{
-	g_pGlobalSys->render_paras.renderBVH = ui.actionshowBVH->isChecked();
-}
-
-void Tsukuyomi::on_actionNormalDebug_triggered()
-{
-	ui.actionNormalDebug->setChecked(true);
-	ui.actionWhitted->setChecked(false);
-	ui.actionPathTracing->setChecked(false);
-	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::NORMAL_DEBUG;
-}
-
-void Tsukuyomi::on_actionWhitted_triggered()
-{
-	ui.actionNormalDebug->setChecked(false);
-	ui.actionWhitted->setChecked(true);
-	ui.actionPathTracing->setChecked(false);
-	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::WHITTED;
-}
-
-void Tsukuyomi::on_actionPathTracing_triggered()
-{
-	ui.actionNormalDebug->setChecked(false);
-	ui.actionWhitted->setChecked(false);
-	ui.actionPathTracing->setChecked(true);
-	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType::PATH_TRACING;
-}
-
 void Tsukuyomi::on_actionCamera_triggered()
 {
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
@@ -163,6 +129,16 @@ void Tsukuyomi::on_renderButton_clicked()
 	}
 }
 
+void Tsukuyomi::on_genBVHButton_clicked()
+{
+	g_pGlobalSys->generateBVH();
+}
+
+void Tsukuyomi::on_showBVHcheckBox_stateChanged(int val)
+{
+	g_pGlobalSys->render_paras.renderBVH = bool(val);
+}
+
 void Tsukuyomi::on_sampleComboBox_currentIndexChanged(int ind)
 {
 	g_pGlobalSys->render_paras.sampleCount = atoi(ui.sampleComboBox->currentText().toStdString().c_str());
@@ -173,6 +149,11 @@ void Tsukuyomi::on_depthcomboBox_currentIndexChanged(int id)
 {
 	g_pGlobalSys->render_paras.depth = atoi(ui.depthcomboBox->currentText().toStdString().c_str());
 	std::cout << "depth " << g_pGlobalSys->render_paras.depth << std::endl;
+}
+
+void Tsukuyomi::on_renderMethodcomboBox_currentIndexChanged(int id)
+{
+	g_pGlobalSys->render_paras.offline_render_type = OfflineRenderType(id);
 }
 
 void Tsukuyomi::on_writeFilecheckBox_stateChanged(int state)

@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -51,8 +52,9 @@ public:
     QAction *actiongenBVH;
     QAction *actionshowBVH;
     QWidget *centralWidget;
-    RenderWidget *render_widget;
+    QHBoxLayout *horizontalLayout;
     ObjectsListWidget *objectsListView;
+    RenderWidget *render_widget;
     QTabWidget *tabWidget;
     QWidget *tab_3;
     QLabel *label_4;
@@ -81,14 +83,15 @@ public:
     QLabel *label_5;
     QComboBox *sampleComboBox;
     QLabel *label_6;
+    QPushButton *genBVHButton;
+    QCheckBox *showBVHcheckBox;
+    QComboBox *renderMethodcomboBox;
+    QLabel *label_7;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menuObjects;
     QMenu *menuLights;
     QMenu *menuRenderOption;
-    QMenu *menuOfflineRender;
-    QMenu *menuType;
-    QMenu *menuAccel;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -96,7 +99,13 @@ public:
     {
         if (TsukuyomiClass->objectName().isEmpty())
             TsukuyomiClass->setObjectName(QStringLiteral("TsukuyomiClass"));
-        TsukuyomiClass->resize(1134, 754);
+        TsukuyomiClass->resize(1200, 780);
+        QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(TsukuyomiClass->sizePolicy().hasHeightForWidth());
+        TsukuyomiClass->setSizePolicy(sizePolicy);
+        TsukuyomiClass->setMinimumSize(QSize(1200, 780));
         QIcon icon;
         icon.addFile(QStringLiteral("C:/Users/linyimap/.designer/backup/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
         TsukuyomiClass->setWindowIcon(icon);
@@ -136,15 +145,39 @@ public:
         actionshowBVH->setCheckable(true);
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        render_widget = new RenderWidget(centralWidget);
-        render_widget->setObjectName(QStringLiteral("render_widget"));
-        render_widget->setGeometry(QRect(180, 30, 640, 480));
+        horizontalLayout = new QHBoxLayout(centralWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         objectsListView = new ObjectsListWidget(centralWidget);
         objectsListView->setObjectName(QStringLiteral("objectsListView"));
-        objectsListView->setGeometry(QRect(10, 30, 161, 471));
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(objectsListView->sizePolicy().hasHeightForWidth());
+        objectsListView->setSizePolicy(sizePolicy1);
+        objectsListView->setMinimumSize(QSize(160, 0));
+        objectsListView->setMaximumSize(QSize(200, 16777215));
+
+        horizontalLayout->addWidget(objectsListView);
+
+        render_widget = new RenderWidget(centralWidget);
+        render_widget->setObjectName(QStringLiteral("render_widget"));
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(render_widget->sizePolicy().hasHeightForWidth());
+        render_widget->setSizePolicy(sizePolicy2);
+
+        horizontalLayout->addWidget(render_widget);
+
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(830, 20, 281, 501));
+        sizePolicy1.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
+        tabWidget->setSizePolicy(sizePolicy1);
+        tabWidget->setMinimumSize(QSize(250, 0));
+        tabWidget->setMaximumSize(QSize(300, 16777215));
+        tabWidget->setMovable(false);
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
         label_4 = new QLabel(tab_3);
@@ -169,7 +202,7 @@ public:
         rotButton->setCheckable(true);
         moveSpeedSlider = new QSlider(tab_3);
         moveSpeedSlider->setObjectName(QStringLiteral("moveSpeedSlider"));
-        moveSpeedSlider->setGeometry(QRect(110, 20, 160, 22));
+        moveSpeedSlider->setGeometry(QRect(110, 20, 120, 22));
         moveSpeedSlider->setMinimum(0);
         moveSpeedSlider->setMaximum(100);
         moveSpeedSlider->setValue(20);
@@ -236,28 +269,48 @@ public:
         depthcomboBox->setGeometry(QRect(90, 60, 69, 22));
         writeFilecheckBox = new QCheckBox(tab_2);
         writeFilecheckBox->setObjectName(QStringLiteral("writeFilecheckBox"));
-        writeFilecheckBox->setGeometry(QRect(30, 100, 91, 21));
+        writeFilecheckBox->setGeometry(QRect(160, 150, 101, 21));
+        QFont font1;
+        font1.setPointSize(12);
+        writeFilecheckBox->setFont(font1);
         renderButton = new QPushButton(tab_2);
         renderButton->setObjectName(QStringLiteral("renderButton"));
-        renderButton->setGeometry(QRect(10, 130, 111, 41));
+        renderButton->setGeometry(QRect(60, 240, 111, 41));
+        renderButton->setFont(font);
         label_5 = new QLabel(tab_2);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setGeometry(QRect(20, 20, 54, 21));
-        QFont font1;
-        font1.setPointSize(12);
         label_5->setFont(font1);
         sampleComboBox = new QComboBox(tab_2);
         sampleComboBox->setObjectName(QStringLiteral("sampleComboBox"));
         sampleComboBox->setGeometry(QRect(90, 20, 69, 22));
         label_6 = new QLabel(tab_2);
         label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setGeometry(QRect(20, 50, 54, 21));
+        label_6->setGeometry(QRect(20, 60, 54, 21));
         label_6->setFont(font1);
+        genBVHButton = new QPushButton(tab_2);
+        genBVHButton->setObjectName(QStringLiteral("genBVHButton"));
+        genBVHButton->setGeometry(QRect(60, 190, 111, 41));
+        genBVHButton->setFont(font);
+        showBVHcheckBox = new QCheckBox(tab_2);
+        showBVHcheckBox->setObjectName(QStringLiteral("showBVHcheckBox"));
+        showBVHcheckBox->setGeometry(QRect(20, 150, 91, 21));
+        showBVHcheckBox->setFont(font1);
+        renderMethodcomboBox = new QComboBox(tab_2);
+        renderMethodcomboBox->setObjectName(QStringLiteral("renderMethodcomboBox"));
+        renderMethodcomboBox->setGeometry(QRect(90, 100, 111, 22));
+        label_7 = new QLabel(tab_2);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setGeometry(QRect(20, 100, 54, 21));
+        label_7->setFont(font1);
         tabWidget->addTab(tab_2, QString());
+
+        horizontalLayout->addWidget(tabWidget);
+
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1134, 23));
+        menuBar->setGeometry(QRect(0, 0, 1200, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menuObjects = new QMenu(menuBar);
@@ -266,12 +319,6 @@ public:
         menuLights->setObjectName(QStringLiteral("menuLights"));
         menuRenderOption = new QMenu(menuBar);
         menuRenderOption->setObjectName(QStringLiteral("menuRenderOption"));
-        menuOfflineRender = new QMenu(menuRenderOption);
-        menuOfflineRender->setObjectName(QStringLiteral("menuOfflineRender"));
-        menuType = new QMenu(menuOfflineRender);
-        menuType->setObjectName(QStringLiteral("menuType"));
-        menuAccel = new QMenu(menuBar);
-        menuAccel->setObjectName(QStringLiteral("menuAccel"));
         TsukuyomiClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TsukuyomiClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -282,7 +329,6 @@ public:
 
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menuObjects->menuAction());
-        menuBar->addAction(menuAccel->menuAction());
         menuBar->addAction(menuRenderOption->menuAction());
         menu->addAction(actionLoad_Mesh);
         menu->addAction(actionLoad_Project);
@@ -294,18 +340,12 @@ public:
         menuLights->addAction(actionPointLight);
         menuLights->addAction(actionDirectionalLight);
         menuLights->addAction(actionAreaLight);
-        menuRenderOption->addAction(menuOfflineRender->menuAction());
-        menuOfflineRender->addAction(menuType->menuAction());
-        menuType->addAction(actionNormalDebug);
-        menuType->addAction(actionWhitted);
-        menuType->addAction(actionPathTracing);
-        menuAccel->addAction(actiongenBVH);
-        menuAccel->addAction(actionshowBVH);
 
         retranslateUi(TsukuyomiClass);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
         sampleComboBox->setCurrentIndex(0);
+        renderMethodcomboBox->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(TsukuyomiClass);
@@ -374,14 +414,20 @@ public:
          << QApplication::translate("TsukuyomiClass", "2048", Q_NULLPTR)
         );
         label_6->setText(QApplication::translate("TsukuyomiClass", "depth", Q_NULLPTR));
+        genBVHButton->setText(QApplication::translate("TsukuyomiClass", "genBVH", Q_NULLPTR));
+        showBVHcheckBox->setText(QApplication::translate("TsukuyomiClass", "showBVH", Q_NULLPTR));
+        renderMethodcomboBox->clear();
+        renderMethodcomboBox->insertItems(0, QStringList()
+         << QApplication::translate("TsukuyomiClass", "Normal", Q_NULLPTR)
+         << QApplication::translate("TsukuyomiClass", "Whitted", Q_NULLPTR)
+         << QApplication::translate("TsukuyomiClass", "PathTracing", Q_NULLPTR)
+        );
+        label_7->setText(QApplication::translate("TsukuyomiClass", "method", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("TsukuyomiClass", "OfflineRender", Q_NULLPTR));
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
         menuObjects->setTitle(QApplication::translate("TsukuyomiClass", "Objects", Q_NULLPTR));
         menuLights->setTitle(QApplication::translate("TsukuyomiClass", "Lights", Q_NULLPTR));
         menuRenderOption->setTitle(QApplication::translate("TsukuyomiClass", "Options", Q_NULLPTR));
-        menuOfflineRender->setTitle(QApplication::translate("TsukuyomiClass", "OfflineRender", Q_NULLPTR));
-        menuType->setTitle(QApplication::translate("TsukuyomiClass", "Type", Q_NULLPTR));
-        menuAccel->setTitle(QApplication::translate("TsukuyomiClass", "Accel", Q_NULLPTR));
     } // retranslateUi
 
 };
