@@ -24,6 +24,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 #include "objectpropertywidget.h"
@@ -52,6 +53,14 @@ public:
     QWidget *centralWidget;
     RenderWidget *render_widget;
     ObjectsListWidget *objectsListView;
+    QTabWidget *tabWidget;
+    QWidget *tab_3;
+    QLabel *label_4;
+    QWidget *widget;
+    QPushButton *transButton;
+    QPushButton *rotButton;
+    QSlider *moveSpeedSlider;
+    QWidget *tab;
     ObjectPropertyWidget *propertyWidget;
     QLabel *label;
     QLineEdit *sx_lineEdit;
@@ -65,16 +74,12 @@ public:
     QLineEdit *rz_lineEdit;
     QLineEdit *ry_lineEdit;
     QLineEdit *rx_lineEdit;
-    QSlider *moveSpeedSlider;
-    QLabel *label_4;
-    QWidget *widget;
-    QPushButton *transButton;
-    QPushButton *rotButton;
-    QPushButton *renderButton;
-    QCheckBox *writeFilecheckBox;
-    QComboBox *sampleComboBox;
+    QWidget *tab_2;
     QComboBox *depthcomboBox;
+    QCheckBox *writeFilecheckBox;
+    QPushButton *renderButton;
     QLabel *label_5;
+    QComboBox *sampleComboBox;
     QLabel *label_6;
     QMenuBar *menuBar;
     QMenu *menu;
@@ -137,15 +142,47 @@ public:
         objectsListView = new ObjectsListWidget(centralWidget);
         objectsListView->setObjectName(QStringLiteral("objectsListView"));
         objectsListView->setGeometry(QRect(10, 30, 161, 471));
-        propertyWidget = new ObjectPropertyWidget(centralWidget);
-        propertyWidget->setObjectName(QStringLiteral("propertyWidget"));
-        propertyWidget->setGeometry(QRect(840, 30, 261, 101));
-        label = new QLabel(propertyWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(20, 10, 61, 16));
+        tabWidget = new QTabWidget(centralWidget);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setGeometry(QRect(830, 20, 311, 501));
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QStringLiteral("tab_3"));
+        label_4 = new QLabel(tab_3);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(10, 20, 91, 16));
         QFont font;
         font.setFamily(QStringLiteral("Consolas"));
         font.setPointSize(12);
+        label_4->setFont(font);
+        widget = new QWidget(tab_3);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(10, 60, 151, 61));
+        transButton = new QPushButton(widget);
+        transButton->setObjectName(QStringLiteral("transButton"));
+        transButton->setGeometry(QRect(10, 10, 51, 41));
+        transButton->setCheckable(true);
+        transButton->setChecked(true);
+        rotButton = new QPushButton(widget);
+        rotButton->setObjectName(QStringLiteral("rotButton"));
+        rotButton->setGeometry(QRect(80, 10, 51, 41));
+        rotButton->setIconSize(QSize(16, 16));
+        rotButton->setCheckable(true);
+        moveSpeedSlider = new QSlider(tab_3);
+        moveSpeedSlider->setObjectName(QStringLiteral("moveSpeedSlider"));
+        moveSpeedSlider->setGeometry(QRect(110, 20, 160, 22));
+        moveSpeedSlider->setMinimum(0);
+        moveSpeedSlider->setMaximum(100);
+        moveSpeedSlider->setValue(20);
+        moveSpeedSlider->setOrientation(Qt::Horizontal);
+        tabWidget->addTab(tab_3, QString());
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        propertyWidget = new ObjectPropertyWidget(tab);
+        propertyWidget->setObjectName(QStringLiteral("propertyWidget"));
+        propertyWidget->setGeometry(QRect(10, 20, 261, 101));
+        label = new QLabel(propertyWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(20, 10, 61, 16));
         label->setFont(font);
         sx_lineEdit = new QLineEdit(propertyWidget);
         sx_lineEdit->setObjectName(QStringLiteral("sx_lineEdit"));
@@ -191,52 +228,32 @@ public:
         rx_lineEdit->setObjectName(QStringLiteral("rx_lineEdit"));
         rx_lineEdit->setGeometry(QRect(110, 70, 41, 20));
         rx_lineEdit->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        moveSpeedSlider = new QSlider(centralWidget);
-        moveSpeedSlider->setObjectName(QStringLiteral("moveSpeedSlider"));
-        moveSpeedSlider->setGeometry(QRect(940, 140, 160, 22));
-        moveSpeedSlider->setMinimum(0);
-        moveSpeedSlider->setMaximum(100);
-        moveSpeedSlider->setValue(20);
-        moveSpeedSlider->setOrientation(Qt::Horizontal);
-        label_4 = new QLabel(centralWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setGeometry(QRect(840, 140, 91, 16));
-        label_4->setFont(font);
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(840, 180, 151, 61));
-        transButton = new QPushButton(widget);
-        transButton->setObjectName(QStringLiteral("transButton"));
-        transButton->setGeometry(QRect(10, 10, 51, 41));
-        transButton->setCheckable(true);
-        transButton->setChecked(true);
-        rotButton = new QPushButton(widget);
-        rotButton->setObjectName(QStringLiteral("rotButton"));
-        rotButton->setGeometry(QRect(80, 10, 51, 41));
-        rotButton->setIconSize(QSize(16, 16));
-        rotButton->setCheckable(true);
-        renderButton = new QPushButton(centralWidget);
-        renderButton->setObjectName(QStringLiteral("renderButton"));
-        renderButton->setGeometry(QRect(850, 260, 111, 41));
-        writeFilecheckBox = new QCheckBox(centralWidget);
-        writeFilecheckBox->setObjectName(QStringLiteral("writeFilecheckBox"));
-        writeFilecheckBox->setGeometry(QRect(1050, 260, 91, 21));
-        sampleComboBox = new QComboBox(centralWidget);
-        sampleComboBox->setObjectName(QStringLiteral("sampleComboBox"));
-        sampleComboBox->setGeometry(QRect(1080, 180, 69, 22));
-        depthcomboBox = new QComboBox(centralWidget);
+        tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        depthcomboBox = new QComboBox(tab_2);
         depthcomboBox->setObjectName(QStringLiteral("depthcomboBox"));
-        depthcomboBox->setGeometry(QRect(1080, 220, 69, 22));
-        label_5 = new QLabel(centralWidget);
+        depthcomboBox->setGeometry(QRect(90, 60, 69, 22));
+        writeFilecheckBox = new QCheckBox(tab_2);
+        writeFilecheckBox->setObjectName(QStringLiteral("writeFilecheckBox"));
+        writeFilecheckBox->setGeometry(QRect(180, 40, 91, 21));
+        renderButton = new QPushButton(tab_2);
+        renderButton->setObjectName(QStringLiteral("renderButton"));
+        renderButton->setGeometry(QRect(20, 110, 111, 41));
+        label_5 = new QLabel(tab_2);
         label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setGeometry(QRect(1010, 180, 54, 21));
+        label_5->setGeometry(QRect(20, 20, 54, 21));
         QFont font1;
         font1.setPointSize(12);
         label_5->setFont(font1);
-        label_6 = new QLabel(centralWidget);
+        sampleComboBox = new QComboBox(tab_2);
+        sampleComboBox->setObjectName(QStringLiteral("sampleComboBox"));
+        sampleComboBox->setGeometry(QRect(90, 20, 69, 22));
+        label_6 = new QLabel(tab_2);
         label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setGeometry(QRect(1010, 220, 54, 21));
+        label_6->setGeometry(QRect(20, 50, 54, 21));
         label_6->setFont(font1);
+        tabWidget->addTab(tab_2, QString());
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -287,6 +304,7 @@ public:
 
         retranslateUi(TsukuyomiClass);
 
+        tabWidget->setCurrentIndex(0);
         sampleComboBox->setCurrentIndex(0);
 
 
@@ -310,6 +328,10 @@ public:
         actionWhitted->setText(QApplication::translate("TsukuyomiClass", "Whitted", Q_NULLPTR));
         actiongenBVH->setText(QApplication::translate("TsukuyomiClass", "genBVH", Q_NULLPTR));
         actionshowBVH->setText(QApplication::translate("TsukuyomiClass", "showBVH", Q_NULLPTR));
+        label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
+        transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
+        rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("TsukuyomiClass", "view", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());
         sx_lineEdit->setText(QString());
@@ -331,11 +353,16 @@ public:
         ry_lineEdit->setText(QString());
         rx_lineEdit->setInputMask(QString());
         rx_lineEdit->setText(QString());
-        label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
-        transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
-        rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
-        renderButton->setText(QApplication::translate("TsukuyomiClass", "Render", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("TsukuyomiClass", "Object", Q_NULLPTR));
+        depthcomboBox->clear();
+        depthcomboBox->insertItems(0, QStringList()
+         << QApplication::translate("TsukuyomiClass", "1", Q_NULLPTR)
+         << QApplication::translate("TsukuyomiClass", "3", Q_NULLPTR)
+         << QApplication::translate("TsukuyomiClass", "5", Q_NULLPTR)
+        );
         writeFilecheckBox->setText(QApplication::translate("TsukuyomiClass", "WriteFile", Q_NULLPTR));
+        renderButton->setText(QApplication::translate("TsukuyomiClass", "Render", Q_NULLPTR));
+        label_5->setText(QApplication::translate("TsukuyomiClass", "sample", Q_NULLPTR));
         sampleComboBox->clear();
         sampleComboBox->insertItems(0, QStringList()
          << QApplication::translate("TsukuyomiClass", "1", Q_NULLPTR)
@@ -346,14 +373,8 @@ public:
          << QApplication::translate("TsukuyomiClass", "1024", Q_NULLPTR)
          << QApplication::translate("TsukuyomiClass", "2048", Q_NULLPTR)
         );
-        depthcomboBox->clear();
-        depthcomboBox->insertItems(0, QStringList()
-         << QApplication::translate("TsukuyomiClass", "1", Q_NULLPTR)
-         << QApplication::translate("TsukuyomiClass", "3", Q_NULLPTR)
-         << QApplication::translate("TsukuyomiClass", "5", Q_NULLPTR)
-        );
-        label_5->setText(QApplication::translate("TsukuyomiClass", "sample", Q_NULLPTR));
         label_6->setText(QApplication::translate("TsukuyomiClass", "depth", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("TsukuyomiClass", "OfflineRender", Q_NULLPTR));
         menu->setTitle(QApplication::translate("TsukuyomiClass", "Files", Q_NULLPTR));
         menuObjects->setTitle(QApplication::translate("TsukuyomiClass", "Objects", Q_NULLPTR));
         menuLights->setTitle(QApplication::translate("TsukuyomiClass", "Lights", Q_NULLPTR));
