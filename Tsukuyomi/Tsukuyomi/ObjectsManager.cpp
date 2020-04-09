@@ -20,7 +20,8 @@ void ObjectManager::clear()
 		SAFE_DELETE(iter.second);
 	}
 	objects.clear();
-	listview->clear();
+	if(listview)
+		listview->clear();
 	curSelObject = nullptr;
 	bvhManager.destroyBoundingVolumeHieratches();
 }

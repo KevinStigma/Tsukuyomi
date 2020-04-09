@@ -10,6 +10,7 @@ class Tsukuyomi : public QMainWindow
 
 public:
 	Tsukuyomi(QWidget *parent = Q_NULLPTR);
+	~Tsukuyomi();
 
 protected:
 	void keyReleaseEvent(QKeyEvent *event);

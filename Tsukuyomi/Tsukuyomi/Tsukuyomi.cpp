@@ -20,6 +20,16 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
 }
 
+Tsukuyomi::~Tsukuyomi()
+{
+	g_pGlobalSys->objectManager.setListView(nullptr);
+	ui.objectsListView->setPropertyWidget(nullptr);
+	g_pGlobalSys->objectsList = nullptr;
+	g_pGlobalSys->renderWidget = nullptr;
+	g_pGlobalSys->moveSpeedSlider = nullptr;
+	g_pGlobalSys->objectPropertyWidget = nullptr;
+}
+
 void Tsukuyomi::on_actionLoad_Mesh_triggered()
 {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Load Mesh"), "./Data/Meshes", "obj files(*.obj)", 0);
