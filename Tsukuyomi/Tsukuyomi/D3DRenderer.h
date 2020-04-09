@@ -16,7 +16,9 @@ class D3DRenderer
 public:
 	D3DRenderer();
 	~D3DRenderer();
+	void updateCamView(int width, int height);
 	bool initD3D(HWND windowId, int width, int height);
+	bool resizeD3D(int width, int height);
 	void initScene();
 	void renderScene();
 	void cleanup();
@@ -79,6 +81,7 @@ protected:
 	ID3D11Buffer*			m_pDirLightVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pDirLightIndexBuffer = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
+	D3D11_VIEWPORT          m_screenViewport;
 	int						transAxisCylinderIndexCount;
 	int						transAxisIndexCount;
 	int                     rotAxisIndexBegin;

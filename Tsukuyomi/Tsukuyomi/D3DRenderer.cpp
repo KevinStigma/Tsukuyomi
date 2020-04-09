@@ -22,6 +22,11 @@ D3DRenderer::~D3DRenderer()
 	cleanup();
 }
 
+void D3DRenderer::updateCamView(int width, int height)
+{
+	m_camera.setLens(m_camera.fov, (float)width / (float)height, m_camera.zNear, m_camera.zFar);
+}
+
 bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height)
 {
 	HRESULT hr = S_OK;
@@ -126,10 +131,57 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	m_pImmediateContext->RSSetViewports(1, &vp);
+	m_screenViewport = vp;
 
 	Effects::InitAll(m_pd3dDevice);
 	InputLayouts::initAll(m_pd3dDevice);
 
+	return true;
+}
+
+bool D3DRenderer::resizeD3D(int width, int height)
+{
+	SAFE_RELEASE(m_pRenderTargetView);
+	SAFE_RELEASE(m_pDepthStencilView);
+	SAFE_RELEASE(m_pDepthStencilBuffer);
+	HRESULT hr = S_OK;
+	m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	
+	//Create our BackBuffer
+	ID3D11Texture2D* backBuffer;
+	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+
+	//Create our Render Target
+	hr = m_pd3dDevice->CreateRenderTargetView(backBuffer, NULL, &m_pRenderTargetView);
+	SAFE_RELEASE(backBuffer);
+
+	//Describe our Depth/Stencil Buffer
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+
+	depthStencilDesc.Width = width;
+	depthStencilDesc.Height = height;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	//Create the Depth/Stencil View
+	m_pd3dDevice->CreateTexture2D(&depthStencilDesc, NULL, &m_pDepthStencilBuffer);
+	m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer, NULL, &m_pDepthStencilView);
+
+	//Set our Render Target
+	m_pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+
+	m_screenViewport.Width = width;
+	m_screenViewport.Height = height;
+
+	//Set the Viewport
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 	return true;
 }
 

@@ -26,12 +26,18 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::resizeEvent(QResizeEvent *event)
 {
+	int w = width(), h = height();
 	if (!renderer)
 	{
 		renderer = new D3DRenderer;
-		renderer->initD3D((HWND)winId(), width(), height());
+		renderer->initD3D((HWND)winId(), w, h);
 		renderer->initScene();
 	}
+	else
+	{
+		renderer->resizeD3D(w, h);
+	}
+	renderer->updateCamView(w, h);
 }
 
 void RenderWidget::paintEvent(QPaintEvent *event)
