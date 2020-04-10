@@ -27,7 +27,8 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>C:/Users/linyimap/.designer/backup/logo.png</normaloff>C:/Users/linyimap/.designer/backup/logo.png</iconset>
+    <normaloff>C:/Users/linyimap/.designer/backup/logo.png</normaloff>
+    <normalon>logo.png</normalon>C:/Users/linyimap/.designer/backup/logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">

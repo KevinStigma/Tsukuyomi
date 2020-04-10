@@ -108,6 +108,7 @@ public:
         TsukuyomiClass->setMinimumSize(QSize(1200, 780));
         QIcon icon;
         icon.addFile(QStringLiteral("C:/Users/linyimap/.designer/backup/logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral("logo.png"), QSize(), QIcon::Normal, QIcon::On);
         TsukuyomiClass->setWindowIcon(icon);
         actionLoad_Mesh = new QAction(TsukuyomiClass);
         actionLoad_Mesh->setObjectName(QStringLiteral("actionLoad_Mesh"));
