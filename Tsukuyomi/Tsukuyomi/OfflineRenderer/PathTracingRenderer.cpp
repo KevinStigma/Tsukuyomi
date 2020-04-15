@@ -138,6 +138,7 @@ Spectrum PathTracingRenderer::Li(const Ray& r)
 		+" "+std::to_string(f1)+" "+std::to_string(f2));
 		if (f.isBlack() || pdf == 0.0f)
 			break;
+		// TODO: why use this value to make russian roulette's q?
 		beta *= (f * abs(MathHelper::DotFloat3(wi, it.normal))/pdf);
 		specularBounce = (flags&BxDFType::BSDF_SPECULAR) != 0;
 		ray = it.spawnRay(wi);
