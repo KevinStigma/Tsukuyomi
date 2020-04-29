@@ -73,7 +73,6 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
-
 	swapChainDesc.BufferDesc = bufferDesc;
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0;
@@ -348,6 +347,87 @@ void D3DRenderer::translateSelObj(XMFLOAT2 mouse_move_dir)
 void D3DRenderer::rotateSelObj(XMFLOAT2 np1, XMFLOAT2 np2)
 {
 	rotAxis.rotateSelObj(m_camera, np1, np2, curSelAxis, g_pGlobalSys->objectManager.getCurSelObject());
+}
+
+void D3DRenderer::enableMSAA(bool enabled)
+{
+	DXGI_SWAP_CHAIN_DESC swapChainDesc;
+	m_pSwapChain->GetDesc(&swapChainDesc);
+	int width = swapChainDesc.BufferDesc.Width;
+	int height = swapChainDesc.BufferDesc.Height;
+
+	UINT m4xMsaaQuality = 0;
+	if (enabled)
+	{
+		m_pd3dDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality);
+		swapChainDesc.SampleDesc.Count = 4;
+		swapChainDesc.SampleDesc.Quality = m4xMsaaQuality - 1;
+	}
+	else
+	{
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
+	}
+
+	SAFE_RELEASE(m_pSwapChain);
+	SAFE_RELEASE(m_pRenderTargetView);
+	SAFE_RELEASE(m_pDepthStencilView);
+	SAFE_RELEASE(m_pDepthStencilBuffer);
+
+	IDXGIDevice* dxgiDevice = 0; 
+	m_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+	IDXGIAdapter* dxgiAdapter = 0; 
+	dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
+	IDXGIFactory* dxgiFactory = 0; 
+	dxgiAdapter->GetParent(__uuidof(IDXGIFactory),(void**)&dxgiFactory);
+	dxgiFactory->CreateSwapChain(m_pd3dDevice, &swapChainDesc, &m_pSwapChain);
+
+	HRESULT hr = S_OK;
+	m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+
+	//Create our BackBuffer
+	ID3D11Texture2D* backBuffer;
+	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+
+	//Create our Render Target
+	hr = m_pd3dDevice->CreateRenderTargetView(backBuffer, NULL, &m_pRenderTargetView);
+	SAFE_RELEASE(backBuffer);
+
+	//Describe our Depth/Stencil Buffer
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+
+	depthStencilDesc.Width = width;
+	depthStencilDesc.Height = height;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	if(enabled)
+	{
+		depthStencilDesc.SampleDesc.Count = 4;
+		depthStencilDesc.SampleDesc.Quality = m4xMsaaQuality - 1;
+	}
+	else
+	{
+		depthStencilDesc.SampleDesc.Count = 1;
+		depthStencilDesc.SampleDesc.Quality = 0;
+	}
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	//Create the Depth/Stencil View
+	m_pd3dDevice->CreateTexture2D(&depthStencilDesc, NULL, &m_pDepthStencilBuffer);
+	m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer, NULL, &m_pDepthStencilView);
+
+	//Set our Render Target
+	m_pImmediateContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+
+	m_screenViewport.Width = width;
+	m_screenViewport.Height = height;
+
+	//Set the Viewport
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 }
 
 void D3DRenderer::renderRulerLlines()

@@ -28,6 +28,7 @@ public slots:
 	void on_renderButton_clicked();
 	void on_genBVHButton_clicked();
 	void on_showBVHcheckBox_stateChanged(int);
+	void on_MSAA_checkBox_stateChanged(int);
 	void on_sampleComboBox_currentIndexChanged(int);
 	void on_depthcomboBox_currentIndexChanged(int);
 	void on_renderMethodcomboBox_currentIndexChanged(int);

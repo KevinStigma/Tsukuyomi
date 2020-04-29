@@ -32,6 +32,7 @@ public:
 	void translateSelObj(XMFLOAT2 mouse_move_dir);
 	void rotateSelObj(XMFLOAT2 np1, XMFLOAT2 np2);
 	AXIS getCurSelAxis() { return curSelAxis; }
+	void enableMSAA(bool enabled);
 	
 protected:
 	void initLights();
@@ -61,7 +62,6 @@ protected:
 	ID3D11DeviceContext*    m_pImmediateContext = nullptr;
 	ID3D11DeviceContext1*   m_pImmediateContext1 = nullptr;
 	IDXGISwapChain*         m_pSwapChain = nullptr;
-	IDXGISwapChain1*        m_pSwapChain1 = nullptr;
 	ID3D11Texture2D*        m_pDepthStencilBuffer = nullptr;
 	ID3D11RenderTargetView* m_pRenderTargetView = nullptr;
 	ID3D11DepthStencilView* m_pDepthStencilView = nullptr;

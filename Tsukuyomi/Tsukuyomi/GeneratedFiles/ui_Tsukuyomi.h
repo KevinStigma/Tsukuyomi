@@ -62,6 +62,7 @@ public:
     QPushButton *transButton;
     QPushButton *rotButton;
     QSlider *moveSpeedSlider;
+    QCheckBox *MSAA_checkBox;
     QWidget *tab;
     ObjectPropertyWidget *propertyWidget;
     QLabel *label;
@@ -208,6 +209,12 @@ public:
         moveSpeedSlider->setMaximum(100);
         moveSpeedSlider->setValue(20);
         moveSpeedSlider->setOrientation(Qt::Horizontal);
+        MSAA_checkBox = new QCheckBox(tab_3);
+        MSAA_checkBox->setObjectName(QStringLiteral("MSAA_checkBox"));
+        MSAA_checkBox->setGeometry(QRect(20, 130, 71, 15));
+        QFont font1;
+        font1.setPointSize(12);
+        MSAA_checkBox->setFont(font1);
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
@@ -271,8 +278,6 @@ public:
         writeFilecheckBox = new QCheckBox(tab_2);
         writeFilecheckBox->setObjectName(QStringLiteral("writeFilecheckBox"));
         writeFilecheckBox->setGeometry(QRect(160, 150, 101, 21));
-        QFont font1;
-        font1.setPointSize(12);
         writeFilecheckBox->setFont(font1);
         renderButton = new QPushButton(tab_2);
         renderButton->setObjectName(QStringLiteral("renderButton"));
@@ -344,7 +349,7 @@ public:
 
         retranslateUi(TsukuyomiClass);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
         sampleComboBox->setCurrentIndex(0);
         renderMethodcomboBox->setCurrentIndex(2);
 
@@ -372,6 +377,7 @@ public:
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
         transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
+        MSAA_checkBox->setText(QApplication::translate("TsukuyomiClass", "MSAA", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("TsukuyomiClass", "view", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());
