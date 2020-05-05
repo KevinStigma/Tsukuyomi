@@ -15,46 +15,65 @@
 //   cannot straddle a 4D vector boundary.
 using namespace DirectX;
 
-struct DirLight
+namespace RenderLightHelper
 {
-	DirLight() { ZeroMemory(this, sizeof(this)); }
 
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular;
-	XMFLOAT3 Direction;
-	float Pad; // Pad the last float so we can set an array of lights if we wanted.
-};
+	struct DirLight
+	{
+		DirLight() { ZeroMemory(this, sizeof(this)); }
 
-struct SpotLight
-{
-	SpotLight() { ZeroMemory(this, sizeof(this)); }
+		XMFLOAT4 Ambient;
+		XMFLOAT4 Diffuse;
+		XMFLOAT4 Specular;
+		XMFLOAT3 Direction;
+		float Pad; // Pad the last float so we can set an array of lights if we wanted.
+	};
 
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular;
+	struct PointLight
+	{
+		PointLight() { ZeroMemory(this, sizeof(this)); }
 
-	// Packed into 4D vector: (Position, Range)
-	XMFLOAT3 Position;
-	float Range;
+		XMFLOAT4 Ambient;
+		XMFLOAT4 Diffuse;
+		XMFLOAT4 Specular;
 
-	// Packed into 4D vector: (Direction, Spot)
-	XMFLOAT3 Direction;
-	float Spot;
+		XMFLOAT3 Position;
+		float Range;
 
-	// Packed into 4D vector: (Att, Pad)
-	XMFLOAT3 Att;
-	float Pad; // Pad the last float so we can set an array of lights if we wanted.
-};
+		XMFLOAT3 Att;
+		float pad;
+	};
 
-struct Material
-{
-	Material() { ZeroMemory(this, sizeof(this)); }
+	struct SpotLight
+	{
+		SpotLight() { ZeroMemory(this, sizeof(this)); }
 
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular; // w = SpecPower
-	XMFLOAT4 Reflect;
-};
+		XMFLOAT4 Ambient;
+		XMFLOAT4 Diffuse;
+		XMFLOAT4 Specular;
+
+		// Packed into 4D vector: (Position, Range)
+		XMFLOAT3 Position;
+		float Range;
+
+		// Packed into 4D vector: (Direction, Spot)
+		XMFLOAT3 Direction;
+		float Spot;
+
+		// Packed into 4D vector: (Att, Pad)
+		XMFLOAT3 Att;
+		float Pad; // Pad the last float so we can set an array of lights if we wanted.
+	};
+
+	struct Material
+	{
+		Material() { ZeroMemory(this, sizeof(this)); }
+
+		XMFLOAT4 Ambient;
+		XMFLOAT4 Diffuse;
+		XMFLOAT4 Specular; // w = SpecPower
+		XMFLOAT4 Reflect;
+	};
+}
 
 #endif // LIGHTHELPER_H

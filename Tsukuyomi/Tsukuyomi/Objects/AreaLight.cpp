@@ -9,7 +9,7 @@ AreaLight::AreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOA
 	else
 		mesh = new Mesh("", mesh_path, t, s, r, this, pbr_mat);
 	type = AREA_LIGHT;
-	Material mat;
+	RenderLightHelper::Material mat;
 	mat.Ambient = XMFLOAT4(color.x, color.y, color.z, 1.0);
 	mat.Diffuse = XMFLOAT4(0.0, 0.0, 0.0, 1.0);
 	mat.Specular = XMFLOAT4(0.0, 0.0, 0.0, 1.0);

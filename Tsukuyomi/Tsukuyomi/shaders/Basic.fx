@@ -8,7 +8,8 @@
  
 cbuffer cbPerFrame
 {
-	DirectionalLight gDirLights[3];
+	DirectionalLight gDirLights[10];
+	PointLight gPointLights[10];
 	float3 gEyePosW;
 
 	float  gFogStart;

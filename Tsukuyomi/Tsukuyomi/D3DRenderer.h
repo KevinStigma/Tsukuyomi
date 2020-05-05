@@ -23,8 +23,8 @@ public:
 	void renderScene();
 	void cleanup();
 	Camera& getCamera() { return m_camera; }
-	std::vector<DirLight> & getLights() { return m_dirLights; }
-	std::vector<Material> & getMaterials() { return m_materials; }
+	std::vector<RenderLightHelper::DirLight> & getLights() { return m_dirLights; }
+	std::vector<RenderLightHelper::Material> & getMaterials() { return m_materials; }
 	ID3D11Device* getDevice() { return m_pd3dDevice; }
 	RenderSelObjMode getRenderSelObjMode() { return renderSelObjMode; }
 	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
@@ -89,8 +89,8 @@ protected:
 	int                     axisVertexCount;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
-	std::vector<DirLight> m_dirLights;
-	std::vector<Material> m_materials;
+	std::vector<RenderLightHelper::DirLight> m_dirLights;
+	std::vector<RenderLightHelper::Material> m_materials;
 	TransAxis				transAxis;
 	RotAxis					rotAxis;
 };

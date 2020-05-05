@@ -27,7 +27,7 @@ public:
 	virtual std::vector<Primitive*> getAllPrimitives();
 	std::string getMeshPath() { return mesh_path; }
 	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
-	void setMaterial(Material new_mat) { mat = new_mat; }
+	void setMaterial(RenderLightHelper::Material new_mat) { mat = new_mat; }
 	PbrMat* getPbrMat() { return pbrMat; }
 	virtual int getComponentNum();
 	IntersectInfo sample(XMFLOAT2 u, float& area)const;
@@ -36,7 +36,7 @@ public:
 	virtual float Pdf() { return 1.0f / area; }
 	virtual float Pdf(const IntersectInfo & ref, const XMFLOAT3& wi);
 protected:
-	Material mat;
+	RenderLightHelper::Material mat;
 	void computeBoundingBox();
 	float computeArea();
 	tinyobj::shape_t shape;

@@ -51,6 +51,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 	DirLights         = mFX->GetVariableByName("gDirLights");
+	PointLights		  = mFX->GetVariableByName("gPointLights");
 	Mat               = mFX->GetVariableByName("gMaterial");
 	DiffuseMap		  = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 	TexTransform	  = mFX->GetVariableByName("gTexTransform")->AsMatrix();
