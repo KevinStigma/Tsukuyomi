@@ -21,6 +21,7 @@ public:
 	XMFLOAT3 getTriangleVertex(int index)const;
 	XMFLOAT3 getTriangleNormal(int index)const;
 	XMFLOAT2 getTriangleTexCoord(int index)const;
+	XMFLOAT3 getWorldCenter();
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);

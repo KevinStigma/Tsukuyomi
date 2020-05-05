@@ -122,7 +122,7 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
 	// the line of site of the light.
 
 	float diffuseFactor = dot(lightVec, normal);
-
+	//diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
 	// Flatten to avoid dynamic branching.
 	[flatten]
 	if( diffuseFactor > 0.0f )
@@ -133,7 +133,6 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
 		diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
 		spec    = specFactor * mat.Specular * L.Specular;
 	}
-
 	// Attenuate
 	float att = 1.0f / dot(L.Att, float3(1.0f, d, d*d));
 

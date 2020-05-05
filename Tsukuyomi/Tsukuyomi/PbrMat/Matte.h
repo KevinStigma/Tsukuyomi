@@ -9,6 +9,7 @@ public:
 		: Kd(Kd), sigma(sigma) {}
 	void ComputeScatteringFunctions(IntersectInfo *it, bool allowMultipleLobes) const;
 	void exportToXML(tinyxml2::XMLElement* elm);
+	RenderLightHelper::Material generateRenderMaterial();
 	std::string toString()
 	{
 		return "Matte";

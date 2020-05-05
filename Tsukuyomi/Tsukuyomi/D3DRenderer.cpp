@@ -256,6 +256,54 @@ void D3DRenderer::initScene()
 	createDirectionalLightBuffers();
 }
 
+void D3DRenderer::updateLights()
+{
+	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
+	std::vector<RenderLightHelper::DirLight> dirLights;
+	std::vector<RenderLightHelper::PointLight> pointLights;
+	for each (Light* light in lights)
+	{
+		XMFLOAT3 color = MathHelper::NormalizeFloat3(light->getColor());
+		if (light->getType() == DIR_LIGHT)
+		{
+			RenderLightHelper::DirLight dirLight;
+			dirLight.Direction = ((DirectionalLight*)light)->getWorldDir();
+			dirLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
+			dirLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			dirLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			dirLights.push_back(dirLight);
+		}
+		else if(light->getType() == POINT_LIGHT)
+		{
+			RenderLightHelper::PointLight pLight;
+			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
+			pLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			pLight.Position = ((PointLight*)light)->getTranslation();
+			pointLights.push_back(pLight);
+		}
+		else if (light->getType() == AREA_LIGHT)
+		{
+			RenderLightHelper::PointLight pLight;
+			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
+			pLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			pLight.Position = ((AreaLight*)light)->getMesh()->getWorldCenter();
+			pointLights.push_back(pLight);
+		}
+	}
+	BasicEffect*basicEffect = Effects::BasicFX;
+	basicEffect->SetDirLightCount(dirLights.size());
+	basicEffect->SetPointLightCount(pointLights.size());
+	if(pointLights.size())
+		basicEffect->SetPointLights(&pointLights[0], pointLights.size());
+	if(dirLights.size())
+		basicEffect->SetDirLights(&dirLights[0], dirLights.size());
+
+	XMFLOAT3 eyePosW = m_camera.getPosition();
+	basicEffect->SetEyePosW(eyePosW);
+}
+
 void D3DRenderer::renderScene()
 {
 	//Clear our backbuffer
@@ -266,6 +314,7 @@ void D3DRenderer::renderScene()
 
 	renderRulerLlines();
 	renderBVH();
+	updateLights();
 
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
@@ -469,9 +518,7 @@ void D3DRenderer::renderRotAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	XMFLOAT3 eyePosW = m_camera.getPosition();
 	basicEffect->SetDirLights(&m_dirLights[0]);
-	basicEffect->SetEyePosW(eyePosW);
 
 	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -627,13 +674,10 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	XMFLOAT3 eyePosW = m_camera.getPosition();
-	basicEffect->SetDirLights(&m_dirLights[0]);
-	basicEffect->SetEyePosW(eyePosW);
-
 	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
+	basicEffect->SetDirLights(&m_dirLights[0]);
 
 	XMVECTOR v = XMVectorZero();
 	XMMATRIX worldMat = transAxis.computeWorldMatrix(obj, AXIS::X);

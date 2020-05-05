@@ -1,6 +1,7 @@
 #pragma once
 #include "../intersect_info.h"
 #include "../BxDFs/BxDF.h"
+#include "LightHelper.h"
 
 class BSDF
 {

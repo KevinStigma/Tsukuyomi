@@ -37,6 +37,7 @@ public:
 protected:
 	void initLights();
 	void initMaterials();
+	void updateLights();
 	void renderRulerLlines();
 	void renderSelObjFlag();
 	void renderBVH();

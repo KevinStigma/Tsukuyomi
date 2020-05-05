@@ -9,6 +9,7 @@ public:
 	void ComputeScatteringFunctions(IntersectInfo *it, bool allowMultipleLobes) const;
 	void exportToXML(tinyxml2::XMLElement* elm);
 	std::string toString() { return "Plastic"; }
+	RenderLightHelper::Material generateRenderMaterial();
 
 private:
 	// PlasticMaterial Private Data

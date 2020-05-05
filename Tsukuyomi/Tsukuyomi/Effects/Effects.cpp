@@ -43,6 +43,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	Light3TexTech     = mFX->GetTechniqueByName("Light3Tex");
 	SimpleColorTech	  = mFX->GetTechniqueByName("SimpleColor");
 	DebugNormalTech	  = mFX->GetTechniqueByName("DebugNormal");
+	CustomLightTech   = mFX->GetTechniqueByName("CustomLight");
 
 	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 
@@ -58,6 +59,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
 	FogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
 	FogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
+	curDirLightCount = mFX->GetVariableByName("curDirLightCount")->AsScalar();
+	curPointLightCount = mFX->GetVariableByName("curPointLightCount")->AsScalar();
 }
 
 BasicEffect::~BasicEffect()

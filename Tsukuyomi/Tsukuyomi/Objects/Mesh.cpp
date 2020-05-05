@@ -21,11 +21,11 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 	type = MESH;
 	if (!isEmpty())
 		generateBuffers(g_pGlobalSys->renderer->getDevice());
-	mat = g_pGlobalSys->renderer->getMaterials()[0];
 	if (!pbr_mat)
 		pbrMat = new MatteMaterial(Spectrum(0.725000, 0.710000, 0.680000), 0.0);
 	else
 		pbrMat = pbr_mat;
+	mat = pbrMat->generateRenderMaterial();
 }
 
 Mesh::~Mesh()
@@ -52,13 +52,8 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Camera& camera = renderer->getCamera();
-	auto & lights = renderer->getLights();
 
-	XMFLOAT3 eyePosW = camera.getPosition();
-	basicEffect->SetDirLights(&lights[0]);
-	basicEffect->SetEyePosW(eyePosW);
-
-	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -386,6 +381,15 @@ XMFLOAT2 Mesh::getTriangleTexCoord(int index)const
 {
 	auto& texs = shape.mesh.texcoords;
 	return XMFLOAT2(texs[index * 3], texs[index * 3 + 1]);
+}
+
+XMFLOAT3 Mesh::getWorldCenter()
+{
+	XMMATRIX mat = getBoundingBox().getTransMatrix() * getTransMatrix();
+	XMVECTOR v = XMVector3TransformCoord(XMVectorSet(0.0, 0.0, 0.0, 1.0), mat);
+	XMFLOAT3 world_pos;
+	XMStoreFloat3(&world_pos, v);
+	return world_pos;
 }
 
 void Mesh::constructNormals()

@@ -11,6 +11,8 @@ cbuffer cbPerFrame
 	DirectionalLight gDirLights[10];
 	PointLight gPointLights[10];
 	float3 gEyePosW;
+	int curPointLightCount;
+	int curDirLightCount;
 
 	float  gFogStart;
 	float  gFogRange;
@@ -177,6 +179,86 @@ float4 PS(VertexOut pin,
 	return litColor;
 }
 
+
+float4 CustomPS(VertexOut pin,
+	uniform int gPointLightCount,
+	uniform int gDirLightCount,
+	uniform bool gUseTexure,
+	uniform bool gAlphaClip,
+	uniform bool gFogEnabled) : SV_Target
+{
+	//return float4(1.0, 0.0, 0.0, 1.0);
+	// Interpolating normal can unnormalize it, so normalize it.
+	pin.NormalW = normalize(pin.NormalW);
+
+	// The toEye vector is used in lighting.
+	float3 toEye = gEyePosW - pin.PosW;
+
+	// Cache the distance to the eye from this surface point.
+	float distToEye = length(toEye);
+
+	// Normalize.
+	toEye /= distToEye;
+
+	// Default to multiplicative identity.
+	float4 texColor = float4(1, 1, 1, 1);
+
+	//
+	// Lighting.
+	//
+
+	float4 litColor = texColor;
+	if (gPointLightCount + gDirLightCount > 0)
+	{
+		// Start with a sum of zero. 
+		float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+		// Sum the light contribution from each light source.  
+		[unroll]
+		for (int i = 0; i < gDirLightCount; ++i)
+		{
+			float4 A, D, S;
+			ComputeDirectionalLight(gMaterial, gDirLights[i], pin.NormalW, toEye,
+				A, D, S);
+
+			ambient += A;
+			diffuse += D;
+			spec += S;
+		}
+
+		[unroll]
+		for (int i = 0; i < gPointLightCount; i++)
+		{
+			float4 A, D, S;
+			ComputePointLight(gMaterial, gPointLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
+			ambient += A;
+			diffuse += D;
+			spec += S;
+		}
+		
+		//litColor = float4(1.0, 0.0, 0.0, 1.0);
+		litColor = texColor * (ambient + diffuse) + spec;
+	}
+
+	//
+	// Fogging
+	//
+
+	if (gFogEnabled)
+	{
+		float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
+
+		// Blend the fog color and the lit color.
+		litColor = lerp(litColor, gFogColor, fogLerp);
+	}
+
+	// Common to take alpha from diffuse material and texture.
+	litColor.a = gMaterial.Diffuse.a * texColor.a;
+	return litColor;
+}
+
 technique11 DebugNormal
 {
 	pass P0
@@ -216,6 +298,7 @@ technique11 Light3
         SetPixelShader( CompileShader( ps_5_0, PS(3, false, false, false) ) );
     }
 }
+
 
 technique11 Light0Tex
 {
@@ -257,126 +340,6 @@ technique11 Light3Tex
     }
 }
 
-technique11 Light0TexAlphaClip
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(0, true, true, false) ) );
-    }
-}
-
-technique11 Light1TexAlphaClip
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(1, true, true, false) ) );
-    }
-}
-
-technique11 Light2TexAlphaClip
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(2, true, true, false) ) );
-    }
-}
-
-technique11 Light3TexAlphaClip
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(3, true, true, false) ) );
-    }
-}
-
-technique11 Light1Fog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(1, false, false, true) ) );
-    }
-}
-
-technique11 Light2Fog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(2, false, false, true) ) );
-    }
-}
-
-technique11 Light3Fog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(3, false, false, true) ) );
-    }
-}
-
-technique11 Light0TexFog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(0, true, false, true) ) );
-    }
-}
-
-technique11 Light1TexFog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(1, true, false, true) ) );
-    }
-}
-
-technique11 Light2TexFog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(2, true, false, true) ) );
-    }
-}
-
-technique11 Light3TexFog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(3, true, false, true) ) );
-    }
-}
-
-technique11 Light0TexAlphaClipFog
-{
-    pass P0
-    {
-        SetVertexShader( CompileShader( vs_5_0, VS() ) );
-		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, PS(0, true, true, true)));
-    }
-}
-
 technique11 Light1TexAlphaClipFog
 {
     pass P0
@@ -415,5 +378,15 @@ technique11 SimpleColor
 		SetVertexShader(CompileShader(vs_5_0, SimpleColorVS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, SimpleColorPS()));
+	}
+}
+
+technique11 CustomLight
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, false, false)));
 	}
 }

@@ -38,9 +38,9 @@ namespace RenderLightHelper
 		XMFLOAT4 Specular;
 
 		XMFLOAT3 Position;
-		float Range;
+		float Range = 100.0;
 
-		XMFLOAT3 Att;
+		XMFLOAT3 Att = XMFLOAT3(0.1,0.6,0.3);
 		float pad;
 	};
 
