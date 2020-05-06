@@ -45,6 +45,7 @@ public:
 	void SetFogRange(float f)                           { FogRange->SetFloat(f); }
 	void SetDirLightCount(int c) { curDirLightCount->SetInt(c); }
 	void SetPointLightCount(int c) { curPointLightCount->SetInt(c); }
+	void SetGammaCorrect(int c) { gammaCorrect->SetInt(c); }
 
 	ID3DX11EffectTechnique* DebugNormalTech;
 	ID3DX11EffectTechnique* Light1Tech;
@@ -68,6 +69,7 @@ public:
 	ID3DX11EffectVariable* Mat;
 	ID3DX11EffectScalarVariable* curPointLightCount;
 	ID3DX11EffectScalarVariable* curDirLightCount;
+	ID3DX11EffectScalarVariable* gammaCorrect;
 	ID3DX11EffectVectorVariable* FogColor;
 	ID3DX11EffectScalarVariable* FogStart;
 	ID3DX11EffectScalarVariable* FogRange;

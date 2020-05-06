@@ -154,6 +154,11 @@ void Tsukuyomi::on_MSAA_checkBox_stateChanged(int val)
 	ui.render_widget->getRenderer()->enableMSAA(bool(val));
 }
 
+void Tsukuyomi::on_Gamma_checkBox_stateChanged(int val)
+{
+	g_pGlobalSys->render_paras.gammaCorrect = bool(val);
+}
+
 void Tsukuyomi::on_sampleComboBox_currentIndexChanged(int ind)
 {
 	g_pGlobalSys->render_paras.sampleCount = atoi(ui.sampleComboBox->currentText().toStdString().c_str());

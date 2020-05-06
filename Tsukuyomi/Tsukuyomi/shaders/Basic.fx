@@ -13,6 +13,7 @@ cbuffer cbPerFrame
 	float3 gEyePosW;
 	int curPointLightCount;
 	int curDirLightCount;
+	int gammaCorrection;
 
 	float  gFogStart;
 	float  gFogRange;
@@ -256,6 +257,14 @@ float4 CustomPS(VertexOut pin,
 
 	// Common to take alpha from diffuse material and texture.
 	litColor.a = gMaterial.Diffuse.a * texColor.a;
+
+	if (gammaCorrection)
+	{
+		float gamma_ratio = 1.0 / 2.2;
+		litColor.r = pow(litColor.r, gamma_ratio);
+		litColor.g = pow(litColor.g, gamma_ratio);
+		litColor.b = pow(litColor.b, gamma_ratio);
+	}
 	return litColor;
 }
 

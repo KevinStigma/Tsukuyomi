@@ -61,6 +61,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	FogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
 	curDirLightCount = mFX->GetVariableByName("curDirLightCount")->AsScalar();
 	curPointLightCount = mFX->GetVariableByName("curPointLightCount")->AsScalar();
+	gammaCorrect = mFX->GetVariableByName("gammaCorrection")->AsScalar();
 }
 
 BasicEffect::~BasicEffect()

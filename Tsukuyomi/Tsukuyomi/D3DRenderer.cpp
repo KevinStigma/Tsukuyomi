@@ -302,6 +302,7 @@ void D3DRenderer::updateLights()
 
 	XMFLOAT3 eyePosW = m_camera.getPosition();
 	basicEffect->SetEyePosW(eyePosW);
+	basicEffect->SetGammaCorrect(g_pGlobalSys->render_paras.gammaCorrect);
 }
 
 void D3DRenderer::renderScene()
