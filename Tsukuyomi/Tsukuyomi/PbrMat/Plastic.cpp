@@ -38,7 +38,7 @@ RenderLightHelper::Material PlasticMaterial::generateRenderMaterial()
 	RenderLightHelper::Material mat;
 	mat.Ambient = XMFLOAT4(Kd.r * 0.2, Kd.b * 0.2, Kd.g * 0.2, 1.0);
 	mat.Diffuse = XMFLOAT4(Kd.r * 0.8, Kd.b * 0.8, Kd.g * 0.8, 1.0);
-	mat.Specular = XMFLOAT4(Ks.r, Ks.g, Ks.b, 1.0);
+	mat.Specular = XMFLOAT4(Ks.r, Ks.g, Ks.b, 10.0);
 	mat.Reflect = XMFLOAT4(0.0, 0.0, 0.0, 1.0);
 	return mat;
 }
