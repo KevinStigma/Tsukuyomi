@@ -33,6 +33,7 @@ public:
 	void rotateSelObj(XMFLOAT2 np1, XMFLOAT2 np2);
 	AXIS getCurSelAxis() { return curSelAxis; }
 	void enableMSAA(bool enabled);
+	void resetCameraTransform(Camera* cam);
 	
 protected:
 	void initLights();

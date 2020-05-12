@@ -36,6 +36,8 @@ public slots:
 	void on_writeFilecheckBox_stateChanged(int state);
 	void on_transButton_clicked(bool checked);
 	void on_rotButton_clicked(bool checked);
+	void on_targetCamButton_clicked();
+	void on_resetViewButton_clicked();
 
 private:
 	Ui::TsukuyomiClass ui;

@@ -64,6 +64,8 @@ public:
     QSlider *moveSpeedSlider;
     QCheckBox *MSAA_checkBox;
     QCheckBox *Gamma_checkBox;
+    QPushButton *targetCamButton;
+    QPushButton *resetViewButton;
     QWidget *tab;
     ObjectPropertyWidget *propertyWidget;
     QLabel *label;
@@ -220,6 +222,14 @@ public:
         Gamma_checkBox->setObjectName(QStringLiteral("Gamma_checkBox"));
         Gamma_checkBox->setGeometry(QRect(20, 150, 151, 16));
         Gamma_checkBox->setFont(font1);
+        targetCamButton = new QPushButton(tab_3);
+        targetCamButton->setObjectName(QStringLiteral("targetCamButton"));
+        targetCamButton->setGeometry(QRect(10, 180, 141, 31));
+        targetCamButton->setFont(font1);
+        resetViewButton = new QPushButton(tab_3);
+        resetViewButton->setObjectName(QStringLiteral("resetViewButton"));
+        resetViewButton->setGeometry(QRect(10, 220, 141, 31));
+        resetViewButton->setFont(font1);
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
@@ -384,6 +394,8 @@ public:
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));
         MSAA_checkBox->setText(QApplication::translate("TsukuyomiClass", "MSAA", Q_NULLPTR));
         Gamma_checkBox->setText(QApplication::translate("TsukuyomiClass", "Gamma Correction", Q_NULLPTR));
+        targetCamButton->setText(QApplication::translate("TsukuyomiClass", "Target To Cam", Q_NULLPTR));
+        resetViewButton->setText(QApplication::translate("TsukuyomiClass", "Reset View", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("TsukuyomiClass", "view", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());

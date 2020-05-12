@@ -101,14 +101,7 @@ void Tsukuyomi::on_actionAreaLight_triggered()
 
 void Tsukuyomi::keyReleaseEvent(QKeyEvent *event)
 {
-	if (event->key() == Qt::Key::Key_R)
-	{
-		if (ui.objectsListView->isEditing)
-			return;
-		Camera& camera = ui.render_widget->getRenderer()->getCamera();
-		camera.init();
-	}
-	else if (event->key() == Qt::Key::Key_Delete)
+	if (event->key() == Qt::Key::Key_Delete)
 	{
 		QListWidget* object_list = g_pGlobalSys->objectsList;
 		QListWidgetItem* item = object_list->currentItem();
@@ -208,4 +201,24 @@ void Tsukuyomi::on_rotButton_clicked(bool checked)
 		if (!ui.transButton->isChecked())
 			g_pGlobalSys->renderer->setRenderSelObjMode(RenderSelObjMode::NONE);
 	}
+}
+
+void Tsukuyomi::on_targetCamButton_clicked()
+{
+	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
+	if (sel_obj->getType() != CAM)
+	{
+		std::cout << "You must select a camera!" << std::endl;
+		return;
+	}
+	Camera* camera = dynamic_cast<Camera*>(sel_obj);
+	g_pGlobalSys->renderer->resetCameraTransform(camera);
+}
+
+void Tsukuyomi::on_resetViewButton_clicked()
+{
+	if (ui.objectsListView->isEditing)
+		return;
+	Camera& camera = ui.render_widget->getRenderer()->getCamera();
+	camera.init();
 }

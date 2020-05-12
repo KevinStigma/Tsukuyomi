@@ -480,6 +480,15 @@ void D3DRenderer::enableMSAA(bool enabled)
 	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 }
 
+void D3DRenderer::resetCameraTransform(Camera* cam)
+{
+	if (!cam)
+		return;
+	m_camera.setTranslation(cam->getTranslation());
+	m_camera.setRotation(cam->getRotation());
+	m_camera.updateViewMatrix();
+}
+
 void D3DRenderer::renderRulerLlines()
 {
 	BasicEffect*basicEffect = Effects::BasicFX;
