@@ -135,6 +135,8 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 	Effects::InitAll(m_pd3dDevice);
 	InputLayouts::initAll(m_pd3dDevice);
 
+	int shadowMapSize = 2048;
+	shadowMap = new ShadowMap(m_pd3dDevice, shadowMapSize, shadowMapSize);
 	return true;
 }
 
@@ -487,6 +489,44 @@ void D3DRenderer::resetCameraTransform(Camera* cam)
 	m_camera.setTranslation(cam->getTranslation());
 	m_camera.setRotation(cam->getRotation());
 	m_camera.updateViewMatrix();
+}
+
+void D3DRenderer::buildShadowTransform()
+{
+	// Only the first "main" light casts a shadow.
+	DirectionalLight* light = dynamic_cast<DirectionalLight*>(g_pGlobalSys->objectManager.getCurSelShadowLight());
+	if (!light)
+		return;
+	float scene_radius = 1000.0f;
+	XMVECTOR lightDir = XMLoadFloat3(&light->getWorldDir());
+	XMVECTOR lightPos = XMLoadFloat3(&light->getTranslation());
+	XMVECTOR targetPos = lightPos + lightDir * scene_radius;
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX V = XMMatrixLookAtLH(lightPos, targetPos, up);
+
+	// Transform bounding sphere to light space.
+	XMFLOAT3 sphereCenterLS;
+	XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, V));
+
+	// Ortho frustum in light space encloses scene.
+	float l = sphereCenterLS.x - scene_radius;
+	float b = sphereCenterLS.y - scene_radius;
+	float n = sphereCenterLS.z - scene_radius;
+	float r = sphereCenterLS.x + scene_radius;
+	float t = sphereCenterLS.y + scene_radius;
+	float f = sphereCenterLS.z + scene_radius;
+	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMMATRIX S = V * P*T;
+	XMStoreFloat4x4(&m_shadowTransform, S);
 }
 
 void D3DRenderer::renderRulerLlines()
@@ -1213,4 +1253,5 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pAxisIndexBuffer);
 	SAFE_RELEASE(m_pFrumstumIndexBuffer);
 	SAFE_RELEASE(m_pFrumstumVertexBuffer);
+	SAFE_DELETE(shadowMap);
 }

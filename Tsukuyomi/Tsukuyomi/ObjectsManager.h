@@ -34,6 +34,8 @@ public:
 	void setListView(ObjectsListWidget* qlistview) { listview = qlistview; }
 	Object* getCurSelObject() { return curSelObject; }
 	void setCurSelObject(std::string name);
+	void setCurShadowLight(Light* light);
+	Light* getCurSelShadowLight() { return curShadowLight; }
 	void exportProject(std::string file_path);
 	void outputSphereMesh();
 	void exportMaterial(PbrMat*mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc);
@@ -47,4 +49,5 @@ protected:
 	std::unordered_map<std::string, Object*> objects;
 	ObjectsListWidget* listview = nullptr;
 	Object* curSelObject = nullptr;
+	Light* curShadowLight = nullptr;
 };

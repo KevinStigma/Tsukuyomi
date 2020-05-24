@@ -146,6 +146,13 @@ void ObjectManager::setCurSelObject(std::string name)
 		curSelObject = objects[name];
 }
 
+void ObjectManager::setCurShadowLight(Light* light)
+{
+	if (light && light->getType() != DIR_LIGHT)
+		return;
+	curShadowLight = light;
+}
+
 bool ObjectManager::changeObjectName(std::string old_name, std::string new_name)
 {
 	if (old_name == new_name)

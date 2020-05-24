@@ -162,6 +162,7 @@
     <ClCompile Include="PbrMat\Matte.cpp" />
     <ClCompile Include="PbrMat\Plastic.cpp" />
     <ClCompile Include="RenderWidget.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="Tsukuyomi.cpp" />
     <ClCompile Include="Vertex.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="PbrMat\PbrMat.h" />
     <ClInclude Include="PbrMat\Plastic.h" />
     <ClInclude Include="Pixel.h" />
+    <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="VisibilityTester.h" />
     <QtMoc Include="ObjectsListWidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>

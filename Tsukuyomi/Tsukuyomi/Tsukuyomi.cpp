@@ -206,6 +206,8 @@ void Tsukuyomi::on_rotButton_clicked(bool checked)
 void Tsukuyomi::on_targetCamButton_clicked()
 {
 	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
+	if (!sel_obj)
+		return;
 	if (sel_obj->getType() != CAM)
 	{
 		std::cout << "You must select a camera!" << std::endl;
@@ -221,4 +223,11 @@ void Tsukuyomi::on_resetViewButton_clicked()
 		return;
 	Camera& camera = ui.render_widget->getRenderer()->getCamera();
 	camera.init();
+}
+
+void Tsukuyomi::on_setShadowLightButton_clicked()
+{
+	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
+	g_pGlobalSys->objectManager.setCurShadowLight(dynamic_cast<Light*>(sel_obj));
+	ui.render_widget->getRenderer()->buildShadowTransform();
 }

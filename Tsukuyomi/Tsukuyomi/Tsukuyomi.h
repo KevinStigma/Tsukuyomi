@@ -38,6 +38,7 @@ public slots:
 	void on_rotButton_clicked(bool checked);
 	void on_targetCamButton_clicked();
 	void on_resetViewButton_clicked();
+	void on_setShadowLightButton_clicked();
 
 private:
 	Ui::TsukuyomiClass ui;

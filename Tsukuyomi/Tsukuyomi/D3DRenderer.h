@@ -7,6 +7,7 @@
 #include "Objects/Camera.h"
 #include "Axis/TransAxis.h"
 #include "Axis/RotAxis.h"
+#include "ShadowMap.h"
 
 class Object;
 enum  RenderSelObjMode { NONE, COORD_AXIS, ROT_AXIS};
@@ -34,6 +35,7 @@ public:
 	AXIS getCurSelAxis() { return curSelAxis; }
 	void enableMSAA(bool enabled);
 	void resetCameraTransform(Camera* cam);
+	void buildShadowTransform();
 	
 protected:
 	void initLights();
@@ -89,6 +91,8 @@ protected:
 	int                     rotAxisIndexBegin;
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;
+	ShadowMap				*shadowMap;
+	XMFLOAT4X4              m_shadowTransform;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
 	std::vector<RenderLightHelper::DirLight> m_dirLights;

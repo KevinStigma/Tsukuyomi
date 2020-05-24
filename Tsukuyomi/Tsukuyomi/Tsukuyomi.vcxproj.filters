@@ -201,6 +201,9 @@
     <ClCompile Include="BxDFs\MicrofacetDistribution.cpp">
       <Filter>BxDFs</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="BxDFs\MicrofacetDistribution.h">
       <Filter>BxDFs</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
