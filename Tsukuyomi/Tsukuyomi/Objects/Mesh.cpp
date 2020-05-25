@@ -74,6 +74,12 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	}
 }
 
+void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer)
+{
+
+}
+
+
 IntersectInfo Mesh::sample(XMFLOAT2 u, float& area)const
 {
 	float r = generateRandomFloat();

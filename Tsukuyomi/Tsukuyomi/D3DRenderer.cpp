@@ -307,8 +307,29 @@ void D3DRenderer::updateLights()
 	basicEffect->SetGammaCorrect(g_pGlobalSys->render_paras.gammaCorrect);
 }
 
+void D3DRenderer::renderToShadowMap()
+{
+	if (!g_pGlobalSys->objectManager.getCurSelShadowLight())
+		return;
+	shadowMap->BindDsvAndSetNullRenderTarget(m_pImmediateContext);
+	std::vector<Object*> objects = g_pGlobalSys->objectManager.getAllObjects();
+	for each (auto obj in objects)
+	{
+		if(obj->getType() == MESH)
+		   dynamic_cast<Mesh*>(obj)->renderToShadowMap(m_pImmediateContext, this);
+	}
+	m_pImmediateContext->RSSetState(0);
+}
+
 void D3DRenderer::renderScene()
 {
+	updateLights();
+	renderToShadowMap();
+
+	ID3D11RenderTargetView* renderTargets[1] = { m_pRenderTargetView };
+	m_pImmediateContext->OMSetRenderTargets(1, renderTargets, m_pDepthStencilView);
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
+
 	//Clear our backbuffer
 	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
 
@@ -317,7 +338,6 @@ void D3DRenderer::renderScene()
 
 	renderRulerLlines();
 	renderBVH();
-	updateLights();
 
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
@@ -525,8 +545,10 @@ void D3DRenderer::buildShadowTransform()
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 
-	XMMATRIX S = V * P*T;
-	XMStoreFloat4x4(&m_shadowTransform, S);
+	XMMATRIX S = V * P * T;
+	XMStoreFloat4x4(&m_shadowTransform.shadowTransMat, S);
+	XMStoreFloat4x4(&m_shadowTransform.lightViewTransMat, V);
+	XMStoreFloat4x4(&m_shadowTransform.lightProjTransMat, P);
 }
 
 void D3DRenderer::renderRulerLlines()

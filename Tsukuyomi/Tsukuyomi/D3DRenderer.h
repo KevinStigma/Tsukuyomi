@@ -8,6 +8,7 @@
 #include "Axis/TransAxis.h"
 #include "Axis/RotAxis.h"
 #include "ShadowMap.h"
+#include "ShadowTransform.h"
 
 class Object;
 enum  RenderSelObjMode { NONE, COORD_AXIS, ROT_AXIS};
@@ -23,6 +24,7 @@ public:
 	void initScene();
 	void renderScene();
 	void cleanup();
+	void renderToShadowMap();
 	Camera& getCamera() { return m_camera; }
 	std::vector<RenderLightHelper::DirLight> & getLights() { return m_dirLights; }
 	std::vector<RenderLightHelper::Material> & getMaterials() { return m_materials; }
@@ -92,7 +94,7 @@ protected:
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;
 	ShadowMap				*shadowMap;
-	XMFLOAT4X4              m_shadowTransform;
+	ShadowTransform		    m_shadowTransform;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
 	std::vector<RenderLightHelper::DirLight> m_dirLights;
