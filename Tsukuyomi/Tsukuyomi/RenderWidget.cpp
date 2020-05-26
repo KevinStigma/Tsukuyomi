@@ -101,6 +101,11 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 				renderer->rotateSelObj(cur_normalized_pos, last_normalized_pos);
 				g_pGlobalSys->objectPropertyWidget->updateObjectRotation(g_pGlobalSys->objectManager.getCurSelObject());
 			}
+
+			if(g_pGlobalSys->objectManager.getCurSelObject() == g_pGlobalSys->objectManager.getCurSelShadowLight())
+			{
+				renderer->buildShadowTransform();
+			}
 		}
 	}
 	else if (touchType == 1)

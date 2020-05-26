@@ -316,7 +316,7 @@ void D3DRenderer::renderToShadowMap()
 	for each (auto obj in objects)
 	{
 		if(obj->getType() == MESH)
-		   dynamic_cast<Mesh*>(obj)->renderToShadowMap(m_pImmediateContext, this);
+		   dynamic_cast<Mesh*>(obj)->renderToShadowMap(m_pImmediateContext, this, &m_shadowTransform);
 	}
 	m_pImmediateContext->RSSetState(0);
 }
@@ -339,6 +339,8 @@ void D3DRenderer::renderScene()
 	renderRulerLlines();
 	renderBVH();
 
+	if(g_pGlobalSys->objectManager.getCurSelShadowLight())
+		Effects::BasicFX->SetShadowMap(shadowMap->DepthMapSRV());
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
 	renderSelObjFlag();
@@ -517,7 +519,7 @@ void D3DRenderer::buildShadowTransform()
 	DirectionalLight* light = dynamic_cast<DirectionalLight*>(g_pGlobalSys->objectManager.getCurSelShadowLight());
 	if (!light)
 		return;
-	float scene_radius = 1000.0f;
+	float scene_radius = 10.0;
 	XMVECTOR lightDir = XMLoadFloat3(&light->getWorldDir());
 	XMVECTOR lightPos = XMLoadFloat3(&light->getTranslation());
 	XMVECTOR targetPos = lightPos + lightDir * scene_radius;

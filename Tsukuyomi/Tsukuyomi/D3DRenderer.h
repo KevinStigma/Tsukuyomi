@@ -25,6 +25,7 @@ public:
 	void renderScene();
 	void cleanup();
 	void renderToShadowMap();
+	ShadowMap* getShadowMap() { return shadowMap; }
 	Camera& getCamera() { return m_camera; }
 	std::vector<RenderLightHelper::DirLight> & getLights() { return m_dirLights; }
 	std::vector<RenderLightHelper::Material> & getMaterials() { return m_materials; }
@@ -38,6 +39,7 @@ public:
 	void enableMSAA(bool enabled);
 	void resetCameraTransform(Camera* cam);
 	void buildShadowTransform();
+	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	
 protected:
 	void initLights();

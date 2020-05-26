@@ -7,6 +7,7 @@
 
 class BxDF;
 class Primitive;
+class ShadowTransform;
 
 class Mesh :public Object
 {
@@ -23,7 +24,7 @@ public:
 	XMFLOAT2 getTriangleTexCoord(int index)const;
 	XMFLOAT3 getWorldCenter();
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
-	void renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer);
+	void renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer, ShadowTransform* sm_trans);
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	virtual std::vector<Primitive*> getAllPrimitives();

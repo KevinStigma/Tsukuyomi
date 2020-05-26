@@ -23,6 +23,7 @@ void ObjectManager::clear()
 	if(listview)
 		listview->clear();
 	curSelObject = nullptr;
+	curShadowLight = nullptr;
 	bvhManager.destroyBoundingVolumeHieratches();
 }
 

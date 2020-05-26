@@ -5,6 +5,8 @@
 #include "../D3DRenderer.h"
 #include "../PbrMat/Matte.h"
 #include "../Accelerate/Triangle.h"
+#include "../ShadowTransform.h"
+#include "../ShadowMap.h"
 #include "GlobalSys.h"
 #include <iostream>
 #include <fstream>
@@ -53,7 +55,10 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 	Camera& camera = renderer->getCamera();
 
-	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
+	bool use_shadow_map = g_pGlobalSys->objectManager.getCurSelShadowLight();
+	ShadowTransform sm_trans = renderer->getShadowMapTransform();
+
+	ID3DX11EffectTechnique* activeTech = use_shadow_map ? basicEffect->CustomLightShadowTech : basicEffect->CustomLightTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -68,15 +73,52 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(mat);
-
+		if (use_shadow_map)
+		{
+			basicEffect->SetShadowTransform(worldMat * XMLoadFloat4x4(&sm_trans.shadowTransMat));
+		}
+		else
+		{
+			basicEffect->SetShadowTransform(XMMatrixIdentity());
+		}
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
 	}
 }
 
-void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer)
+void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer, ShadowTransform* sm_trans)
 {
+	BuildShadowMapEffect* buildShadowMapEffect = Effects::BuildShadowMapFX;
 
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	Camera& camera = renderer->getCamera();
+
+	ID3DX11EffectTechnique* activeTech = buildShadowMapEffect->BuildShadowMapTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX worldMat = getWorldMatrix();
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX view_mat = XMLoadFloat4x4(&sm_trans->lightViewTransMat);
+	XMMATRIX proj_mat = XMLoadFloat4x4(&sm_trans->lightProjTransMat);
+	XMMATRIX WVP = worldMat * view_mat * proj_mat;
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		buildShadowMapEffect->SetWorld(worldMat);
+		buildShadowMapEffect->SetWorldInvTranspose(worldMat);
+		buildShadowMapEffect->SetTexTransform(inv_world_mat);
+		buildShadowMapEffect->SetWorldViewProj(WVP);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
+	}
 }
 
 

@@ -37,6 +37,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	SimpleColorTech	  = mFX->GetTechniqueByName("SimpleColor");
 	DebugNormalTech	  = mFX->GetTechniqueByName("DebugNormal");
 	CustomLightTech   = mFX->GetTechniqueByName("CustomLight");
+	CustomLightShadowTech = mFX->GetTechniqueByName("CustomLightShadow");
 
 	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 
@@ -48,6 +49,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	PointLights		  = mFX->GetVariableByName("gPointLights");
 	Mat               = mFX->GetVariableByName("gMaterial");
 	DiffuseMap		  = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	ShadowMap		  = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
+	ShadowTransform   = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
 	TexTransform	  = mFX->GetVariableByName("gTexTransform")->AsMatrix();
 	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
 	FogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
@@ -97,5 +100,6 @@ void Effects::InitAll(ID3D11Device* device)
 void Effects::DestroyAll()
 {
 	SAFE_DELETE(BasicFX);
+	SAFE_DELETE(BuildShadowMapFX);
 }
 #pragma endregion

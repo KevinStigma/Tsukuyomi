@@ -35,17 +35,21 @@ public:
 	void SetWorld(CXMMATRIX M)                          { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M)              { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetTexTransform(CXMMATRIX M)                   { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetShadowTransform(CXMMATRIX M)				{ ShadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetDirLights(const RenderLightHelper::DirLight* lights, int count=3)   { DirLights->SetRawValue(lights, 0, count*sizeof(RenderLightHelper::DirLight)); }
 	void SetPointLights(const RenderLightHelper::PointLight* lights, int count=3) { PointLights->SetRawValue(lights, 0, count * sizeof(RenderLightHelper::PointLight)); }
 	void SetMaterial(const RenderLightHelper::Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(RenderLightHelper::Material)); }
 	void SetDiffuseMap(ID3D11ShaderResourceView* rv)		{ DiffuseMap->SetResource(rv); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex)		{ ShadowMap->SetResource(tex); }
+
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f)                           { FogStart->SetFloat(f); }
 	void SetFogRange(float f)                           { FogRange->SetFloat(f); }
 	void SetDirLightCount(int c) { curDirLightCount->SetInt(c); }
 	void SetPointLightCount(int c) { curPointLightCount->SetInt(c); }
 	void SetGammaCorrect(int c) { gammaCorrect->SetInt(c); }
+
 
 	ID3DX11EffectTechnique* DebugNormalTech;
 	ID3DX11EffectTechnique* Light1Tech;
@@ -57,11 +61,13 @@ public:
 	ID3DX11EffectTechnique*	Light3TexTech;
 	ID3DX11EffectTechnique* SimpleColorTech;
 	ID3DX11EffectTechnique* CustomLightTech;
+	ID3DX11EffectTechnique* CustomLightShadowTech;
 	ID3DX11EffectTechnique* Light1TexAlphaClipFogTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* World;
 	ID3DX11EffectMatrixVariable* TexTransform;
+	ID3DX11EffectMatrixVariable* ShadowTransform;
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;
 	ID3DX11EffectVectorVariable* EyePosW;
 	ID3DX11EffectVariable* DirLights;
@@ -75,6 +81,7 @@ public:
 	ID3DX11EffectScalarVariable* FogRange;
 
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;
+	ID3DX11EffectShaderResourceVariable* ShadowMap;
 };
 #pragma endregion
 

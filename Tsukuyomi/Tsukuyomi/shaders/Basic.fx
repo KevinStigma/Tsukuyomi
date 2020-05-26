@@ -26,16 +26,29 @@ cbuffer cbPerObject
 	float4x4 gWorldInvTranspose;
 	float4x4 gWorldViewProj;
 	float4x4 gTexTransform; 
+	float4x4 gShadowTransform;
 	Material gMaterial;
 }; 
 
 Texture2D gDiffuseMap;
+Texture2D gShadowMap;
 
 SamplerState samLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
 	AddressU = WRAP;
 	AddressV = WRAP;
+};
+
+SamplerComparisonState samShadow
+{
+	Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	AddressU = BORDER;
+	AddressV = BORDER;
+	AddressW = BORDER;
+	BorderColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	ComparisonFunc = LESS;
 };
 
 struct SimpleVertexIn
@@ -50,6 +63,7 @@ struct VertexOut
 	float3 PosW       : POSITION;
 	float3 NormalW    : NORMAL;
 	float2 Tex        : TEXCOORD0;
+	float4 ShadowPosH : TEXCOORD1;
 	float4 Color      : COLOR;
 };
 
@@ -89,6 +103,8 @@ VertexOut VS(VertexIn vin)
 	
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	vout.ShadowPosH = mul(float4(vin.PosL, 1.0f), gShadowTransform);
 
 	return vout;
 }
@@ -184,6 +200,7 @@ float4 PS(VertexOut pin,
 float4 CustomPS(VertexOut pin,
 	uniform int gPointLightCount,
 	uniform int gDirLightCount,
+	uniform bool gUseShadowMap,
 	uniform bool gUseTexure,
 	uniform bool gAlphaClip,
 	uniform bool gFogEnabled) : SV_Target
@@ -216,6 +233,12 @@ float4 CustomPS(VertexOut pin,
 		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
+		float shadow = 1.0;
+		if (gUseShadowMap)
+		{
+			shadow = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
+		}
+
 		// Sum the light contribution from each light source.  
 		[unroll]
 		for (int i = 0; i < gDirLightCount; ++i)
@@ -225,8 +248,8 @@ float4 CustomPS(VertexOut pin,
 				A, D, S);
 
 			ambient += A;
-			diffuse += D;
-			spec += S;
+			diffuse += shadow * D;
+			spec += shadow *S;
 		}
 
 		[unroll]
@@ -235,13 +258,12 @@ float4 CustomPS(VertexOut pin,
 			float4 A, D, S;
 			ComputePointLight(gMaterial, gPointLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
 			ambient += A;
-			diffuse += D;
-			spec += S;
+			diffuse += shadow * D;
+			spec += shadow * S;
 		}
-		
-		//litColor = float4(1.0, 0.0, 0.0, 1.0);
 		litColor = texColor * (ambient + diffuse) + spec;
 	}
+
 
 	//
 	// Fogging
@@ -396,6 +418,17 @@ technique11 CustomLight
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, false, false)));
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, false, false, false)));
 	}
 }
+
+technique11 CustomLightShadow
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, true, false, false, false)));
+	}
+}
+
