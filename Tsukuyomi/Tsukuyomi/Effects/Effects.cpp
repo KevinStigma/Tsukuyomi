@@ -11,13 +11,6 @@ Effect::Effect(ID3D11Device* device, const std::wstring& filename)
 {
 	ID3D10Blob * compilationMsgs = 0;
 	auto hr=D3DX11CompileEffectFromFile(filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, D3DCOMPILE_ENABLE_STRICTNESS, 0, device, &mFX, &compilationMsgs);
-	
-	/*if (compilationMsgs)
-	{
-		MessageBoxA(0, (char*)compilationMsgs->GetBufferPointer(), 0, 0);
-		SAFE_RELEASE(compilationMsgs);
-	}
-	*/
 
 	if (FAILED(hr))
 		std::cout << "compile effect file failed!" << std::endl;
@@ -69,13 +62,36 @@ BasicEffect::~BasicEffect()
 }
 #pragma endregion
 
+
+#pragma region BuildShadowMapEffect
+BuildShadowMapEffect::BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
+	: Effect(device, filename)
+{
+	BuildShadowMapTech = mFX->GetTechniqueByName("BuildShadowMapTech");
+
+	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	World = mFX->GetVariableByName("gWorld")->AsMatrix();
+	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	TexTransform = mFX->GetVariableByName("gTexTransform")->AsMatrix();
+	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
+}
+
+BuildShadowMapEffect::~BuildShadowMapEffect()
+{
+}
+#pragma endregion
+
+
 #pragma region Effects
 
 BasicEffect* Effects::BasicFX = 0;
+BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
 	BasicFX = new BasicEffect(device, L"./shaders/Basic.fx");
+	BuildShadowMapFX = new BuildShadowMapEffect(device, L"./shaders/BuildShadowMap.fx");
 }
 
 void Effects::DestroyAll()

@@ -382,5 +382,8 @@
     <FxCompile Include="shaders\LightHelper.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\BuildShadowMap.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

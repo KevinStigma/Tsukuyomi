@@ -78,6 +78,33 @@ public:
 };
 #pragma endregion
 
+
+#pragma region BuildShadowMapEffect
+class BuildShadowMapEffect : public Effect
+{
+public:
+	BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename);
+	~BuildShadowMapEffect();
+
+	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetTexTransform(CXMMATRIX M) { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetEyePosW(const XMFLOAT3& v) { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+
+	ID3DX11EffectTechnique* BuildShadowMapTech;
+
+	ID3DX11EffectMatrixVariable* ViewProj;
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+	ID3DX11EffectMatrixVariable* World;
+	ID3DX11EffectMatrixVariable* WorldInvTranspose;
+	ID3DX11EffectMatrixVariable* TexTransform;
+	ID3DX11EffectVectorVariable* EyePosW;
+};
+#pragma endregion
+
+
 #pragma region Effects
 class Effects
 {
@@ -85,6 +112,7 @@ public:
 	static void InitAll(ID3D11Device* device);
 	static void DestroyAll();
 	static BasicEffect* BasicFX;
+	static BuildShadowMapEffect* BuildShadowMapFX;
 };
 #pragma endregion
 
