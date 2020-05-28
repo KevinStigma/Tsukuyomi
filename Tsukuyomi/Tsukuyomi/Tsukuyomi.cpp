@@ -49,6 +49,7 @@ void Tsukuyomi::on_actionLoad_Project_triggered()
 		return;
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
 	object_mgr.updateFromProject(filename.toStdString());
+	ui.render_widget->getRenderer()->buildShadowTransform();
 }
 
 void Tsukuyomi::on_actionSave_Project_triggered()

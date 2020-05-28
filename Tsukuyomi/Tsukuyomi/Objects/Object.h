@@ -16,6 +16,7 @@ struct BoundingBox
 {
 	XMFLOAT3 top, bottom;
 	BoundingBox();
+	BoundingBox(XMFLOAT3 t,XMFLOAT3 b):top(t), bottom(b) {}
 	XMFLOAT3 getCenter()const {
 		return XMFLOAT3((top.x + bottom.x)*0.5f, (top.y + bottom.y)*0.5f, (top.z + bottom.z)*0.5f);
 	}

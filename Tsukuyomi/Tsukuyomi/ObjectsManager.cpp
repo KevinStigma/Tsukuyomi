@@ -248,6 +248,10 @@ void ObjectManager::exportProject(std::string file_path)
 		{
 			type_str = "dir_light";
 			obj_element->SetAttribute("Color", ((DirectionalLight*)obj)->getColorText().c_str());
+			if (curShadowLight == obj)
+				obj_element->SetAttribute("ShadowLight", "true");
+			else
+				obj_element->SetAttribute("ShadowLight", "false");
 		}
 		else if (obj->getType() == AREA_LIGHT)
 		{
@@ -365,7 +369,13 @@ void ObjectManager::updateFromProject(std::string file_path)
 			std::string color_str = express->Attribute("Color");
 			SplitString(color_str, strs, ",");
 			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
-			createNewObjectOfDirectionalLight(name, translation, scale, rotation, color);
+			Object* light = createNewObjectOfDirectionalLight(name, translation, scale, rotation, color);
+			if (express->FindAttribute("ShadowLight"))
+			{
+				if (express->Attribute("ShadowLight"))
+					setCurShadowLight((Light*)light);
+			}
+
 		}
 		else if (type == "area_light")
 		{

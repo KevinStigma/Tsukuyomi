@@ -519,7 +519,16 @@ void D3DRenderer::buildShadowTransform()
 	DirectionalLight* light = dynamic_cast<DirectionalLight*>(g_pGlobalSys->objectManager.getCurSelShadowLight());
 	if (!light)
 		return;
-	float scene_radius = 10.0;
+
+	BoundingBox boundingbox = BoundingBox::Union(g_pGlobalSys->objectManager.getBVHManager()->getBvhNodes()[0].boundingbox,
+		BoundingBox(light->getTranslation(), light->getTranslation()));
+
+	XMFLOAT3 diff((boundingbox.bottom.x - boundingbox.top.x) * 0.5f, 
+		(boundingbox.bottom.y - boundingbox.top.y) * 0.5f,
+		(boundingbox.bottom.z - boundingbox.top.z) * 0.5f);
+
+	float scene_radius = MathHelper::Float3Length(diff);
+	std::cout << "update scene radius:" << scene_radius << std::endl;
 	XMVECTOR lightDir = XMLoadFloat3(&light->getWorldDir());
 	XMVECTOR lightPos = XMLoadFloat3(&light->getTranslation());
 	XMVECTOR targetPos = lightPos + lightDir * scene_radius;
