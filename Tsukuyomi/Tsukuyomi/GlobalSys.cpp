@@ -19,6 +19,11 @@ float GlobalSys::getMoveSpeed()
 	return 0.001 / 20.0 * moveSpeedSlider->value();
 }
 
+float GlobalSys::getHDRExposure()
+{
+	return exposureSlider->value() / 10.0f;
+}
+
 OfflineRenderer* GlobalSys::generateOfflineRenderer()
 {
 	OfflineRenderer* renderer=nullptr;

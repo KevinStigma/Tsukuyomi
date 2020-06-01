@@ -58,6 +58,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	curDirLightCount = mFX->GetVariableByName("curDirLightCount")->AsScalar();
 	curPointLightCount = mFX->GetVariableByName("curPointLightCount")->AsScalar();
 	gammaCorrect = mFX->GetVariableByName("gammaCorrection")->AsScalar();
+	enableHDR = mFX->GetVariableByName("enableHDR")->AsScalar();
+	HDRexposure = mFX->GetVariableByName("HDRexposure")->AsScalar();
 }
 
 BasicEffect::~BasicEffect()

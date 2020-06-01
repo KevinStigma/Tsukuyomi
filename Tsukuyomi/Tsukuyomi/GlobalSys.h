@@ -16,6 +16,7 @@ public:
 	GlobalSys();
 	~GlobalSys();
 	float getMoveSpeed();
+	float getHDRExposure();
 	OfflineRenderer* generateOfflineRenderer();
 	float cast_ray_to_get_intersection(const Ray& ray, IntersectInfo& info, bool use_accel=true);
 	void generateBVH();
@@ -25,6 +26,7 @@ public:
 	RenderWidget* renderWidget = nullptr;
 	QListWidget*  objectsList = nullptr;
 	QSlider*      moveSpeedSlider = nullptr;
+	QSlider*      exposureSlider = nullptr;
 	ObjectPropertyWidget* objectPropertyWidget = nullptr;
 };
 

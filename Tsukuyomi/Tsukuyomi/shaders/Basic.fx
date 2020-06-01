@@ -14,7 +14,9 @@ cbuffer cbPerFrame
 	int curPointLightCount;
 	int curDirLightCount;
 	int gammaCorrection;
+	int enableHDR;
 
+	float  HDRexposure;
 	float  gFogStart;
 	float  gFogRange;
 	float4 gFogColor; 
@@ -279,6 +281,15 @@ float4 CustomPS(VertexOut pin,
 
 	// Common to take alpha from diffuse material and texture.
 	litColor.a = gMaterial.Diffuse.a * texColor.a;
+
+	if (enableHDR)
+	{
+		float exposure = max(0.0, HDRexposure);
+		litColor.r = 1.0 - exp(-litColor.r * exposure);
+		litColor.g = 1.0 - exp(-litColor.g * exposure);
+		litColor.b = 1.0 - exp(-litColor.b * exposure);
+	}
+
 
 	if (gammaCorrection)
 	{

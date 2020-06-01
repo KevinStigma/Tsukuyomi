@@ -265,7 +265,7 @@ void D3DRenderer::updateLights()
 	std::vector<RenderLightHelper::PointLight> pointLights;
 	for each (Light* light in lights)
 	{
-		XMFLOAT3 color = MathHelper::NormalizeFloat3(light->getColor());
+		XMFLOAT3 color = light->getColor();
 		if (light->getType() == DIR_LIGHT)
 		{
 			RenderLightHelper::DirLight dirLight;
@@ -305,6 +305,8 @@ void D3DRenderer::updateLights()
 	XMFLOAT3 eyePosW = m_camera.getPosition();
 	basicEffect->SetEyePosW(eyePosW);
 	basicEffect->SetGammaCorrect(g_pGlobalSys->render_paras.gammaCorrect);
+	basicEffect->SetEnableHDR(g_pGlobalSys->render_paras.enableHDR);
+	basicEffect->SetHDRExposure(g_pGlobalSys->getHDRExposure());
 }
 
 void D3DRenderer::renderToShadowMap()

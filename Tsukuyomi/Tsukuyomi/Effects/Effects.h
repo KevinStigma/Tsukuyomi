@@ -49,7 +49,8 @@ public:
 	void SetDirLightCount(int c) { curDirLightCount->SetInt(c); }
 	void SetPointLightCount(int c) { curPointLightCount->SetInt(c); }
 	void SetGammaCorrect(int c) { gammaCorrect->SetInt(c); }
-
+	void SetEnableHDR(int c) { enableHDR->SetInt(c); }
+	void SetHDRExposure(float f) { HDRexposure->SetFloat(f); }
 
 	ID3DX11EffectTechnique* DebugNormalTech;
 	ID3DX11EffectTechnique* Light1Tech;
@@ -76,6 +77,8 @@ public:
 	ID3DX11EffectScalarVariable* curPointLightCount;
 	ID3DX11EffectScalarVariable* curDirLightCount;
 	ID3DX11EffectScalarVariable* gammaCorrect;
+	ID3DX11EffectScalarVariable* HDRexposure;
+	ID3DX11EffectScalarVariable* enableHDR;
 	ID3DX11EffectVectorVariable* FogColor;
 	ID3DX11EffectScalarVariable* FogStart;
 	ID3DX11EffectScalarVariable* FogRange;

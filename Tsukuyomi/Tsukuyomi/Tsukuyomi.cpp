@@ -18,6 +18,7 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys->renderWidget = ui.render_widget;
 	g_pGlobalSys->moveSpeedSlider = ui.moveSpeedSlider;
 	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
+	g_pGlobalSys->exposureSlider = ui.moveSpeedSlider_hdr;
 }
 
 Tsukuyomi::~Tsukuyomi()
@@ -146,6 +147,11 @@ void Tsukuyomi::on_showBVHcheckBox_stateChanged(int val)
 void Tsukuyomi::on_MSAA_checkBox_stateChanged(int val)
 {
 	ui.render_widget->getRenderer()->enableMSAA(bool(val));
+}
+
+void Tsukuyomi::on_HDR_checkBox_stateChanged(int val)
+{
+	g_pGlobalSys->render_paras.enableHDR = bool(val);
 }
 
 void Tsukuyomi::on_Gamma_checkBox_stateChanged(int val)
