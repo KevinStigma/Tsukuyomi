@@ -39,7 +39,7 @@ public:
 	void enableMSAA(bool enabled);
 	void resetCameraTransform(Camera* cam);
 	void buildShadowTransform();
-	int computeFPS();
+	float computeFPS();
 	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	
 protected:

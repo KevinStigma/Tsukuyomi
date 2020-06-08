@@ -45,7 +45,8 @@ void RenderWidget::paintEvent(QPaintEvent *event)
 {
 	renderer->renderScene();
 	update();
-	std::string title = std::string("Tsukuyomi-FPS(") + std::to_string(renderer->computeFPS()) + ")";
+	float fps = renderer->computeFPS();
+	std::string title = std::string("Tsukuyomi-FPS(") + std::to_string(fps) + ")";
 	g_pGlobalSys->mainWindow->setWindowTitle(title.c_str());
 }
 
