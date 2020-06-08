@@ -39,6 +39,7 @@ public:
 	void enableMSAA(bool enabled);
 	void resetCameraTransform(Camera* cam);
 	void buildShadowTransform();
+	int computeFPS();
 	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	
 protected:
@@ -95,6 +96,7 @@ protected:
 	int                     rotAxisIndexBegin;
 	int                     rotAxisIndexCount;
 	int                     axisVertexCount;
+	clock_t                 last_clock = 0;
 	ShadowMap				*shadowMap;
 	ShadowTransform		    m_shadowTransform;
 	AXIS                    curSelAxis = AXIS::NO;

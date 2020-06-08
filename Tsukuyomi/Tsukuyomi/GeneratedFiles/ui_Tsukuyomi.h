@@ -253,7 +253,7 @@ public:
         moveSpeedSlider_hdr->setObjectName(QStringLiteral("moveSpeedSlider_hdr"));
         moveSpeedSlider_hdr->setGeometry(QRect(110, 120, 120, 22));
         moveSpeedSlider_hdr->setMinimum(0);
-        moveSpeedSlider_hdr->setMaximum(20);
+        moveSpeedSlider_hdr->setMaximum(100);
         moveSpeedSlider_hdr->setValue(10);
         moveSpeedSlider_hdr->setOrientation(Qt::Horizontal);
         tabWidget->addTab(tab_3, QString());

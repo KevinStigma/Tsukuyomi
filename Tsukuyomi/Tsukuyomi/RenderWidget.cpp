@@ -5,6 +5,7 @@
 #include "./Objects/Camera.h"
 #include "Axis/TransAxis.h"
 #include <iostream>
+#include <QApplication>
 #include <QMouseEvent>
 #include <QListWidget>
 
@@ -44,6 +45,8 @@ void RenderWidget::paintEvent(QPaintEvent *event)
 {
 	renderer->renderScene();
 	update();
+	std::string title = std::string("Tsukuyomi-FPS(") + std::to_string(renderer->computeFPS()) + ")";
+	g_pGlobalSys->mainWindow->setWindowTitle(title.c_str());
 }
 
 void RenderWidget::keyPressEvent(QKeyEvent *event)

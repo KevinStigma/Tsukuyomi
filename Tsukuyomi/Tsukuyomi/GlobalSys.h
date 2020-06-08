@@ -2,6 +2,7 @@
 #include <string>
 #include <QListWidget>
 #include <QSlider>
+#include <QMainWindow.h>
 #include "RenderParas.h"
 #include "ObjectsManager.h"
 #include "OfflineRenderer/OfflineRenderer.h"
@@ -22,6 +23,7 @@ public:
 	void generateBVH();
 	RenderParas render_paras;
 	ObjectManager objectManager;
+	QMainWindow *  mainWindow = nullptr;
 	D3DRenderer * renderer = nullptr;
 	RenderWidget* renderWidget = nullptr;
 	QListWidget*  objectsList = nullptr;

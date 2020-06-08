@@ -515,6 +515,14 @@ void D3DRenderer::resetCameraTransform(Camera* cam)
 	m_camera.updateViewMatrix();
 }
 
+int D3DRenderer::computeFPS()
+{
+	clock_t cur_clock = clock();
+	float passed_secs = std::max<float>((cur_clock - last_clock) / CLOCKS_PER_SEC, 0.001);
+	last_clock = cur_clock;
+	return 1.0 / passed_secs;
+}
+
 void D3DRenderer::buildShadowTransform()
 {
 	// Only the first "main" light casts a shadow.
