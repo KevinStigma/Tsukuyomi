@@ -137,6 +137,7 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 
 	int shadowMapSize = 2048;
 	shadowMap = new ShadowMap(m_pd3dDevice, shadowMapSize, shadowMapSize);
+	ssaoMap = new SSAOMap(m_pd3dDevice, width, height);
 	return true;
 }
 
@@ -323,20 +324,41 @@ void D3DRenderer::renderToShadowMap()
 	m_pImmediateContext->RSSetState(0);
 }
 
+void D3DRenderer::renderNormalDepthMap()
+{
+	ssaoMap->SetNormalDepthRenderTarget(m_pImmediateContext, m_pDepthStencilView);
+	std::vector<Object*> objects = g_pGlobalSys->objectManager.getAllObjects();
+	for each (auto obj in objects)
+	{
+		if (obj->getType() == MESH)
+			dynamic_cast<Mesh*>(obj)->renderNormalDepthMap(m_pImmediateContext, this);
+	}
+	m_pImmediateContext->RSSetState(0);
+}
+
+void D3DRenderer::renderSSAOMap()
+{
+	if (!g_pGlobalSys->render_paras.enableSSAO)
+		return;
+	renderNormalDepthMap();
+}
+
 void D3DRenderer::renderScene()
 {
 	updateLights();
 	renderToShadowMap();
+	
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
+	//Refresh the Depth/Stencil view
+	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	renderSSAOMap();
 
 	ID3D11RenderTargetView* renderTargets[1] = { m_pRenderTargetView };
 	m_pImmediateContext->OMSetRenderTargets(1, renderTargets, m_pDepthStencilView);
-	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
-
 	//Clear our backbuffer
 	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
 
-	//Refresh the Depth/Stencil view
-	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	renderRulerLlines();
 	renderBVH();
@@ -1297,4 +1319,5 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pFrumstumIndexBuffer);
 	SAFE_RELEASE(m_pFrumstumVertexBuffer);
 	SAFE_DELETE(shadowMap);
+	SAFE_DELETE(ssaoMap);
 }

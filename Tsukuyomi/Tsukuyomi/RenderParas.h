@@ -12,6 +12,7 @@ struct RenderParas
 	bool renderBVH = false;
 	bool writeFile = false;
 	bool enableHDR = false;
+	bool enableSSAO = false;
 	bool gammaCorrect = false;
 	int depth = 1;
 	int sampleCount = 16;

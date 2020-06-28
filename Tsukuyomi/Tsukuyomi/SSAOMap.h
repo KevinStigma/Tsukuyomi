@@ -7,8 +7,10 @@ class SSAOMap
 public:
 	SSAOMap(ID3D11Device* device, UINT width, UINT height);
 	~SSAOMap();
+	void SetNormalDepthRenderTarget(ID3D11DeviceContext* dc, ID3D11DepthStencilView* dsv);
 
 private:
+	ID3D11DeviceContext* context;
 	UINT mWidth;
 	UINT mHeight;
 

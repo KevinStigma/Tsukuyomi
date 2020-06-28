@@ -25,6 +25,7 @@ public:
 	XMFLOAT3 getWorldCenter();
 	void render(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	void renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer, ShadowTransform* sm_trans);
+	void renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* renderer);
 	tinyobj::mesh_t * getMesh() { if (isEmpty()) return nullptr; else return &(shape.mesh); }
 	void generateBuffers(ID3D11Device* device);
 	virtual std::vector<Primitive*> getAllPrimitives();

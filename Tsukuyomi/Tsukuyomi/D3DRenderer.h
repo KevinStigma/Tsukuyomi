@@ -8,6 +8,7 @@
 #include "Axis/TransAxis.h"
 #include "Axis/RotAxis.h"
 #include "ShadowMap.h"
+#include "SSAOMap.h"
 #include "ShadowTransform.h"
 
 class Object;
@@ -25,7 +26,9 @@ public:
 	void renderScene();
 	void cleanup();
 	void renderToShadowMap();
+	void renderSSAOMap();
 	ShadowMap* getShadowMap() { return shadowMap; }
+	SSAOMap* getSSAOMap() { return ssaoMap; }
 	Camera& getCamera() { return m_camera; }
 	std::vector<RenderLightHelper::DirLight> & getLights() { return m_dirLights; }
 	std::vector<RenderLightHelper::Material> & getMaterials() { return m_materials; }
@@ -49,6 +52,7 @@ protected:
 	void renderRulerLlines();
 	void renderSelObjFlag();
 	void renderBVH();
+	void renderNormalDepthMap();
 	void renderFrustum(FXMMATRIX trans_mat);
 	void renderWireFrameSphere(Object * obj);
 	void renderDirectionalLight(Object* obj);
@@ -98,6 +102,7 @@ protected:
 	int                     axisVertexCount;
 	clock_t                 last_clock = 0;
 	ShadowMap				*shadowMap;
+	SSAOMap				    *ssaoMap;
 	ShadowTransform		    m_shadowTransform;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;

@@ -155,6 +155,11 @@ void Tsukuyomi::on_HDR_checkBox_stateChanged(int val)
 	g_pGlobalSys->render_paras.enableHDR = bool(val);
 }
 
+void Tsukuyomi::on_SSAO_checkBox_stateChanged(int val)
+{
+	g_pGlobalSys->render_paras.enableSSAO = bool(val);
+}
+
 void Tsukuyomi::on_Gamma_checkBox_stateChanged(int val)
 {
 	g_pGlobalSys->render_paras.gammaCorrect = bool(val);

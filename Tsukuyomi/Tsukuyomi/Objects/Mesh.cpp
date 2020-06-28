@@ -86,6 +86,11 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	}
 }
 
+void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* renderer)
+{
+
+}
+
 void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer, ShadowTransform* sm_trans)
 {
 	BuildShadowMapEffect* buildShadowMapEffect = Effects::BuildShadowMapFX;

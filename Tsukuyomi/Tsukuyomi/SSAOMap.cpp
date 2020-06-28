@@ -50,6 +50,16 @@ SSAOMap::SSAOMap(ID3D11Device* device, UINT width, UINT height)
 	ReleaseCOM(ssaoMap);
 }
 
+void SSAOMap::SetNormalDepthRenderTarget(ID3D11DeviceContext* dc, ID3D11DepthStencilView* dsv)
+{
+	ID3D11RenderTargetView* renderTargets[1] = { mNormalDepthRTV };
+	dc->OMSetRenderTargets(1, renderTargets, dsv);
+
+	// Clear view space normal to (0,0,-1) and clear depth to be very far away.  
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1e5f };
+	dc->ClearRenderTargetView(mNormalDepthRTV, clearColor);
+}
+
 SSAOMap::~SSAOMap()
 {
 	SAFE_RELEASE(mNormalDepthMapSRV);
