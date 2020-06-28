@@ -204,6 +204,9 @@
     <ClCompile Include="ShadowMap.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="SSAOMap.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -372,6 +375,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShadowTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SSAOMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
