@@ -88,20 +88,51 @@ BuildShadowMapEffect::~BuildShadowMapEffect()
 #pragma endregion
 
 
+#pragma region BuildSSAOMapEffect
+BuildSSAOMapEffect::BuildSSAOMapEffect(ID3D11Device* device, const std::wstring& filename) 
+	:Effect(device, filename)
+{
+	BuildNormalDepthMapTech = mFX->GetTechniqueByName("BuildNormalDepthMapTech");
+	BuildInitialSSAOMapTech = mFX->GetTechniqueByName("BuildInitialSSAOMapTech");
+
+	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	World = mFX->GetVariableByName("gWorld")->AsMatrix();
+	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	WorldView = mFX->GetVariableByName("gViewProj")->AsMatrix();
+	WorldInvTransposeView = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	ViewToTexSpace = mFX->GetVariableByName("gViewToTexSpace")->AsMatrix();
+	FarPlaneSize = mFX->GetVariableByName("gFarPlaneSize")->AsVector();
+	FarPlaneDepth = mFX->GetVariableByName("gFarPlaneDepth")->AsScalar();
+	OffsetVectors = mFX->GetVariableByName("gOffsetVectors")->AsVector();
+
+	NormalDepthMap = mFX->GetVariableByName("gNormalDepthMap")->AsShaderResource();
+	RandomVecMap = mFX->GetVariableByName("gRandomVecMap")->AsShaderResource();
+}
+
+BuildSSAOMapEffect::~BuildSSAOMapEffect()
+{
+}
+#pragma endregion
+
+
 #pragma region Effects
 
 BasicEffect* Effects::BasicFX = 0;
 BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
+BuildSSAOMapEffect* Effects::BuildSSAOMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
 	BasicFX = new BasicEffect(device, L"./shaders/Basic.fx");
 	BuildShadowMapFX = new BuildShadowMapEffect(device, L"./shaders/BuildShadowMap.fx");
+	BuildSSAOMapFX = new BuildSSAOMapEffect(device, L"./shaders/BuildSSAOMap.fx");
 }
 
 void Effects::DestroyAll()
 {
 	SAFE_DELETE(BasicFX);
 	SAFE_DELETE(BuildShadowMapFX);
+	SAFE_DELETE(BuildSSAOMapFX);
 }
 #pragma endregion

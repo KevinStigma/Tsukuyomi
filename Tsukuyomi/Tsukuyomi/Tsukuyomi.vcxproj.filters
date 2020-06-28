@@ -391,5 +391,8 @@
     <FxCompile Include="shaders\BuildShadowMap.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\BuildSSAOMap.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

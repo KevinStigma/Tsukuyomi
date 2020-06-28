@@ -229,3 +229,9 @@ XMFLOAT3 Camera::unprojectCoord(XMFLOAT2 pos, float depth)const
 	XMStoreFloat3(&world_pos, XMVector3TransformCoord(view_pos, inv_view));
 	return world_pos;
 }
+
+XMFLOAT2 Camera::getProjPlaneSize(float depth)
+{
+	float frustum_height = depth * tanf(fov * 0.5f);
+	return XMFLOAT2(frustum_height * aspectRatio, frustum_height);
+}

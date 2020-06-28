@@ -115,6 +115,46 @@ public:
 #pragma endregion
 
 
+#pragma region BuildSSAOMapEffect
+class BuildSSAOMapEffect : public Effect
+{
+public:
+	BuildSSAOMapEffect(ID3D11Device* device, const std::wstring& filename);
+	~BuildSSAOMapEffect();
+
+	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldView(CXMMATRIX M) { WorldView->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTransposeView(CXMMATRIX M) { WorldInvTransposeView->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetViewToTexSpace(CXMMATRIX M) { ViewToTexSpace->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetFarPlaneDepth(float depth) { FarPlaneDepth->SetFloat(depth); }
+	void SetFarPlaneSize(CXMVECTOR v) { FarPlaneSize->SetFloatVector(reinterpret_cast<const float*>(&v)); }
+	void SetOffsetVectors(const XMFLOAT4 v[14]) { OffsetVectors->SetFloatVectorArray(reinterpret_cast<const float*>(v), 0, 14); }
+	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
+	void SetRandomVecMap(ID3D11ShaderResourceView* srv) { RandomVecMap->SetResource(srv); }
+
+	ID3DX11EffectTechnique* BuildNormalDepthMapTech;
+	ID3DX11EffectTechnique* BuildInitialSSAOMapTech;
+
+	ID3DX11EffectShaderResourceVariable* NormalDepthMap;
+	ID3DX11EffectShaderResourceVariable* RandomVecMap;
+
+	ID3DX11EffectMatrixVariable* ViewProj;
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+	ID3DX11EffectMatrixVariable* World;
+	ID3DX11EffectMatrixVariable* WorldInvTranspose;
+	ID3DX11EffectMatrixVariable* WorldView;
+	ID3DX11EffectMatrixVariable* WorldInvTransposeView;
+	ID3DX11EffectMatrixVariable* ViewToTexSpace;
+	ID3DX11EffectVectorVariable* OffsetVectors;
+	ID3DX11EffectScalarVariable* FarPlaneDepth;
+	ID3DX11EffectVectorVariable* FarPlaneSize;
+};
+#pragma endregion
+
+
 #pragma region Effects
 class Effects
 {
@@ -123,6 +163,7 @@ public:
 	static void DestroyAll();
 	static BasicEffect* BasicFX;
 	static BuildShadowMapEffect* BuildShadowMapFX;
+	static BuildSSAOMapEffect* BuildSSAOMapFX;
 };
 #pragma endregion
 

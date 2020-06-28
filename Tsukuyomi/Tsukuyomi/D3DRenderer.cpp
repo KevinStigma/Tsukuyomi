@@ -256,7 +256,15 @@ void D3DRenderer::initScene()
 	createSelObjAxisBuffers();
 	createFrustumBuffers();
 	createCircleBuffers();
+	createFullScreenQuadBuffers();
 	createDirectionalLightBuffers();
+
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMStoreFloat4x4(&TexTransformMat, XMMATRIX(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f));
 }
 
 void D3DRenderer::updateLights()
@@ -336,11 +344,60 @@ void D3DRenderer::renderNormalDepthMap()
 	m_pImmediateContext->RSSetState(0);
 }
 
+void D3DRenderer::renderInitialSSAOMap()
+{
+	ssaoMap->SetRenderSSAORenderTarget(m_pImmediateContext);
+	BuildSSAOMapEffect* buildSSAOMapEffect = Effects::BuildSSAOMapFX;
+
+	buildSSAOMapEffect->SetFarPlaneDepth(m_camera.zFar);
+	buildSSAOMapEffect->SetFarPlaneSize(XMLoadFloat2(&m_camera.getProjPlaneSize(m_camera.zFar)));
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	m_pImmediateContext->IASetVertexBuffers(0, 1, &m_pQuadVertexBuffer, &stride, &offset);
+	m_pImmediateContext->IASetIndexBuffer(m_pQuadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_pImmediateContext->IASetInputLayout(InputLayouts::PosNorTex);
+	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	ID3DX11EffectTechnique* activeTech = buildSSAOMapEffect->BuildInitialSSAOMapTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX T = XMLoadFloat4x4(&TexTransformMat);
+	XMMATRIX worldMat = XMMatrixIdentity();
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX view_mat = m_camera.getViewMatrix();
+	XMMATRIX proj_mat = m_camera.getProjMatrix();
+	XMMATRIX WVP = worldMat * view_mat * proj_mat;
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		buildSSAOMapEffect->SetWorld(worldMat);
+		buildSSAOMapEffect->SetWorldInvTranspose(worldMat);
+		buildSSAOMapEffect->SetWorldViewProj(WVP);
+		buildSSAOMapEffect->SetViewToTexSpace(proj_mat * T);
+		buildSSAOMapEffect->SetNormalDepthMap(ssaoMap->getNormalDepthMapSRV());
+		buildSSAOMapEffect->SetOffsetVectors(ssaoMap->getOffsets().data());
+		buildSSAOMapEffect->SetRandomVecMap(ssaoMap->getRandomVectorSRV());
+
+		activeTech->GetPassByIndex(p)->Apply(0, m_pImmediateContext);
+		m_pImmediateContext->DrawIndexed(6, 0, 0);
+	}
+
+}
+
+void D3DRenderer::blurSSAOMap()
+{
+
+}
+
 void D3DRenderer::renderSSAOMap()
 {
 	if (!g_pGlobalSys->render_paras.enableSSAO)
 		return;
 	renderNormalDepthMap();
+	renderInitialSSAOMap();
+	blurSSAOMap();
 }
 
 void D3DRenderer::renderScene()
@@ -358,7 +415,6 @@ void D3DRenderer::renderScene()
 	m_pImmediateContext->OMSetRenderTargets(1, renderTargets, m_pDepthStencilView);
 	//Clear our backbuffer
 	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
-
 
 	renderRulerLlines();
 	renderBVH();
@@ -582,12 +638,7 @@ void D3DRenderer::buildShadowTransform()
 	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
 
 	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
-	XMMATRIX T(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-
+	XMMATRIX T = XMLoadFloat4x4(&TexTransformMat);
 	XMMATRIX S = V * P * T;
 	XMStoreFloat4x4(&m_shadowTransform.shadowTransMat, S);
 	XMStoreFloat4x4(&m_shadowTransform.lightViewTransMat, V);
@@ -1077,6 +1128,44 @@ void D3DRenderer::createSelObjAxisBuffers()
 		return;
 }
 
+void D3DRenderer::createFullScreenQuadBuffers()
+{
+	D3D11_BUFFER_DESC buffDesc = {};
+	D3D11_SUBRESOURCE_DATA initData = {};
+	ZeroMemory(&buffDesc, sizeof(buffDesc));
+
+	GeometryGenerator gen;
+	GeometryGenerator::MeshData mesh_data;
+	gen.CreateFullscreenQuad(mesh_data);
+
+	std::vector<Basic32> vertices;
+	for (int i = 0; i < mesh_data.Vertices.size(); i++)
+	{
+		GeometryGenerator::Vertex v = mesh_data.Vertices[i];
+		vertices.push_back(Basic32(v.Position.x, v.Position.y, v.Position.z, v.Normal.x, v.Normal.y, v.Normal.z, v.TexC.x, v.TexC.y));
+	}
+
+	buffDesc.BindFlags = D3D11_BIND_FLAG::D3D11_BIND_VERTEX_BUFFER;
+	buffDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+	buffDesc.CPUAccessFlags = 0;
+	buffDesc.ByteWidth = sizeof(Basic32) * vertices.size();
+
+	initData.pSysMem = vertices.data();
+	if (FAILED(m_pd3dDevice->CreateBuffer(&buffDesc, &initData, &m_pQuadVertexBuffer)))
+		return;
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(unsigned int)* mesh_data.Indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &mesh_data.Indices[0];
+	if (FAILED(m_pd3dDevice->CreateBuffer(&ibd, &iinitData, &m_pQuadIndexBuffer)))
+		return;
+}
+
 void D3DRenderer::createFrustumBuffers()
 {
 	D3D11_BUFFER_DESC buffDesc = {};
@@ -1318,6 +1407,8 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pAxisIndexBuffer);
 	SAFE_RELEASE(m_pFrumstumIndexBuffer);
 	SAFE_RELEASE(m_pFrumstumVertexBuffer);
+	SAFE_RELEASE(m_pQuadVertexBuffer);
+	SAFE_RELEASE(m_pQuadIndexBuffer);
 	SAFE_DELETE(shadowMap);
 	SAFE_DELETE(ssaoMap);
 }

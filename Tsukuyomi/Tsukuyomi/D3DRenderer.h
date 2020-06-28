@@ -53,6 +53,8 @@ protected:
 	void renderSelObjFlag();
 	void renderBVH();
 	void renderNormalDepthMap();
+	void renderInitialSSAOMap();
+	void blurSSAOMap();
 	void renderFrustum(FXMMATRIX trans_mat);
 	void renderWireFrameSphere(Object * obj);
 	void renderDirectionalLight(Object* obj);
@@ -64,6 +66,7 @@ protected:
 	void createBoundingBoxBuffers();
 	void createSelObjAxisBuffers();
 	void createFrustumBuffers();
+	void createFullScreenQuadBuffers();
 	void createCircleBuffers();
 	void createDirectionalLightBuffers();
 
@@ -87,6 +90,8 @@ protected:
 	ID3D11Buffer*           m_pBoundingBoxIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pAxisVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pAxisIndexBuffer = nullptr;
+	ID3D11Buffer*           m_pQuadVertexBuffer = nullptr;
+	ID3D11Buffer*			m_pQuadIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pFrumstumVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pFrumstumIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pCircleVertexBuffer = nullptr;
@@ -106,6 +111,7 @@ protected:
 	ShadowTransform		    m_shadowTransform;
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
+	XMFLOAT4X4              TexTransformMat;
 	std::vector<RenderLightHelper::DirLight> m_dirLights;
 	std::vector<RenderLightHelper::Material> m_materials;
 	TransAxis				transAxis;

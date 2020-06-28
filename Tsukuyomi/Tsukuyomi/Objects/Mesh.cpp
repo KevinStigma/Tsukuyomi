@@ -88,7 +88,40 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
+	BuildSSAOMapEffect* buildSSAOMapEffect = Effects::BuildSSAOMapFX;
 
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	Camera& camera = renderer->getCamera();
+
+	ID3DX11EffectTechnique* activeTech = buildSSAOMapEffect->BuildNormalDepthMapTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX worldMat = getWorldMatrix();
+	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX view_mat = camera.getViewMatrix();
+	XMMATRIX proj_mat = camera.getProjMatrix();
+	XMMATRIX WVP = worldMat * view_mat * proj_mat;
+	XMMATRIX world_view_mat = worldMat * view_mat;
+	XMMATRIX world_inv_transpose_view_mat = inv_world_mat * view_mat;
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		buildSSAOMapEffect->SetWorld(worldMat);
+		buildSSAOMapEffect->SetWorldInvTranspose(worldMat);
+		buildSSAOMapEffect->SetWorldViewProj(WVP);
+		buildSSAOMapEffect->SetWorldView(world_view_mat);
+		buildSSAOMapEffect->SetWorldInvTransposeView(world_inv_transpose_view_mat);
+
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
+	}
 }
 
 void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* renderer, ShadowTransform* sm_trans)
