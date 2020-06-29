@@ -29,11 +29,13 @@ cbuffer cbPerObject
 	float4x4 gWorldViewProj;
 	float4x4 gTexTransform; 
 	float4x4 gShadowTransform;
+	float4x4 gWorldViewProjTex;
 	Material gMaterial;
 }; 
 
 Texture2D gDiffuseMap;
 Texture2D gShadowMap;
+Texture2D gSSAOMap;
 
 SamplerState samLinear
 {
@@ -66,6 +68,7 @@ struct VertexOut
 	float3 NormalW    : NORMAL;
 	float2 Tex        : TEXCOORD0;
 	float4 ShadowPosH : TEXCOORD1;
+	float4 SSAOPosH : TEXCOORD2;
 	float4 Color      : COLOR;
 };
 
@@ -107,7 +110,7 @@ VertexOut VS(VertexIn vin)
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	vout.ShadowPosH = mul(float4(vin.PosL, 1.0f), gShadowTransform);
-
+	vout.SSAOPosH = mul(float4(vin.PosL, 1.0f), gWorldViewProjTex);
 	return vout;
 }
  
@@ -119,7 +122,7 @@ float4 NormalPS(VertexOut pin) : SV_Target
 
 float4 PS(VertexOut pin, 
           uniform int gLightCount, 
-		  uniform bool gUseTexure, 
+		  uniform bool gUseTexure,
 		  uniform bool gAlphaClip, 
 		  uniform bool gFogEnabled) : SV_Target
 {
@@ -203,6 +206,7 @@ float4 CustomPS(VertexOut pin,
 	uniform int gPointLightCount,
 	uniform int gDirLightCount,
 	uniform bool gUseShadowMap,
+	uniform bool gUseSSAO,
 	uniform bool gUseTexure,
 	uniform bool gAlphaClip,
 	uniform bool gFogEnabled) : SV_Target
@@ -241,6 +245,13 @@ float4 CustomPS(VertexOut pin,
 			shadow = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
 		}
 
+		float ambient_weight = 1.0;
+		if (gUseSSAO)
+		{
+			pin.SSAOPosH /= pin.SSAOPosH.w;
+			ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
+		}
+
 		// Sum the light contribution from each light source.  
 		[unroll]
 		for (int i = 0; i < gDirLightCount; ++i)
@@ -263,7 +274,7 @@ float4 CustomPS(VertexOut pin,
 			diffuse += shadow * D;
 			spec += shadow * S;
 		}
-		litColor = texColor * (ambient + diffuse) + spec;
+		litColor = texColor * (ambient * ambient_weight + diffuse) + spec;
 	}
 
 
@@ -429,7 +440,7 @@ technique11 CustomLight
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, false, false, false)));
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, false, false, false, false)));
 	}
 }
 
@@ -439,7 +450,30 @@ technique11 CustomLightShadow
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, true, false, false, false)));
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, true, false, false, false, false)));
 	}
 }
+
+
+technique11 CustomLightSSAO
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, false, true, false, false, false)));
+	}
+}
+
+
+technique11 CustomLightShadowSSAO
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, true, true, false, false, false)));
+	}
+}
+
 

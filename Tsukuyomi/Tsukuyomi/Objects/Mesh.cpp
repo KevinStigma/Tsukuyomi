@@ -58,7 +58,18 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	bool use_shadow_map = g_pGlobalSys->objectManager.getCurSelShadowLight();
 	ShadowTransform sm_trans = renderer->getShadowMapTransform();
 
-	ID3DX11EffectTechnique* activeTech = use_shadow_map ? basicEffect->CustomLightShadowTech : basicEffect->CustomLightTech;
+	bool use_ssao = g_pGlobalSys->render_paras.enableSSAO;
+
+	ID3DX11EffectTechnique* activeTech = false;
+	if (use_shadow_map && use_ssao)
+		activeTech = basicEffect->CustomLightShadowSSAOTech;
+	else if(use_shadow_map && !use_ssao)
+		activeTech = basicEffect->CustomLightShadowTech;
+	else if (!use_shadow_map && use_ssao)
+		activeTech = basicEffect->CustomLightSSAOTech;
+	else
+		activeTech = basicEffect->CustomLightTech;
+
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -66,6 +77,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	XMMATRIX worldMat = getWorldMatrix();
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
+	XMMATRIX WVPT = WVP * renderer->getTexTransformMat();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{	
 		basicEffect->SetWorld(worldMat);
@@ -73,6 +85,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(mat);
+		basicEffect->SetWorldViewProjTex(WVPT);
 		if (use_shadow_map)
 		{
 			basicEffect->SetShadowTransform(worldMat * XMLoadFloat4x4(&sm_trans.shadowTransMat));
@@ -81,6 +94,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		{
 			basicEffect->SetShadowTransform(XMMatrixIdentity());
 		}
+
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
 	}

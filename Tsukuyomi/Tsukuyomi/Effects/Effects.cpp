@@ -38,18 +38,21 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	DebugNormalTech	  = mFX->GetTechniqueByName("DebugNormal");
 	CustomLightTech   = mFX->GetTechniqueByName("CustomLight");
 	CustomLightShadowTech = mFX->GetTechniqueByName("CustomLightShadow");
-
+	CustomLightShadowSSAOTech = mFX->GetTechniqueByName("CustomLightShadowSSAO");
+	CustomLightSSAOTech = mFX->GetTechniqueByName("CustomLightSSAO");
 	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 
 	WorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	World             = mFX->GetVariableByName("gWorld")->AsMatrix();
 	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	WorldViewProjTex  = mFX->GetVariableByName("gWorldViewProjTex")->AsMatrix();
 	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 	DirLights         = mFX->GetVariableByName("gDirLights");
 	PointLights		  = mFX->GetVariableByName("gPointLights");
 	Mat               = mFX->GetVariableByName("gMaterial");
 	DiffuseMap		  = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 	ShadowMap		  = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
+	SSAOMap           = mFX->GetVariableByName("gSSAOMap")->AsShaderResource();
 	ShadowTransform   = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
 	TexTransform	  = mFX->GetVariableByName("gTexTransform")->AsMatrix();
 	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
@@ -115,18 +118,39 @@ BuildSSAOMapEffect::~BuildSSAOMapEffect()
 }
 #pragma endregion
 
+#pragma region BlurSSAOEffect
+BlurSSAOEffect::BlurSSAOEffect(ID3D11Device* device, const std::wstring& filename)
+	:Effect(device, filename)
+{
+	HorizontalBlurTech = mFX->GetTechniqueByName("HorizontalBlurTech");
+	VerticalBlurTech = mFX->GetTechniqueByName("VerticalBlurTech");
+
+	TexelWidth = mFX->GetVariableByName("gTexelWidth")->AsScalar();
+	TexelHeight = mFX->GetVariableByName("gTexelHeight")->AsScalar();
+
+	NormalDepthMap = mFX->GetVariableByName("gNormalDepthMap")->AsShaderResource();
+	InputImage = mFX->GetVariableByName("gInputImage")->AsShaderResource();
+}
+
+BlurSSAOEffect::~BlurSSAOEffect()
+{
+}
+#pragma endregion
+
 
 #pragma region Effects
 
 BasicEffect* Effects::BasicFX = 0;
 BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
 BuildSSAOMapEffect* Effects::BuildSSAOMapFX = 0;
+BlurSSAOEffect* Effects::SSAOBlurFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
 	BasicFX = new BasicEffect(device, L"./shaders/Basic.fx");
 	BuildShadowMapFX = new BuildShadowMapEffect(device, L"./shaders/BuildShadowMap.fx");
 	BuildSSAOMapFX = new BuildSSAOMapEffect(device, L"./shaders/BuildSSAOMap.fx");
+	SSAOBlurFX = new BlurSSAOEffect(device, L"./shaders/SSAOBlur.fx");
 }
 
 void Effects::DestroyAll()

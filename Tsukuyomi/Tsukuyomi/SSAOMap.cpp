@@ -1,5 +1,7 @@
 #include "SSAOMap.h"
 #include "common.h"
+#include "Effects/Effects.h"
+#include "Vertex.h"
 
 SSAOMap::SSAOMap(ID3D11Device* device, UINT width, UINT height)
 {
@@ -68,8 +70,57 @@ void SSAOMap::SetRenderSSAORenderTarget(ID3D11DeviceContext* dc)
 	ID3D11RenderTargetView* renderTargets[1] = { mSSAOMapRTV1 };
 	dc->OMSetRenderTargets(1, renderTargets, 0);
   
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	dc->ClearRenderTargetView(mSSAOMapRTV1, clearColor);
+	dc->RSSetViewports(1, &mSSAOViewport);
+}
+
+void SSAOMap::blurSSAOMap(ID3D11DeviceContext*dc, ID3D11Buffer*quadVertexBuffer, ID3D11Buffer* quadIndexBuffer, int blurCount)
+{
+	for (int i = 0; i < blurCount; i++)
+	{
+		blurSSAOMap(dc, mSSAOMapSRV1, mSSAOMapRTV2, quadVertexBuffer, quadIndexBuffer, true);
+		blurSSAOMap(dc, mSSAOMapSRV2, mSSAOMapRTV1, quadVertexBuffer, quadIndexBuffer, false);
+	}
+}
+
+void SSAOMap::blurSSAOMap(ID3D11DeviceContext*dc, ID3D11ShaderResourceView* inputSRV, ID3D11RenderTargetView* outputRTV, ID3D11Buffer*quadVertexBuffer, ID3D11Buffer* quadIndexBuffer, bool horizontal)
+{
+	ID3D11RenderTargetView* renderTargets[1] = { outputRTV };
+	dc->OMSetRenderTargets(1, renderTargets, 0);
+	dc->ClearRenderTargetView(outputRTV, reinterpret_cast<const float*>(&Colors::Black));
+	dc->RSSetViewports(1, &mSSAOViewport);
+
+	Effects::SSAOBlurFX->SetTexelWidth(1.0f / mSSAOViewport.Width);
+	Effects::SSAOBlurFX->SetTexelHeight(1.0f / mSSAOViewport.Height);
+	Effects::SSAOBlurFX->SetNormalDepthMap(mNormalDepthMapSRV);
+	Effects::SSAOBlurFX->SetInputImage(inputSRV);
+
+	ID3DX11EffectTechnique* tech;
+	if (horizontal)
+		tech = Effects::SSAOBlurFX->HorizontalBlurTech;
+	else
+		tech = Effects::SSAOBlurFX->VerticalBlurTech;
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+
+	dc->IASetInputLayout(InputLayouts::PosNorTex);
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	dc->IASetVertexBuffers(0, 1, &quadVertexBuffer, &stride, &offset);
+	dc->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		tech->GetPassByIndex(p)->Apply(0, dc);
+		dc->DrawIndexed(6, 0, 0);
+
+		// Unbind the input SRV as it is going to be an output in the next blur.
+		Effects::SSAOBlurFX->SetInputImage(0);
+		tech->GetPassByIndex(p)->Apply(0, dc);
+	}
 }
 
 void SSAOMap::BuildRandomVectorTexture(ID3D11Device* device)

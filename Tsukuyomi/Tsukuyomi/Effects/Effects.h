@@ -35,6 +35,7 @@ public:
 	void SetWorld(CXMMATRIX M)                          { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M)              { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetTexTransform(CXMMATRIX M)                   { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldViewProjTex(CXMMATRIX M)               { WorldViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetShadowTransform(CXMMATRIX M)				{ ShadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetEyePosW(const XMFLOAT3& v)                  { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetDirLights(const RenderLightHelper::DirLight* lights, int count=3)   { DirLights->SetRawValue(lights, 0, count*sizeof(RenderLightHelper::DirLight)); }
@@ -42,6 +43,7 @@ public:
 	void SetMaterial(const RenderLightHelper::Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(RenderLightHelper::Material)); }
 	void SetDiffuseMap(ID3D11ShaderResourceView* rv)		{ DiffuseMap->SetResource(rv); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex)		{ ShadowMap->SetResource(tex); }
+	void SetSSAOMap(ID3D11ShaderResourceView* sm)           { SSAOMap->SetResource(sm); }
 
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f)                           { FogStart->SetFloat(f); }
@@ -63,6 +65,8 @@ public:
 	ID3DX11EffectTechnique* SimpleColorTech;
 	ID3DX11EffectTechnique* CustomLightTech;
 	ID3DX11EffectTechnique* CustomLightShadowTech;
+	ID3DX11EffectTechnique* CustomLightShadowSSAOTech;
+	ID3DX11EffectTechnique* CustomLightSSAOTech;
 	ID3DX11EffectTechnique* Light1TexAlphaClipFogTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
@@ -70,6 +74,7 @@ public:
 	ID3DX11EffectMatrixVariable* TexTransform;
 	ID3DX11EffectMatrixVariable* ShadowTransform;
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;
+	ID3DX11EffectMatrixVariable* WorldViewProjTex;
 	ID3DX11EffectVectorVariable* EyePosW;
 	ID3DX11EffectVariable* DirLights;
 	ID3DX11EffectVariable* PointLights;
@@ -85,6 +90,7 @@ public:
 
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;
 	ID3DX11EffectShaderResourceVariable* ShadowMap;
+	ID3DX11EffectShaderResourceVariable* SSAOMap;
 };
 #pragma endregion
 
@@ -155,6 +161,30 @@ public:
 #pragma endregion
 
 
+#pragma region BlurSSAOEffect
+class BlurSSAOEffect : public Effect
+{
+public:
+	BlurSSAOEffect(ID3D11Device* device, const std::wstring& filename);
+	~BlurSSAOEffect();
+
+	void SetTexelWidth(float depth) { TexelWidth->SetFloat(depth); }
+	void SetTexelHeight(float depth) { TexelHeight->SetFloat(depth); }
+	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
+	void SetInputImage(ID3D11ShaderResourceView* srv) { InputImage->SetResource(srv); }
+
+	ID3DX11EffectTechnique* HorizontalBlurTech;
+	ID3DX11EffectTechnique* VerticalBlurTech;
+
+	ID3DX11EffectShaderResourceVariable* NormalDepthMap;
+	ID3DX11EffectShaderResourceVariable* InputImage;
+
+	ID3DX11EffectScalarVariable* TexelWidth;
+	ID3DX11EffectScalarVariable* TexelHeight;
+};
+#pragma endregion
+
+
 #pragma region Effects
 class Effects
 {
@@ -164,6 +194,7 @@ public:
 	static BasicEffect* BasicFX;
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
+	static BlurSSAOEffect* SSAOBlurFX;
 };
 #pragma endregion
 

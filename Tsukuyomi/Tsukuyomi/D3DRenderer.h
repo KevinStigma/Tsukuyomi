@@ -43,6 +43,7 @@ public:
 	void resetCameraTransform(Camera* cam);
 	void buildShadowTransform();
 	float computeFPS();
+	XMMATRIX getTexTransformMat() { return XMLoadFloat4x4(&TexTransformMat); }
 	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	
 protected:
@@ -54,7 +55,6 @@ protected:
 	void renderBVH();
 	void renderNormalDepthMap();
 	void renderInitialSSAOMap();
-	void blurSSAOMap();
 	void renderFrustum(FXMMATRIX trans_mat);
 	void renderWireFrameSphere(Object * obj);
 	void renderDirectionalLight(Object* obj);

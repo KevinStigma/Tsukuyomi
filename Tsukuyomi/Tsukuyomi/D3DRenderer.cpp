@@ -386,18 +386,13 @@ void D3DRenderer::renderInitialSSAOMap()
 
 }
 
-void D3DRenderer::blurSSAOMap()
-{
-
-}
-
 void D3DRenderer::renderSSAOMap()
 {
 	if (!g_pGlobalSys->render_paras.enableSSAO)
 		return;
 	renderNormalDepthMap();
 	renderInitialSSAOMap();
-	blurSSAOMap();
+	ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
 }
 
 void D3DRenderer::renderScene()
@@ -411,6 +406,7 @@ void D3DRenderer::renderScene()
 
 	renderSSAOMap();
 
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 	ID3D11RenderTargetView* renderTargets[1] = { m_pRenderTargetView };
 	m_pImmediateContext->OMSetRenderTargets(1, renderTargets, m_pDepthStencilView);
 	//Clear our backbuffer
@@ -421,6 +417,8 @@ void D3DRenderer::renderScene()
 
 	if(g_pGlobalSys->objectManager.getCurSelShadowLight())
 		Effects::BasicFX->SetShadowMap(shadowMap->DepthMapSRV());
+	if (g_pGlobalSys->render_paras.enableSSAO)
+		Effects::BasicFX->SetShadowMap(ssaoMap->getSSAOMapSRV());
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
 	renderSelObjFlag();

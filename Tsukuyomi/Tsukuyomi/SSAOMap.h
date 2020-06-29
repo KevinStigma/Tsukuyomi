@@ -9,6 +9,8 @@ public:
 	~SSAOMap();
 	void SetNormalDepthRenderTarget(ID3D11DeviceContext* dc, ID3D11DepthStencilView* dsv);
 	void SetRenderSSAORenderTarget(ID3D11DeviceContext* dc);
+	void blurSSAOMap(ID3D11DeviceContext* dc, ID3D11ShaderResourceView* inputSRV, ID3D11RenderTargetView* outputRTV, ID3D11Buffer*quadVertexBuffer, ID3D11Buffer* quadIndexBuffer, bool horizontal);
+	void blurSSAOMap(ID3D11DeviceContext*dc, ID3D11Buffer*quadVertexBuffer, ID3D11Buffer* quadIndexBuffer, int blurCount);
 
 	ID3D11ShaderResourceView* getRandomVectorSRV() {
 		return mRandomVectorSRV;
@@ -16,6 +18,10 @@ public:
 
 	ID3D11ShaderResourceView* getNormalDepthMapSRV() {
 		return mNormalDepthMapSRV;
+	}
+
+	ID3D11ShaderResourceView* getSSAOMapSRV() {
+		return mSSAOMapSRV1;
 	}
 
 	std::vector<XMFLOAT4> getOffsets() { return mOffsets; }

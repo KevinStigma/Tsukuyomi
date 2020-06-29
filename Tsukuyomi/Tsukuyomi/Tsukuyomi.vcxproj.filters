@@ -394,5 +394,8 @@
     <FxCompile Include="shaders\BuildSSAOMap.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\SSAOBlur.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

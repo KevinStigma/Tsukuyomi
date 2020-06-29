@@ -126,7 +126,7 @@ InitalSSAOVertexOut InitalSSAOVS(VertexIn vin)
 	InitalSSAOVertexOut vout;
 
 	vout.PosH = float4(vin.PosL.x * gFarPlaneSize.x, vin.PosL.y * gFarPlaneSize.y, gFarPlaneDepth, 1.0);
-	vout.Tex = mul(vout.PosH, gViewToTexSpace);
+	vout.Tex = vin.Tex;
 	return vout;
 }
 
