@@ -71,6 +71,7 @@ public:
     QLabel *label_8;
     QSlider *moveSpeedSlider_hdr;
     QCheckBox *SSAO_checkBox;
+    QCheckBox *DebugTex_checkBox;
     QWidget *tab;
     ObjectPropertyWidget *propertyWidget;
     QLabel *label;
@@ -229,15 +230,15 @@ public:
         Gamma_checkBox->setFont(font1);
         targetCamButton = new QPushButton(tab_3);
         targetCamButton->setObjectName(QStringLiteral("targetCamButton"));
-        targetCamButton->setGeometry(QRect(60, 260, 141, 31));
+        targetCamButton->setGeometry(QRect(60, 310, 141, 31));
         targetCamButton->setFont(font1);
         resetViewButton = new QPushButton(tab_3);
         resetViewButton->setObjectName(QStringLiteral("resetViewButton"));
-        resetViewButton->setGeometry(QRect(60, 300, 141, 31));
+        resetViewButton->setGeometry(QRect(60, 350, 141, 31));
         resetViewButton->setFont(font1);
         setShadowLightButton = new QPushButton(tab_3);
         setShadowLightButton->setObjectName(QStringLiteral("setShadowLightButton"));
-        setShadowLightButton->setGeometry(QRect(60, 340, 141, 31));
+        setShadowLightButton->setGeometry(QRect(60, 390, 141, 31));
         setShadowLightButton->setFont(font1);
         HDR_checkBox = new QCheckBox(tab_3);
         HDR_checkBox->setObjectName(QStringLiteral("HDR_checkBox"));
@@ -261,6 +262,10 @@ public:
         SSAO_checkBox->setObjectName(QStringLiteral("SSAO_checkBox"));
         SSAO_checkBox->setGeometry(QRect(20, 210, 71, 15));
         SSAO_checkBox->setFont(font1);
+        DebugTex_checkBox = new QCheckBox(tab_3);
+        DebugTex_checkBox->setObjectName(QStringLiteral("DebugTex_checkBox"));
+        DebugTex_checkBox->setGeometry(QRect(20, 250, 101, 16));
+        DebugTex_checkBox->setFont(font1);
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
@@ -431,6 +436,7 @@ public:
         HDR_checkBox->setText(QApplication::translate("TsukuyomiClass", "HDR", Q_NULLPTR));
         label_8->setText(QApplication::translate("TsukuyomiClass", "HDR Exposure", Q_NULLPTR));
         SSAO_checkBox->setText(QApplication::translate("TsukuyomiClass", "SSAO", Q_NULLPTR));
+        DebugTex_checkBox->setText(QApplication::translate("TsukuyomiClass", "Debug Tex", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("TsukuyomiClass", "view", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());

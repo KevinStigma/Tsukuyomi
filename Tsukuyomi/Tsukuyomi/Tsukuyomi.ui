@@ -226,7 +226,7 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>260</y>
+          <y>310</y>
           <width>141</width>
           <height>31</height>
          </rect>
@@ -244,7 +244,7 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>300</y>
+          <y>350</y>
           <width>141</width>
           <height>31</height>
          </rect>
@@ -262,7 +262,7 @@
         <property name="geometry">
          <rect>
           <x>60</x>
-          <y>340</y>
+          <y>390</y>
           <width>141</width>
           <height>31</height>
          </rect>
@@ -351,6 +351,24 @@
         </property>
         <property name="text">
          <string>SSAO</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="DebugTex_checkBox">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>250</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Debug Tex</string>
         </property>
        </widget>
       </widget>

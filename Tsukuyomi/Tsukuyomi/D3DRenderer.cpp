@@ -265,6 +265,12 @@ void D3DRenderer::initScene()
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f));
+
+	XMStoreFloat4x4(&DebugTexTransMat, XMMATRIX(
+		0.25f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.25f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.75f, -0.75f, 0.0001f, 1.0f));	
 }
 
 void D3DRenderer::updateLights()
@@ -422,6 +428,8 @@ void D3DRenderer::renderScene()
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
 	renderSelObjFlag();
+
+	renderDebugTex();
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
 }
@@ -444,6 +452,39 @@ void D3DRenderer::renderSelObjFlag()
 			renderCoordAxis(sel_obj);
 		else if(renderSelObjMode == ROT_AXIS)
 			renderRotAxis(sel_obj);
+	}
+}
+
+void D3DRenderer::renderDebugTex()
+{
+	if (!g_pGlobalSys->render_paras.showDebugTex)
+		return;
+	DebugTexEffect* debugTexEffect = Effects::DebugTexFX;
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	m_pImmediateContext->IASetVertexBuffers(0, 1, &m_pQuadVertexBuffer, &stride, &offset);
+	m_pImmediateContext->IASetIndexBuffer(m_pQuadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_pImmediateContext->IASetInputLayout(InputLayouts::PosNorTex);
+	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	if (g_pGlobalSys->render_paras.enableSSAO)
+		debugTexEffect->SetDebugTex(ssaoMap->getNormalDepthMapSRV());
+	else if (g_pGlobalSys->objectManager.getCurSelShadowLight())
+		debugTexEffect->SetDebugTex(shadowMap->DepthMapSRV());
+
+	ID3DX11EffectTechnique* activeTech = debugTexEffect->DebugTexTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX worldMat = XMLoadFloat4x4(&DebugTexTransMat);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		debugTexEffect->SetWorldViewProj(worldMat);
+
+		activeTech->GetPassByIndex(p)->Apply(0, m_pImmediateContext);
+		m_pImmediateContext->DrawIndexed(6, 0, 0);
 	}
 }
 

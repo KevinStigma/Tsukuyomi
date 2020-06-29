@@ -53,6 +53,7 @@ protected:
 	void renderRulerLlines();
 	void renderSelObjFlag();
 	void renderBVH();
+	void renderDebugTex();
 	void renderNormalDepthMap();
 	void renderInitialSSAOMap();
 	void renderFrustum(FXMMATRIX trans_mat);
@@ -112,6 +113,7 @@ protected:
 	AXIS                    curSelAxis = AXIS::NO;
 	XMFLOAT2                curSelAxisProjDir;
 	XMFLOAT4X4              TexTransformMat;
+	XMFLOAT4X4              DebugTexTransMat;
 	std::vector<RenderLightHelper::DirLight> m_dirLights;
 	std::vector<RenderLightHelper::Material> m_materials;
 	TransAxis				transAxis;

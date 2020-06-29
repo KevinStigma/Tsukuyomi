@@ -14,6 +14,7 @@ struct RenderParas
 	bool enableHDR = false;
 	bool enableSSAO = false;
 	bool gammaCorrect = false;
+	bool showDebugTex = false;
 	int depth = 1;
 	int sampleCount = 16;
 };

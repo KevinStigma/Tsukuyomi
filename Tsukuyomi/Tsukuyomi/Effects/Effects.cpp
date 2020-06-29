@@ -70,6 +70,19 @@ BasicEffect::~BasicEffect()
 }
 #pragma endregion
 
+#pragma region DebugTexEffect
+DebugTexEffect::DebugTexEffect(ID3D11Device* device, const std::wstring& filename):Effect(device, filename)
+{
+	DebugTexTech = mFX->GetTechniqueByName("DebugTexTech");
+	DebugTex = mFX->GetVariableByName("gDebugTex")->AsShaderResource();
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+}
+
+DebugTexEffect::~DebugTexEffect()
+{
+
+}
+#pragma endregion
 
 #pragma region BuildShadowMapEffect
 BuildShadowMapEffect::BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
@@ -144,6 +157,7 @@ BasicEffect* Effects::BasicFX = 0;
 BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
 BuildSSAOMapEffect* Effects::BuildSSAOMapFX = 0;
 BlurSSAOEffect* Effects::SSAOBlurFX = 0;
+DebugTexEffect* Effects::DebugTexFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -151,6 +165,7 @@ void Effects::InitAll(ID3D11Device* device)
 	BuildShadowMapFX = new BuildShadowMapEffect(device, L"./shaders/BuildShadowMap.fx");
 	BuildSSAOMapFX = new BuildSSAOMapEffect(device, L"./shaders/BuildSSAOMap.fx");
 	SSAOBlurFX = new BlurSSAOEffect(device, L"./shaders/SSAOBlur.fx");
+	DebugTexFX = new DebugTexEffect(device, L"./shaders/DebugTexture.fx");
 }
 
 void Effects::DestroyAll()
@@ -158,5 +173,7 @@ void Effects::DestroyAll()
 	SAFE_DELETE(BasicFX);
 	SAFE_DELETE(BuildShadowMapFX);
 	SAFE_DELETE(BuildSSAOMapFX);
+	SAFE_DELETE(SSAOBlurFX);
+	SAFE_DELETE(DebugTexFX);
 }
 #pragma endregion

@@ -372,7 +372,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 			Object* light = createNewObjectOfDirectionalLight(name, translation, scale, rotation, color);
 			if (express->FindAttribute("ShadowLight"))
 			{
-				if (express->Attribute("ShadowLight"))
+				if (std::string(express->Attribute("ShadowLight")) == "true")
 					setCurShadowLight((Light*)light);
 			}
 

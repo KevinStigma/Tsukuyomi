@@ -95,6 +95,23 @@ public:
 #pragma endregion
 
 
+#pragma region DebugTexEffect
+class DebugTexEffect : public Effect
+{
+public:
+	DebugTexEffect(ID3D11Device* device, const std::wstring& filename);
+	~DebugTexEffect();
+
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetDebugTex(ID3D11ShaderResourceView* srv) { DebugTex->SetResource(srv); }
+
+	
+	ID3DX11EffectTechnique* DebugTexTech;
+	ID3DX11EffectShaderResourceVariable* DebugTex;
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+};
+#pragma endregion
+
 #pragma region BuildShadowMapEffect
 class BuildShadowMapEffect : public Effect
 {
@@ -195,6 +212,7 @@ public:
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
 	static BlurSSAOEffect* SSAOBlurFX;
+	static DebugTexEffect* DebugTexFX;
 };
 #pragma endregion
 
