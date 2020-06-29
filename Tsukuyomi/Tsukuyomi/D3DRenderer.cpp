@@ -116,6 +116,7 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 
 	m_pd3dDevice->CreateTexture2D(&depthStencilDesc, NULL, &m_pDepthStencilBuffer);
 	hr = m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer, NULL, &m_pDepthStencilView);
+
 	if (FAILED(hr))
 		return false;
 
@@ -137,7 +138,7 @@ bool D3DRenderer::initD3D(HWND windowId, int viewport_width, int viewport_height
 
 	int shadowMapSize = 2048;
 	shadowMap = new ShadowMap(m_pd3dDevice, shadowMapSize, shadowMapSize);
-	ssaoMap = new SSAOMap(m_pd3dDevice, width, height);
+	ssaoMap = new SSAOMap(m_pd3dDevice, viewport_width, viewport_height);
 	return true;
 }
 
@@ -184,6 +185,9 @@ bool D3DRenderer::resizeD3D(int width, int height)
 
 	//Set the Viewport
 	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
+
+	SAFE_DELETE(ssaoMap);
+	ssaoMap = new SSAOMap(m_pd3dDevice, width, height);
 	return true;
 }
 
@@ -347,7 +351,6 @@ void D3DRenderer::renderNormalDepthMap()
 		if (obj->getType() == MESH)
 			dynamic_cast<Mesh*>(obj)->renderNormalDepthMap(m_pImmediateContext, this);
 	}
-	m_pImmediateContext->RSSetState(0);
 }
 
 void D3DRenderer::renderInitialSSAOMap()
@@ -389,7 +392,6 @@ void D3DRenderer::renderInitialSSAOMap()
 		activeTech->GetPassByIndex(p)->Apply(0, m_pImmediateContext);
 		m_pImmediateContext->DrawIndexed(6, 0, 0);
 	}
-
 }
 
 void D3DRenderer::renderSSAOMap()
@@ -397,8 +399,8 @@ void D3DRenderer::renderSSAOMap()
 	if (!g_pGlobalSys->render_paras.enableSSAO)
 		return;
 	renderNormalDepthMap();
-	renderInitialSSAOMap();
-	ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
+	//renderInitialSSAOMap();
+	//ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
 }
 
 void D3DRenderer::renderScene()
@@ -406,6 +408,7 @@ void D3DRenderer::renderScene()
 	updateLights();
 	renderToShadowMap();
 	
+	m_pImmediateContext->RSSetState(0);
 	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 	//Refresh the Depth/Stencil view
 	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -430,6 +433,12 @@ void D3DRenderer::renderScene()
 	renderSelObjFlag();
 
 	renderDebugTex();
+
+	m_pImmediateContext->OMSetDepthStencilState(0, 0);
+
+	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
+	m_pImmediateContext->PSSetShaderResources(0, 16, nullSRV);
+
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
 }

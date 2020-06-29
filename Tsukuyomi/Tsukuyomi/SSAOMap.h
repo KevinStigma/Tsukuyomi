@@ -5,7 +5,7 @@
 class SSAOMap
 {
 public:
-	SSAOMap(ID3D11Device* device, UINT width, UINT height);
+	SSAOMap(ID3D11Device* device, int width, int height);
 	~SSAOMap();
 	void SetNormalDepthRenderTarget(ID3D11DeviceContext* dc, ID3D11DepthStencilView* dsv);
 	void SetRenderSSAORenderTarget(ID3D11DeviceContext* dc);
@@ -31,8 +31,6 @@ private:
 	void BuildRandomVectorTexture(ID3D11Device* device);
 
 	ID3D11DeviceContext* context;
-	UINT mWidth;
-	UINT mHeight;
 	std::vector<XMFLOAT4> mOffsets;
 
 	ID3D11ShaderResourceView* mRandomVectorSRV;

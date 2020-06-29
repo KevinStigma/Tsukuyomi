@@ -73,9 +73,8 @@ VertexOut NormalDepthVS(VertexIn vin)
 
 float4 NormalDepthPS(VertexOut pin) : SV_Target
 {
-	// Interpolating normal can unnormalize it, so normalize it.
-	pin.NormalV = normalize(pin.NormalV);
-	return float4(pin.NormalV, pin.PosV.z);
+	float3 n = normalize(pin.NormalV);
+	return float4(1.0, 1.0, 1.0, pin.PosV.z);
 }
 
 struct InitalSSAOVertexOut

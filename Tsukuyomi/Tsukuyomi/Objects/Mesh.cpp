@@ -75,13 +75,13 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 	XMVECTOR v;
 	XMMATRIX worldMat = getWorldMatrix();
-	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));	
 	XMMATRIX WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
 	XMMATRIX WVPT = WVP * renderer->getTexTransformMat();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{	
 		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
 		basicEffect->SetTexTransform(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(mat);
@@ -119,7 +119,7 @@ void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* rend
 
 	XMVECTOR v;
 	XMMATRIX worldMat = getWorldMatrix();
-	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 	XMMATRIX view_mat = camera.getViewMatrix();
 	XMMATRIX proj_mat = camera.getProjMatrix();
 	XMMATRIX WVP = worldMat * view_mat * proj_mat;
@@ -128,7 +128,7 @@ void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* rend
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		buildSSAOMapEffect->SetWorld(worldMat);
-		buildSSAOMapEffect->SetWorldInvTranspose(worldMat);
+		buildSSAOMapEffect->SetWorldInvTranspose(inv_world_mat);
 		buildSSAOMapEffect->SetWorldViewProj(WVP);
 		buildSSAOMapEffect->SetWorldView(world_view_mat);
 		buildSSAOMapEffect->SetWorldInvTransposeView(world_inv_transpose_view_mat);

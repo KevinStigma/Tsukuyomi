@@ -3,39 +3,36 @@
 #include "Effects/Effects.h"
 #include "Vertex.h"
 
-SSAOMap::SSAOMap(ID3D11Device* device, UINT width, UINT height)
+SSAOMap::SSAOMap(ID3D11Device* device, int width, int height):mNormalDepthMapSRV(nullptr), mNormalDepthRTV(nullptr)
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width = mWidth;
-	texDesc.Height = mHeight;
+	texDesc.Width = width;
+	texDesc.Height = height;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 
 	ID3D11Texture2D* normalDepthMap = 0;
 	HRESULT hr = device->CreateTexture2D(&texDesc, 0, &normalDepthMap);
 
-	device->CreateTexture2D(&texDesc, 0, &normalDepthMap);
 	device->CreateShaderResourceView(normalDepthMap, 0, &mNormalDepthMapSRV);
 	device->CreateRenderTargetView(normalDepthMap, 0, &mNormalDepthRTV);
 	
 	// view saves a reference.
 	ReleaseCOM(normalDepthMap);
 
-	texDesc.Width = mWidth * 0.5;
-	texDesc.Height = mHeight * 0.5;
+	texDesc.Width = width * 0.5;
+	texDesc.Height = height * 0.5;
 	texDesc.Format = DXGI_FORMAT_R16_FLOAT;
 
 	ID3D11Texture2D* ssaoMap = 0;
 	hr = device->CreateTexture2D(&texDesc, 0, &ssaoMap);
-
-	device->CreateTexture2D(&texDesc, 0, &ssaoMap);
 	device->CreateShaderResourceView(ssaoMap, 0, &mSSAOMapSRV1);
 	device->CreateRenderTargetView(ssaoMap, 0, &mSSAOMapRTV1);
 
@@ -61,7 +58,7 @@ void SSAOMap::SetNormalDepthRenderTarget(ID3D11DeviceContext* dc, ID3D11DepthSte
 	dc->OMSetRenderTargets(1, renderTargets, dsv);
 
 	// Clear view space normal to (0,0,-1) and clear depth to be very far away.  
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1e5f };
+	float clearColor[] = { 1.0f, 0.0f, 0.0f, 1e5 };
 	dc->ClearRenderTargetView(mNormalDepthRTV, clearColor);
 }
 
