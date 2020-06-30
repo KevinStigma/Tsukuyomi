@@ -8,8 +8,9 @@ Texture2D gDebugTex;
 SamplerState samLinear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = Wrap;
-	AddressV = Wrap;
+	AddressU = BORDER;
+	AddressV = BORDER;
+	BorderColor = float4(0.0f, 0.0f, 0.0f, 1.0);
 };
 
 struct VertexIn
@@ -38,7 +39,7 @@ VertexOut VS(VertexIn vin)
 float4 PS(VertexOut pin) : SV_Target
 {
 	float3 color = gDebugTex.SampleLevel(samLinear, pin.Tex.xy, 0.0f).rgb;
-	return float4(color, 1.0);
+	return float4(color.x, color.y, color.z, 1.0);
 }
 
 technique11 DebugTexTech

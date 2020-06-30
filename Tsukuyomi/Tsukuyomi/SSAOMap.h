@@ -24,6 +24,10 @@ public:
 		return mSSAOMapSRV1;
 	}
 
+	ID3D11ShaderResourceView* getDepthMapSRV() {
+		return mDepthMapSRV;
+	}
+
 	std::vector<XMFLOAT4> getOffsets() { return mOffsets; }
 
 private:
@@ -36,6 +40,9 @@ private:
 	ID3D11ShaderResourceView* mRandomVectorSRV;
 	ID3D11ShaderResourceView* mNormalDepthMapSRV;
 	ID3D11RenderTargetView* mNormalDepthRTV;
+
+	ID3D11ShaderResourceView* mDepthMapSRV;
+	ID3D11DepthStencilView* mDepthMapDSV;
 
 	ID3D11ShaderResourceView* mSSAOMapSRV1;
 	ID3D11RenderTargetView* mSSAOMapRTV1;

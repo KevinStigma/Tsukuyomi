@@ -475,5 +475,3 @@ technique11 CustomLightShadowSSAO
 		SetPixelShader(CompileShader(ps_5_0, CustomPS(curPointLightCount, curDirLightCount, true, true, false, false, false)));
 	}
 }
-
-

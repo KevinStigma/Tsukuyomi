@@ -87,13 +87,9 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		basicEffect->SetMaterial(mat);
 		basicEffect->SetWorldViewProjTex(WVPT);
 		if (use_shadow_map)
-		{
 			basicEffect->SetShadowTransform(worldMat * XMLoadFloat4x4(&sm_trans.shadowTransMat));
-		}
 		else
-		{
 			basicEffect->SetShadowTransform(XMMatrixIdentity());
-		}
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);
@@ -102,7 +98,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 
 void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* renderer)
 {
-	BuildSSAOMapEffect* buildSSAOMapEffect = Effects::BuildSSAOMapFX;
+	BuildNormalDepthMapEffect* effect = Effects::BuildNormalDepthMapFX;
 
 	UINT stride = sizeof(Basic32);
 	UINT offset = 0;
@@ -113,7 +109,7 @@ void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* rend
 
 	Camera& camera = renderer->getCamera();
 
-	ID3DX11EffectTechnique* activeTech = buildSSAOMapEffect->BuildNormalDepthMapTech;
+	ID3DX11EffectTechnique* activeTech = effect->BuildNormalDepthMapTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -127,11 +123,11 @@ void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* rend
 	XMMATRIX world_inv_transpose_view_mat = inv_world_mat * view_mat;
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		buildSSAOMapEffect->SetWorld(worldMat);
-		buildSSAOMapEffect->SetWorldInvTranspose(inv_world_mat);
-		buildSSAOMapEffect->SetWorldViewProj(WVP);
-		buildSSAOMapEffect->SetWorldView(world_view_mat);
-		buildSSAOMapEffect->SetWorldInvTransposeView(world_inv_transpose_view_mat);
+		effect->SetWorld(worldMat);
+		effect->SetWorldInvTranspose(inv_world_mat);
+		effect->SetWorldViewProj(WVP);
+		effect->SetWorldView(world_view_mat);
+		effect->SetWorldInvTransposeView(world_inv_transpose_view_mat);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(shape.mesh.indices.size(), 0, 0);

@@ -345,6 +345,7 @@ void D3DRenderer::renderToShadowMap()
 void D3DRenderer::renderNormalDepthMap()
 {
 	ssaoMap->SetNormalDepthRenderTarget(m_pImmediateContext, m_pDepthStencilView);
+	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 	std::vector<Object*> objects = g_pGlobalSys->objectManager.getAllObjects();
 	for each (auto obj in objects)
 	{
@@ -368,7 +369,7 @@ void D3DRenderer::renderInitialSSAOMap()
 	m_pImmediateContext->IASetInputLayout(InputLayouts::PosNorTex);
 	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	ID3DX11EffectTechnique* activeTech = buildSSAOMapEffect->BuildInitialSSAOMapTech;
+	ID3DX11EffectTechnique* activeTech = buildSSAOMapEffect->BuildSSAOMapTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -399,7 +400,7 @@ void D3DRenderer::renderSSAOMap()
 	if (!g_pGlobalSys->render_paras.enableSSAO)
 		return;
 	renderNormalDepthMap();
-	//renderInitialSSAOMap();
+	renderInitialSSAOMap();
 	//ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
 }
 
@@ -410,8 +411,6 @@ void D3DRenderer::renderScene()
 	
 	m_pImmediateContext->RSSetState(0);
 	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
-	//Refresh the Depth/Stencil view
-	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	renderSSAOMap();
 
@@ -420,6 +419,7 @@ void D3DRenderer::renderScene()
 	m_pImmediateContext->OMSetRenderTargets(1, renderTargets, m_pDepthStencilView);
 	//Clear our backbuffer
 	m_pImmediateContext->ClearRenderTargetView(m_pRenderTargetView, DirectX::Colors::Black);
+	m_pImmediateContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	renderRulerLlines();
 	renderBVH();
@@ -478,7 +478,7 @@ void D3DRenderer::renderDebugTex()
 	m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	if (g_pGlobalSys->render_paras.enableSSAO)
-		debugTexEffect->SetDebugTex(ssaoMap->getNormalDepthMapSRV());
+		debugTexEffect->SetDebugTex(ssaoMap->getSSAOMapSRV());
 	else if (g_pGlobalSys->objectManager.getCurSelShadowLight())
 		debugTexEffect->SetDebugTex(shadowMap->DepthMapSRV());
 

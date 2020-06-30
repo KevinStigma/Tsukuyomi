@@ -11,8 +11,6 @@ Texture2D gRandomVecMap;
 cbuffer cbPerObject
 {
 	float4x4 gWorld;
-	float4x4 gWorldView;
-	float4x4 gWorldInvTransposeView;
 	float4x4 gWorldInvTranspose;
 	float4x4 gViewProj;
 	float4x4 gViewToTexSpace; // Proj*Texture
@@ -56,30 +54,6 @@ struct VertexIn
 struct VertexOut
 {
 	float4 PosH : SV_POSITION;
-	float3 PosV : POSITION;
-	float3 NormalV : NORMAL;
-};
- 
-VertexOut NormalDepthVS(VertexIn vin)
-{
-	VertexOut vout;
-
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-	vout.PosV = mul(float4(vin.PosL, 1.0f), gWorldView).xyz;
-	vout.NormalV = mul(float4(vin.NormalL, 1.0f), gWorldInvTransposeView).xyz;
-
-	return vout;
-}
-
-float4 NormalDepthPS(VertexOut pin) : SV_Target
-{
-	float3 n = normalize(pin.NormalV);
-	return float4(1.0, 1.0, 1.0, pin.PosV.z);
-}
-
-struct InitalSSAOVertexOut
-{
-	float4 PosH : SV_POSITION;
 	float2 Tex  : TEXCOORD0;
 };
 
@@ -120,16 +94,16 @@ float OcclusionFunction(float distZ)
 	return occlusion;
 }
 
-InitalSSAOVertexOut InitalSSAOVS(VertexIn vin)
+VertexOut SSAOVS(VertexIn vin)
 {
-	InitalSSAOVertexOut vout;
+	VertexOut vout;
 
 	vout.PosH = float4(vin.PosL.x * gFarPlaneSize.x, vin.PosL.y * gFarPlaneSize.y, gFarPlaneDepth, 1.0);
 	vout.Tex = vin.Tex;
 	return vout;
 }
 
-float4 InitalSSAOPS(InitalSSAOVertexOut pin) : SV_Target
+float4 SSAOPS(VertexOut pin) : SV_Target
 {
 	float4 normalDepth = gNormalDepthMap.SampleLevel(samNormalDepth, pin.Tex, 0.0f);
 	float3 n = normalDepth.xyz;
@@ -166,22 +140,13 @@ float4 InitalSSAOPS(InitalSSAOVertexOut pin) : SV_Target
 	return saturate(pow(access, 4.0f));
 }
 
-technique11 BuildNormalDepthMapTech
-{
-    pass P0
-    {
-        SetVertexShader(CompileShader(vs_5_0, NormalDepthVS()));
-		SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_5_0, NormalDepthPS()));
-    }
-}
 
-technique11 BuildInitialSSAOMapTech
+technique11 BuildSSAOMapTech
 {
 	pass P0
 	{
-		SetVertexShader(CompileShader(vs_5_0, InitalSSAOVS()));
+		SetVertexShader(CompileShader(vs_5_0, SSAOVS()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, InitalSSAOPS()));
+		SetPixelShader(CompileShader(ps_5_0, SSAOPS()));
 	}
 }

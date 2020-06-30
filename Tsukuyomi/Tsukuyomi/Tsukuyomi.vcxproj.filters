@@ -400,5 +400,8 @@
     <FxCompile Include="shaders\DebugTexture.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\BuildNormalDepthMap.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -103,20 +103,35 @@ BuildShadowMapEffect::~BuildShadowMapEffect()
 }
 #pragma endregion
 
+#pragma region BuildNormalDepthMapEffect
+BuildNormalDepthMapEffect::BuildNormalDepthMapEffect(ID3D11Device* device, const std::wstring& filename)
+	:Effect(device, filename)
+{
+	BuildNormalDepthMapTech = mFX->GetTechniqueByName("BuildNormalDepthMap");
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	World = mFX->GetVariableByName("gWorld")->AsMatrix();
+	WorldView = mFX->GetVariableByName("gWorldView")->AsMatrix();
+	WorldInvTransposeView = mFX->GetVariableByName("gWorldInvTransposeView")->AsMatrix();
+
+	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+}
+
+BuildNormalDepthMapEffect::~BuildNormalDepthMapEffect()
+{
+
+}
+#pragma endregion
 
 #pragma region BuildSSAOMapEffect
 BuildSSAOMapEffect::BuildSSAOMapEffect(ID3D11Device* device, const std::wstring& filename) 
 	:Effect(device, filename)
 {
-	BuildNormalDepthMapTech = mFX->GetTechniqueByName("BuildNormalDepthMapTech");
-	BuildInitialSSAOMapTech = mFX->GetTechniqueByName("BuildInitialSSAOMapTech");
+	BuildSSAOMapTech = mFX->GetTechniqueByName("BuildSSAOMapTech");
 
 	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
 	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	World = mFX->GetVariableByName("gWorld")->AsMatrix();
 	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-	WorldView = mFX->GetVariableByName("gViewProj")->AsMatrix();
-	WorldInvTransposeView = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	ViewToTexSpace = mFX->GetVariableByName("gViewToTexSpace")->AsMatrix();
 	FarPlaneSize = mFX->GetVariableByName("gFarPlaneSize")->AsVector();
 	FarPlaneDepth = mFX->GetVariableByName("gFarPlaneDepth")->AsScalar();
@@ -158,6 +173,7 @@ BuildShadowMapEffect* Effects::BuildShadowMapFX = 0;
 BuildSSAOMapEffect* Effects::BuildSSAOMapFX = 0;
 BlurSSAOEffect* Effects::SSAOBlurFX = 0;
 DebugTexEffect* Effects::DebugTexFX = 0;
+BuildNormalDepthMapEffect* Effects::BuildNormalDepthMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -166,6 +182,7 @@ void Effects::InitAll(ID3D11Device* device)
 	BuildSSAOMapFX = new BuildSSAOMapEffect(device, L"./shaders/BuildSSAOMap.fx");
 	SSAOBlurFX = new BlurSSAOEffect(device, L"./shaders/SSAOBlur.fx");
 	DebugTexFX = new DebugTexEffect(device, L"./shaders/DebugTexture.fx");
+	BuildNormalDepthMapFX = new BuildNormalDepthMapEffect(device, L"./shaders/BuildNormalDepthMap.fx");
 }
 
 void Effects::DestroyAll()
@@ -175,5 +192,6 @@ void Effects::DestroyAll()
 	SAFE_DELETE(BuildSSAOMapFX);
 	SAFE_DELETE(SSAOBlurFX);
 	SAFE_DELETE(DebugTexFX);
+	SAFE_DELETE(BuildNormalDepthMapFX);
 }
 #pragma endregion

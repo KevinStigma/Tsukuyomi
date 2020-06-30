@@ -12,7 +12,6 @@
 cbuffer cbPerFrame
 {
 	float3 gEyePosW;
-
 };
 
 cbuffer cbPerObject

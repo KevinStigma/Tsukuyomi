@@ -138,6 +138,30 @@ public:
 #pragma endregion
 
 
+#pragma region BuildShadowMapEffect
+class BuildNormalDepthMapEffect : public Effect
+{
+public:
+	BuildNormalDepthMapEffect(ID3D11Device* device, const std::wstring& filename);
+	~BuildNormalDepthMapEffect();
+
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldView(CXMMATRIX M) { WorldView->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTransposeView(CXMMATRIX M) { WorldInvTransposeView->SetMatrix(reinterpret_cast<const float*>(&M)); }
+
+	ID3DX11EffectTechnique* BuildNormalDepthMapTech;
+
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+	ID3DX11EffectMatrixVariable* World;
+	ID3DX11EffectMatrixVariable* WorldInvTranspose;
+	ID3DX11EffectMatrixVariable* WorldView;
+	ID3DX11EffectMatrixVariable* WorldInvTransposeView;
+};
+#pragma endregion
+
+
 #pragma region BuildSSAOMapEffect
 class BuildSSAOMapEffect : public Effect
 {
@@ -149,8 +173,6 @@ public:
 	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetWorldView(CXMMATRIX M) { WorldView->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetWorldInvTransposeView(CXMMATRIX M) { WorldInvTransposeView->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewToTexSpace(CXMMATRIX M) { ViewToTexSpace->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetFarPlaneDepth(float depth) { FarPlaneDepth->SetFloat(depth); }
 	void SetFarPlaneSize(CXMVECTOR v) { FarPlaneSize->SetFloatVector(reinterpret_cast<const float*>(&v)); }
@@ -158,8 +180,7 @@ public:
 	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
 	void SetRandomVecMap(ID3D11ShaderResourceView* srv) { RandomVecMap->SetResource(srv); }
 
-	ID3DX11EffectTechnique* BuildNormalDepthMapTech;
-	ID3DX11EffectTechnique* BuildInitialSSAOMapTech;
+	ID3DX11EffectTechnique* BuildSSAOMapTech;
 
 	ID3DX11EffectShaderResourceVariable* NormalDepthMap;
 	ID3DX11EffectShaderResourceVariable* RandomVecMap;
@@ -168,8 +189,6 @@ public:
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* World;
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;
-	ID3DX11EffectMatrixVariable* WorldView;
-	ID3DX11EffectMatrixVariable* WorldInvTransposeView;
 	ID3DX11EffectMatrixVariable* ViewToTexSpace;
 	ID3DX11EffectVectorVariable* OffsetVectors;
 	ID3DX11EffectScalarVariable* FarPlaneDepth;
@@ -209,6 +228,7 @@ public:
 	static void InitAll(ID3D11Device* device);
 	static void DestroyAll();
 	static BasicEffect* BasicFX;
+	static BuildNormalDepthMapEffect* BuildNormalDepthMapFX;
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
 	static BlurSSAOEffect* SSAOBlurFX;
