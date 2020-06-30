@@ -383,7 +383,7 @@ void D3DRenderer::renderInitialSSAOMap()
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		buildSSAOMapEffect->SetWorld(worldMat);
-		buildSSAOMapEffect->SetWorldInvTranspose(worldMat);
+		buildSSAOMapEffect->SetWorldInvTranspose(inv_world_mat);
 		buildSSAOMapEffect->SetWorldViewProj(WVP);
 		buildSSAOMapEffect->SetViewToTexSpace(proj_mat * T);
 		buildSSAOMapEffect->SetNormalDepthMap(ssaoMap->getNormalDepthMapSRV());

@@ -98,7 +98,7 @@ void SSAOMap::SetRenderSSAORenderTarget(ID3D11DeviceContext* dc)
 	ID3D11RenderTargetView* renderTargets[1] = { mSSAOMapRTV1 };
 	dc->OMSetRenderTargets(1, renderTargets, 0);
   
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float clearColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	dc->ClearRenderTargetView(mSSAOMapRTV1, clearColor);
 	dc->RSSetViewports(1, &mSSAOViewport);
 }

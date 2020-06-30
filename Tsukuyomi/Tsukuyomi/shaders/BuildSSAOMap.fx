@@ -54,6 +54,7 @@ struct VertexIn
 struct VertexOut
 {
 	float4 PosH : SV_POSITION;
+	float3 PosV : POSITION;
 	float2 Tex  : TEXCOORD0;
 };
 
@@ -97,8 +98,8 @@ float OcclusionFunction(float distZ)
 VertexOut SSAOVS(VertexIn vin)
 {
 	VertexOut vout;
-
-	vout.PosH = float4(vin.PosL.x * gFarPlaneSize.x, vin.PosL.y * gFarPlaneSize.y, gFarPlaneDepth, 1.0);
+	vout.PosH = float4(vin.PosL.x, vin.PosL.y, 1.0, 1.0);
+	vout.PosV = float3(vin.PosL.x * gFarPlaneSize.x, vin.PosL.y * gFarPlaneSize.y, gFarPlaneDepth);
 	vout.Tex = vin.Tex;
 	return vout;
 }
@@ -109,7 +110,7 @@ float4 SSAOPS(VertexOut pin) : SV_Target
 	float3 n = normalDepth.xyz;
 	float pz = normalDepth.w;
 	
-	float3 p = pz / pin.PosH.z * pin.PosH.xyz;
+	float3 p = pz / pin.PosV.z * pin.PosV.xyz;
 	
 	// Extract random vector and map from [0,1] --> [-1, +1].
 	float3 randVec = 2.0f * gRandomVecMap.SampleLevel(samRandomVec, 4.0f*pin.Tex, 0.0f).rgb - 1.0f;
