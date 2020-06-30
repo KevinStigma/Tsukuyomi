@@ -401,7 +401,7 @@ void D3DRenderer::renderSSAOMap()
 		return;
 	renderNormalDepthMap();
 	renderInitialSSAOMap();
-	//ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
+	ssaoMap->blurSSAOMap(m_pImmediateContext, m_pQuadVertexBuffer, m_pQuadIndexBuffer, 4);
 }
 
 void D3DRenderer::renderScene()
@@ -427,7 +427,7 @@ void D3DRenderer::renderScene()
 	if(g_pGlobalSys->objectManager.getCurSelShadowLight())
 		Effects::BasicFX->SetShadowMap(shadowMap->DepthMapSRV());
 	if (g_pGlobalSys->render_paras.enableSSAO)
-		Effects::BasicFX->SetShadowMap(ssaoMap->getSSAOMapSRV());
+		Effects::BasicFX->SetSSAOMap(ssaoMap->getSSAOMapSRV());
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
 	renderSelObjFlag();

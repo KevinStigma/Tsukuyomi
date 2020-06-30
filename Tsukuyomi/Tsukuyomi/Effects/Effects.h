@@ -204,8 +204,8 @@ public:
 	BlurSSAOEffect(ID3D11Device* device, const std::wstring& filename);
 	~BlurSSAOEffect();
 
-	void SetTexelWidth(float depth) { TexelWidth->SetFloat(depth); }
-	void SetTexelHeight(float depth) { TexelHeight->SetFloat(depth); }
+	void SetTexelWidth(float w) { TexelWidth->SetFloat(w); }
+	void SetTexelHeight(float h) { TexelHeight->SetFloat(h); }
 	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
 	void SetInputImage(ID3D11ShaderResourceView* srv) { InputImage->SetResource(srv); }
 

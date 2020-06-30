@@ -67,10 +67,13 @@ SSAOMap::SSAOMap(ID3D11Device* device, int width, int height):mNormalDepthMapSRV
 	device->CreateShaderResourceView(ssaoMap, 0, &mSSAOMapSRV1);
 	device->CreateRenderTargetView(ssaoMap, 0, &mSSAOMapRTV1);
 
-	device->CreateShaderResourceView(ssaoMap, 0, &mSSAOMapSRV2);
-	device->CreateRenderTargetView(ssaoMap, 0, &mSSAOMapRTV2);
+	ID3D11Texture2D* ssaoMap2 = 0;
+	hr = device->CreateTexture2D(&texDesc, 0, &ssaoMap2);
+	device->CreateShaderResourceView(ssaoMap2, 0, &mSSAOMapSRV2);
+	device->CreateRenderTargetView(ssaoMap2, 0, &mSSAOMapRTV2);
 
 	ReleaseCOM(ssaoMap);
+	ReleaseCOM(ssaoMap2);
 
 	mSSAOViewport.TopLeftX = 0.0f;
 	mSSAOViewport.TopLeftY = 0.0f;
@@ -116,9 +119,9 @@ void SSAOMap::blurSSAOMap(ID3D11DeviceContext*dc, ID3D11ShaderResourceView* inpu
 {
 	ID3D11RenderTargetView* renderTargets[1] = { outputRTV };
 	dc->OMSetRenderTargets(1, renderTargets, 0);
-	dc->ClearRenderTargetView(outputRTV, reinterpret_cast<const float*>(&Colors::Black));
+	dc->ClearRenderTargetView(outputRTV, reinterpret_cast<const float*>(&Colors::White));
 	dc->RSSetViewports(1, &mSSAOViewport);
-
+	
 	Effects::SSAOBlurFX->SetTexelWidth(1.0f / mSSAOViewport.Width);
 	Effects::SSAOBlurFX->SetTexelHeight(1.0f / mSSAOViewport.Height);
 	Effects::SSAOBlurFX->SetNormalDepthMap(mNormalDepthMapSRV);
@@ -136,7 +139,7 @@ void SSAOMap::blurSSAOMap(ID3D11DeviceContext*dc, ID3D11ShaderResourceView* inpu
 	dc->IASetInputLayout(InputLayouts::PosNorTex);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	dc->IASetVertexBuffers(0, 1, &quadVertexBuffer, &stride, &offset);
-	dc->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	dc->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);

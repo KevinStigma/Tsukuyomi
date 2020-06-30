@@ -54,7 +54,7 @@ VertexOut VS(VertexIn vin)
 	VertexOut vout;
 
 	// Already in NDC space.
-	vout.PosH = float4(vin.PosL, 1.0f);
+	vout.PosH = float4(vin.PosL.x, vin.PosL.y, 1.0, 1.0f);
 
 	// Pass onto pixel shader.
 	vout.Tex = vin.Tex;

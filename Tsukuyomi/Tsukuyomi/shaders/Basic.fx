@@ -246,11 +246,11 @@ float4 CustomPS(VertexOut pin,
 		}
 
 		float ambient_weight = 1.0;
-		/*if (gUseSSAO)
+		if (gUseSSAO)
 		{
 			pin.SSAOPosH /= pin.SSAOPosH.w;
 			ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
-		}*/
+		}
 
 		// Sum the light contribution from each light source.  
 		[unroll]
