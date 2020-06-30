@@ -147,10 +147,6 @@ void SSAOMap::blurSSAOMap(ID3D11DeviceContext*dc, ID3D11ShaderResourceView* inpu
 	{
 		tech->GetPassByIndex(p)->Apply(0, dc);
 		dc->DrawIndexed(6, 0, 0);
-
-		// Unbind the input SRV as it is going to be an output in the next blur.
-		Effects::SSAOBlurFX->SetInputImage(0);
-		tech->GetPassByIndex(p)->Apply(0, dc);
 	}
 }
 

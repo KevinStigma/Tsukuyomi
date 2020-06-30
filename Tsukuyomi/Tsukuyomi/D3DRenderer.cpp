@@ -408,9 +408,6 @@ void D3DRenderer::renderScene()
 {
 	updateLights();
 	renderToShadowMap();
-	
-	m_pImmediateContext->RSSetState(0);
-	m_pImmediateContext->RSSetViewports(1, &m_screenViewport);
 
 	renderSSAOMap();
 
@@ -433,11 +430,6 @@ void D3DRenderer::renderScene()
 	renderSelObjFlag();
 
 	renderDebugTex();
-
-	m_pImmediateContext->OMSetDepthStencilState(0, 0);
-
-	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
-	m_pImmediateContext->PSSetShaderResources(0, 16, nullSRV);
 
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
