@@ -437,6 +437,8 @@ void D3DRenderer::renderScene()
 
 void D3DRenderer::renderSelObjFlag()
 {
+	if (!g_pGlobalSys->render_paras.showRulerLines)
+		return;
 	Object* sel_obj = g_pGlobalSys->objectManager.getCurSelObject();
 	if (sel_obj)
 	{
@@ -687,6 +689,8 @@ void D3DRenderer::buildShadowTransform()
 
 void D3DRenderer::renderRulerLlines()
 {
+	if (!g_pGlobalSys->render_paras.showRulerLines)
+		return;
 	BasicEffect*basicEffect = Effects::BasicFX;
 
 	UINT stride = sizeof(SimpleVertex);

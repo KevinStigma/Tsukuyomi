@@ -145,6 +145,11 @@ void Tsukuyomi::on_showBVHcheckBox_stateChanged(int val)
 	g_pGlobalSys->render_paras.renderBVH = bool(val);
 }
 
+void Tsukuyomi::on_RulerLine_checkBox_stateChanged(int val)
+{
+	g_pGlobalSys->render_paras.showRulerLines = bool(val);
+}
+
 void Tsukuyomi::on_MSAA_checkBox_stateChanged(int val)
 {
 	ui.render_widget->getRenderer()->enableMSAA(bool(val));

@@ -28,6 +28,7 @@ public slots:
 	void on_renderButton_clicked();
 	void on_genBVHButton_clicked();
 	void on_showBVHcheckBox_stateChanged(int);
+	void on_RulerLine_checkBox_stateChanged(int);
 	void on_MSAA_checkBox_stateChanged(int);
 	void on_HDR_checkBox_stateChanged(int);
 	void on_SSAO_checkBox_stateChanged(int);

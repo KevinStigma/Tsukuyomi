@@ -15,6 +15,7 @@ struct RenderParas
 	bool enableSSAO = false;
 	bool gammaCorrect = false;
 	bool showDebugTex = false;
+	bool showRulerLines = true;
 	int depth = 1;
 	int sampleCount = 16;
 };

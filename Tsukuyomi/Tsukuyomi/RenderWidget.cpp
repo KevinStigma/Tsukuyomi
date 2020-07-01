@@ -90,7 +90,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 			camera.rotateRight(-diff_y);
 			camera.rotateY(diff_x);
 		}
-		else
+		else if(g_pGlobalSys->render_paras.showRulerLines)
 		{
 			XMFLOAT2 cur_normalized_pos((cur_pos.x() / (float)width()) * 2.0f - 1.0f, (1.0f - cur_pos.y()/(float)height()) * 2.0f - 1.0f);
 			XMFLOAT2 last_normalized_pos(lastMousePos.x() / (float)width() * 2.0f - 1.0f, (1.0f - lastMousePos.y() / (float)height()) * 2.0f - 1.0f);
@@ -119,7 +119,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 		camera.walkRight(diff_x * g_pGlobalSys->getMoveSpeed()*500.0);
 		camera.walkUp(diff_y * g_pGlobalSys->getMoveSpeed() * 500.0);
 	}
-	else if (touchType == -1)
+	else if (touchType == -1 && g_pGlobalSys->render_paras.showRulerLines)
 	{
 		renderer->rayAxisIntersectionDetect(cur_pos.x() / float(width()), 1.0 - (cur_pos.y() / float(height())));
 	}

@@ -42,6 +42,11 @@ void BVHManager::destroyBoundingVolumeHieratches()
 	}
 	primitives.clear();
 	linear_nodes.clear();
+	for (int i = 0; i < nBuckets; i++)
+	{
+		buckets[i].count = 0;
+		buckets[i].bounds = BoundingBox();
+	}
 }
 
 

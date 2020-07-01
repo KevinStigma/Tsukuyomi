@@ -72,6 +72,7 @@ public:
     QSlider *moveSpeedSlider_hdr;
     QCheckBox *SSAO_checkBox;
     QCheckBox *DebugTex_checkBox;
+    QCheckBox *RulerLine_checkBox;
     QWidget *tab;
     ObjectPropertyWidget *propertyWidget;
     QLabel *label;
@@ -266,6 +267,11 @@ public:
         DebugTex_checkBox->setObjectName(QStringLiteral("DebugTex_checkBox"));
         DebugTex_checkBox->setGeometry(QRect(20, 250, 101, 16));
         DebugTex_checkBox->setFont(font1);
+        RulerLine_checkBox = new QCheckBox(tab_3);
+        RulerLine_checkBox->setObjectName(QStringLiteral("RulerLine_checkBox"));
+        RulerLine_checkBox->setGeometry(QRect(20, 270, 101, 16));
+        RulerLine_checkBox->setFont(font1);
+        RulerLine_checkBox->setChecked(true);
         tabWidget->addTab(tab_3, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
@@ -437,6 +443,7 @@ public:
         label_8->setText(QApplication::translate("TsukuyomiClass", "HDR Exposure", Q_NULLPTR));
         SSAO_checkBox->setText(QApplication::translate("TsukuyomiClass", "SSAO", Q_NULLPTR));
         DebugTex_checkBox->setText(QApplication::translate("TsukuyomiClass", "Debug Tex", Q_NULLPTR));
+        RulerLine_checkBox->setText(QApplication::translate("TsukuyomiClass", "RulerLine", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("TsukuyomiClass", "view", Q_NULLPTR));
         label->setText(QApplication::translate("TsukuyomiClass", "Scale", Q_NULLPTR));
         sx_lineEdit->setInputMask(QString());
