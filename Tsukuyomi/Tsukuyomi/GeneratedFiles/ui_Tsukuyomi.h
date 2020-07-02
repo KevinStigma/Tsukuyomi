@@ -51,6 +51,7 @@ public:
     QAction *actionWhitted;
     QAction *actiongenBVH;
     QAction *actionshowBVH;
+    QAction *actionScreenShot;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     ObjectsListWidget *objectsListView;
@@ -155,6 +156,8 @@ public:
         actionshowBVH = new QAction(TsukuyomiClass);
         actionshowBVH->setObjectName(QStringLiteral("actionshowBVH"));
         actionshowBVH->setCheckable(true);
+        actionScreenShot = new QAction(TsukuyomiClass);
+        actionScreenShot->setObjectName(QStringLiteral("actionScreenShot"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -403,6 +406,7 @@ public:
         menuLights->addAction(actionPointLight);
         menuLights->addAction(actionDirectionalLight);
         menuLights->addAction(actionAreaLight);
+        menuRenderOption->addAction(actionScreenShot);
 
         retranslateUi(TsukuyomiClass);
 
@@ -431,6 +435,7 @@ public:
         actionWhitted->setText(QApplication::translate("TsukuyomiClass", "Whitted", Q_NULLPTR));
         actiongenBVH->setText(QApplication::translate("TsukuyomiClass", "genBVH", Q_NULLPTR));
         actionshowBVH->setText(QApplication::translate("TsukuyomiClass", "showBVH", Q_NULLPTR));
+        actionScreenShot->setText(QApplication::translate("TsukuyomiClass", "ScreenShot", Q_NULLPTR));
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
         transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));

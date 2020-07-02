@@ -2,6 +2,8 @@
 #include <directxcolors.h>
 #include <vector>
 #include <iostream>
+#include <dxgi.h>
+#include <ScreenGrab.h>
 #include "common.h"
 #include "Vertex.h"
 #include "Globalsys.h"
@@ -11,6 +13,7 @@
 #include "./GeometryGenerator/GeometryGenerator.h"
 
 using namespace DirectX::Colors;
+
 
 D3DRenderer::D3DRenderer():m_camera("main_cam")
 {
@@ -433,6 +436,21 @@ void D3DRenderer::renderScene()
 
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
+}
+
+
+void D3DRenderer::GragScreenShot()
+{	
+	std::string file_name = "./Data/ScreenShots/"+generateRandomId()+".jpg";
+
+	wchar_t * w_file_name = new wchar_t[file_name.size() + 2];
+	wmemset(w_file_name, 0, file_name.size() + 2);
+	MultiByteToWideChar(CP_ACP, 0, file_name.c_str(), file_name.size(), w_file_name, file_name.size());
+
+	ID3D11Texture2D *pBackBuffer;
+	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&pBackBuffer));
+	SaveWICTextureToFile(m_pImmediateContext, pBackBuffer, { 0x19e4a5aa, 0x5662, 0x4fc5, 0xa0, 0xc0, 0x17, 0x58, 0x02, 0x8e, 0x10, 0x57 }, w_file_name);
+	SAFE_DELETE(w_file_name);
 }
 
 void D3DRenderer::renderSelObjFlag()

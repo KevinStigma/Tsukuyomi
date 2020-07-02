@@ -20,6 +20,7 @@ public slots:
 	void on_actionLoad_Project_triggered();
 	void on_actionSave_Project_triggered();
 	void on_actionClear_Scene_triggered();
+	void on_actionScreenShot_triggered();
 	void on_actionExit_triggered();
 	void on_actionCamera_triggered();
 	void on_actionPointLight_triggered();

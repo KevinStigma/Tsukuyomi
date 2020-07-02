@@ -912,6 +912,7 @@
     <property name="title">
      <string>Options</string>
     </property>
+    <addaction name="actionScreenShot"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
@@ -1012,6 +1013,11 @@
    </property>
    <property name="text">
     <string>showBVH</string>
+   </property>
+  </action>
+  <action name="actionScreenShot">
+   <property name="text">
+    <string>ScreenShot</string>
    </property>
   </action>
  </widget>

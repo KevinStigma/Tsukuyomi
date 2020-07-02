@@ -27,6 +27,7 @@ public:
 	void cleanup();
 	void renderToShadowMap();
 	void renderSSAOMap();
+	void GragScreenShot();
 	ShadowMap* getShadowMap() { return shadowMap; }
 	SSAOMap* getSSAOMap() { return ssaoMap; }
 	Camera& getCamera() { return m_camera; }

@@ -52,7 +52,6 @@ void RenderWidget::paintEvent(QPaintEvent *event)
 
 void RenderWidget::keyPressEvent(QKeyEvent *event)
 {
-
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent *mouse_event)

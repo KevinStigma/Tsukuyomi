@@ -69,6 +69,11 @@ void Tsukuyomi::on_actionClear_Scene_triggered()
 	object_mgr.clear();
 }
 
+void Tsukuyomi::on_actionScreenShot_triggered()
+{
+	ui.render_widget->getRenderer()->GragScreenShot();
+}
+
 void Tsukuyomi::on_actionExit_triggered()
 {
 	qApp->quit();
