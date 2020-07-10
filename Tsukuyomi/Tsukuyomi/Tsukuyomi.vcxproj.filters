@@ -231,6 +231,9 @@
     <QtRcc Include="Tsukuyomi.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+    <QtRcc Include="SheetStyles\breeze\breeze.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DRenderer.h">

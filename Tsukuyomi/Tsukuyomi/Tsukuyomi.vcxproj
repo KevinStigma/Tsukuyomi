@@ -176,6 +176,7 @@
     <QtUic Include="Tsukuyomi.ui" />
   </ItemGroup>
   <ItemGroup>
+    <QtRcc Include="SheetStyles\breeze\breeze.qrc" />
     <QtRcc Include="Tsukuyomi.qrc" />
   </ItemGroup>
   <ItemGroup>
