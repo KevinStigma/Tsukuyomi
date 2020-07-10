@@ -20,6 +20,7 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
 	g_pGlobalSys->exposureSlider = ui.moveSpeedSlider_hdr;
 	g_pGlobalSys->mainWindow = this;
+	srand(time(0));
 }
 
 Tsukuyomi::~Tsukuyomi()

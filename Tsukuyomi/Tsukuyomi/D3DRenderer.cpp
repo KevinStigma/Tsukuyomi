@@ -451,6 +451,7 @@ void D3DRenderer::GragScreenShot()
 	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&pBackBuffer));
 	SaveWICTextureToFile(m_pImmediateContext, pBackBuffer, { 0x19e4a5aa, 0x5662, 0x4fc5, 0xa0, 0xc0, 0x17, 0x58, 0x02, 0x8e, 0x10, 0x57 }, w_file_name);
 	SAFE_DELETE(w_file_name);
+	std::cout << "screenshot on " << file_name << std::endl;
 }
 
 void D3DRenderer::renderSelObjFlag()

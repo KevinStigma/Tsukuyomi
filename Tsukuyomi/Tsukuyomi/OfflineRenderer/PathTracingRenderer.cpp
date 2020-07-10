@@ -21,7 +21,6 @@ void PathTracingRenderer::start_render(Camera* camera, int height)
 	std::cout << "start path tracing!" << std::endl;
 	clock_t start, finish;
 	start = clock();
-	srand(time(0));
 	int width = int((height * camera->aspectRatio) + 0.5);
 	QImage image(QSize(width, height), QImage::Format_ARGB32);
 	std::string filename = generateRandomId();
