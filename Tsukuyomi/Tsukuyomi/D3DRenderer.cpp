@@ -253,7 +253,7 @@ void D3DRenderer::initScene()
 		0.75f, -0.75f, 0.0001f, 1.0f));	
 }
 
-void D3DRenderer::updateLights()
+void D3DRenderer::updateLightsForRenderingMeshes()
 {
 	std::vector<Light*> lights = g_pGlobalSys->objectManager.getAllLights();
 	std::vector<RenderLightHelper::DirLight> dirLights;
@@ -266,7 +266,7 @@ void D3DRenderer::updateLights()
 			RenderLightHelper::DirLight dirLight;
 			dirLight.Direction = ((DirectionalLight*)light)->getWorldDir();
 			dirLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			dirLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			dirLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
 			dirLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
 			dirLights.push_back(dirLight);
 		}
@@ -274,7 +274,7 @@ void D3DRenderer::updateLights()
 		{
 			RenderLightHelper::PointLight pLight;
 			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			pLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			pLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
 			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
 			pLight.Position = ((PointLight*)light)->getTranslation();
 			pointLights.push_back(pLight);
@@ -283,7 +283,7 @@ void D3DRenderer::updateLights()
 		{
 			RenderLightHelper::PointLight pLight;
 			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			pLight.Diffuse = XMFLOAT4(color.x*0.8, color.y*0.8, color.z*0.8, 1.0);
+			pLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
 			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
 			pLight.Position = ((AreaLight*)light)->getMesh()->getWorldCenter();
 			pointLights.push_back(pLight);
@@ -302,6 +302,25 @@ void D3DRenderer::updateLights()
 	basicEffect->SetGammaCorrect(g_pGlobalSys->render_paras.gammaCorrect);
 	basicEffect->SetEnableHDR(g_pGlobalSys->render_paras.enableHDR);
 	basicEffect->SetHDRExposure(g_pGlobalSys->getHDRExposure());
+}
+
+void D3DRenderer::updateLightsForRenderingSelFlags()
+{
+	std::vector<RenderLightHelper::DirLight> dirLights;
+	std::vector<RenderLightHelper::PointLight> pointLights;
+
+	RenderLightHelper::DirLight dirLight;
+	dirLight.Direction = XMFLOAT3(1.0, 1.0, 1.0);
+	dirLight.Diffuse = XMFLOAT4(2.0, 2.0, 2.0, 1.0);
+	dirLights.push_back(dirLight);
+
+	dirLight.Direction = XMFLOAT3(-1.0, -1.0, -1.0);
+	dirLights.push_back(dirLight);
+
+	BasicEffect*basicEffect = Effects::BasicFX;
+	basicEffect->SetDirLightCount(dirLights.size());
+	basicEffect->SetPointLightCount(0);
+	basicEffect->SetDirLights(&dirLights[0], dirLights.size());
 }
 
 void D3DRenderer::renderToShadowMap()
@@ -382,7 +401,7 @@ void D3DRenderer::renderSSAOMap()
 
 void D3DRenderer::renderScene()
 {
-	updateLights();
+	updateLightsForRenderingMeshes();
 	renderToShadowMap();
 
 	renderSSAOMap();
@@ -443,6 +462,7 @@ void D3DRenderer::renderSelObjFlag()
 		else if (sel_obj->getType() == DIR_LIGHT)
 			renderDirectionalLight(sel_obj);
 
+		updateLightsForRenderingSelFlags();
 		if(renderSelObjMode == COORD_AXIS)
 			renderCoordAxis(sel_obj);
 		else if(renderSelObjMode == ROT_AXIS)
@@ -720,9 +740,7 @@ void D3DRenderer::renderRotAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	basicEffect->SetDirLights(&m_dirLights[0]);
-
-	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
@@ -876,10 +894,9 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	ID3DX11EffectTechnique* activeTech = basicEffect->Light1Tech;
+	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
-	basicEffect->SetDirLights(&m_dirLights[0]);
 
 	XMVECTOR v = XMVectorZero();
 	XMMATRIX worldMat = transAxis.computeWorldMatrix(obj, AXIS::X);

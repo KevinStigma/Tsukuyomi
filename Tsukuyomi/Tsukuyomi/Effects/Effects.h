@@ -44,6 +44,7 @@ public:
 	void SetDiffuseMap(ID3D11ShaderResourceView* rv)		{ DiffuseMap->SetResource(rv); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex)		{ ShadowMap->SetResource(tex); }
 	void SetSSAOMap(ID3D11ShaderResourceView* sm)           { SSAOMap->SetResource(sm); }
+	void SetIsLight(bool v)									{ isLight->SetBool(v); }
 
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f)                           { FogStart->SetFloat(f); }
@@ -55,19 +56,11 @@ public:
 	void SetHDRExposure(float f) { HDRexposure->SetFloat(f); }
 
 	ID3DX11EffectTechnique* DebugNormalTech;
-	ID3DX11EffectTechnique* Light1Tech;
-	ID3DX11EffectTechnique* Light2Tech;
-	ID3DX11EffectTechnique* Light3Tech;
-	ID3DX11EffectTechnique* Light0TexTech;
-	ID3DX11EffectTechnique* Light1TexTech;
-	ID3DX11EffectTechnique*	Light2TexTech;
-	ID3DX11EffectTechnique*	Light3TexTech;
 	ID3DX11EffectTechnique* SimpleColorTech;
 	ID3DX11EffectTechnique* CustomLightTech;
 	ID3DX11EffectTechnique* CustomLightShadowTech;
 	ID3DX11EffectTechnique* CustomLightShadowSSAOTech;
 	ID3DX11EffectTechnique* CustomLightSSAOTech;
-	ID3DX11EffectTechnique* Light1TexAlphaClipFogTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* World;
@@ -79,6 +72,7 @@ public:
 	ID3DX11EffectVariable* DirLights;
 	ID3DX11EffectVariable* PointLights;
 	ID3DX11EffectVariable* Mat;
+	ID3DX11EffectScalarVariable* isLight;
 	ID3DX11EffectScalarVariable* curPointLightCount;
 	ID3DX11EffectScalarVariable* curDirLightCount;
 	ID3DX11EffectScalarVariable* gammaCorrect;

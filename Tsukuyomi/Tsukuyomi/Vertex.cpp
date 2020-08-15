@@ -22,7 +22,7 @@ ID3D11InputLayout* InputLayouts::PosColor = 0;
 void InputLayouts::initAll(ID3D11Device* device)
 {
 	D3DX11_PASS_DESC passDesc;
-	Effects::BasicFX->Light1Tech->GetPassByIndex(0)->GetDesc(&passDesc);
+	Effects::BasicFX->CustomLightTech->GetPassByIndex(0)->GetDesc(&passDesc);
 	device->CreateInputLayout(InputLayoutDesc::Basic32, 3, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &PosNorTex);
 
 	Effects::BasicFX->SimpleColorTech->GetPassByIndex(0)->GetDesc(&passDesc);

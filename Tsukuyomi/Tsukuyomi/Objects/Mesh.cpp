@@ -27,7 +27,7 @@ Mesh::Mesh(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFL
 		pbrMat = new MatteMaterial(Spectrum(0.725000, 0.710000, 0.680000), 0.0);
 	else
 		pbrMat = render_mats->first;
-	mat = render_mats->second;
+	mat = render_mats? render_mats->second : RenderLightHelper::Material();
 }
 
 Mesh::~Mesh()
@@ -70,6 +70,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	else
 		activeTech = basicEffect->CustomLightTech;
 
+	basicEffect->SetIsLight(bool(area_light));
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 

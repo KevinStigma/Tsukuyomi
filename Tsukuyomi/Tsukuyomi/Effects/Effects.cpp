@@ -29,21 +29,12 @@ Effect::~Effect()
 BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	: Effect(device, filename)
 {
- 	Light1Tech        = mFX->GetTechniqueByName("Light1");
-	Light2Tech        = mFX->GetTechniqueByName("Light2");
-	Light3Tech        = mFX->GetTechniqueByName("Light3");
-
-	Light0TexTech     = mFX->GetTechniqueByName("Light0Tex");
-	Light1TexTech	  = mFX->GetTechniqueByName("Light1Tex");
-	Light2TexTech     = mFX->GetTechniqueByName("Light2Tex");
-	Light3TexTech     = mFX->GetTechniqueByName("Light3Tex");
 	SimpleColorTech	  = mFX->GetTechniqueByName("SimpleColor");
 	DebugNormalTech	  = mFX->GetTechniqueByName("DebugNormal");
 	CustomLightTech   = mFX->GetTechniqueByName("CustomLight");
 	CustomLightShadowTech = mFX->GetTechniqueByName("CustomLightShadow");
 	CustomLightShadowSSAOTech = mFX->GetTechniqueByName("CustomLightShadowSSAO");
 	CustomLightSSAOTech = mFX->GetTechniqueByName("CustomLightSSAO");
-	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
 
 	WorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	World             = mFX->GetVariableByName("gWorld")->AsMatrix();
@@ -66,6 +57,7 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	gammaCorrect = mFX->GetVariableByName("gammaCorrection")->AsScalar();
 	enableHDR = mFX->GetVariableByName("enableHDR")->AsScalar();
 	HDRexposure = mFX->GetVariableByName("HDRexposure")->AsScalar();
+	isLight = mFX->GetVariableByName("gIsLight")->AsScalar();
 }
 
 BasicEffect::~BasicEffect()

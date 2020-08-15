@@ -50,7 +50,8 @@ public:
 protected:
 	void initLights();
 	void initMaterials();
-	void updateLights();
+	void updateLightsForRenderingMeshes();
+	void updateLightsForRenderingSelFlags();
 	void renderRulerLlines();
 	void renderSelObjFlag();
 	void renderBVH();

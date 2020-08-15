@@ -67,7 +67,7 @@ namespace RenderLightHelper
 
 	struct Material
 	{
-		Material() { ZeroMemory(this, sizeof(this)); }
+		Material() {}
 
 		XMFLOAT3 albedo = XMFLOAT3(0.5, 0.5, 0.5);
 		float roughness = 0.8;
