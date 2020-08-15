@@ -13,7 +13,10 @@ Effect::Effect(ID3D11Device* device, const std::wstring& filename)
 	auto hr=D3DX11CompileEffectFromFile(filename.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, D3DCOMPILE_ENABLE_STRICTNESS, 0, device, &mFX, &compilationMsgs);
 
 	if (FAILED(hr))
+	{
+		MessageBoxA(0, (char*)compilationMsgs->GetBufferPointer(), 0, 0);
 		std::cout << "compile effect file failed!" << std::endl;
+	}
 }
 
 Effect::~Effect()
