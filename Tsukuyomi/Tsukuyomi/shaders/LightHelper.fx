@@ -60,6 +60,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 						     out float4 diffuse,
 						     out float4 spec)
 {
+	/*
 	// Initialize outputs.
 	ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -86,6 +87,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 		diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
 		spec    = specFactor * mat.Specular * L.Specular;
 	}
+	*/
 }
 
 //---------------------------------------------------------------------------------------
@@ -96,6 +98,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, float3 toEye,
 				   out float4 ambient, out float4 diffuse, out float4 spec)
 {
+	/*
 	// Initialize outputs.
 	ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -137,6 +140,7 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
 
 	diffuse *= att;
 	spec    *= att;
+	*/
 }
 
 //---------------------------------------------------------------------------------------
@@ -147,6 +151,7 @@ void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, fl
 void ComputeSpotLight(Material mat, SpotLight L, float3 pos, float3 normal, float3 toEye,
 				  out float4 ambient, out float4 diffuse, out float4 spec)
 {
+	/*
 	// Initialize outputs.
 	ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -193,6 +198,7 @@ void ComputeSpotLight(Material mat, SpotLight L, float3 pos, float3 normal, floa
 	ambient *= spot;
 	diffuse *= att;
 	spec    *= att;
+	*/
 }
 
 //---------------------------------------------------------------------------------------

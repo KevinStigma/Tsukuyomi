@@ -230,6 +230,7 @@ void D3DRenderer::initMaterials()
 void D3DRenderer::initScene()
 {
 	initLights();
+	initMaterials();
 	createRulerLlinesVertexBuffer();
 	createBoundingBoxBuffers();
 	createSelObjAxisBuffers();

@@ -26,7 +26,7 @@ Effect::~Effect()
 BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	: Effect(device, filename)
 {
-	Light1Tech        = mFX->GetTechniqueByName("Light1");
+ 	Light1Tech        = mFX->GetTechniqueByName("Light1");
 	Light2Tech        = mFX->GetTechniqueByName("Light2");
 	Light3Tech        = mFX->GetTechniqueByName("Light3");
 

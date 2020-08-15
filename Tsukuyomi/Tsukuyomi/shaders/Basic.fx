@@ -127,6 +127,7 @@ float4 PS(VertexOut pin,
 		  uniform bool gFogEnabled) : SV_Target
 {
 	
+	/*
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
 
@@ -199,6 +200,8 @@ float4 PS(VertexOut pin,
 	litColor.a = gMaterial.Diffuse.a * texColor.a;
 
 	return litColor;
+	*/
+	return float4(1.0, 0.0, 0.0, 1.0);
 }
 
 
@@ -211,7 +214,8 @@ float4 CustomPS(VertexOut pin,
 	uniform bool gAlphaClip,
 	uniform bool gFogEnabled) : SV_Target
 {
-	//return float4(1.0, 0.0, 0.0, 1.0);
+	return float4(1.0, 0.0, 0.0, 1.0);
+	/*
 	// Interpolating normal can unnormalize it, so normalize it.
 	pin.NormalW = normalize(pin.NormalW);
 
@@ -310,6 +314,7 @@ float4 CustomPS(VertexOut pin,
 		litColor.b = pow(litColor.b, gamma_ratio);
 	}
 	return litColor;
+	*/
 }
 
 technique11 DebugNormal
