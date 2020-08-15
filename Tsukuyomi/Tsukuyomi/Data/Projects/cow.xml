@@ -1,6 +1,6 @@
 <TsukuyomiProject>
     <Object MeshPath="Data/Meshes/cow.obj" Name="cow" Type="mesh">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000" roughness="0.800000" metallic="0.000000"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>0.010000,0.010000,0.010000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>

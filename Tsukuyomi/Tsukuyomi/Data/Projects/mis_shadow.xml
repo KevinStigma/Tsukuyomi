@@ -1,59 +1,59 @@
 <TsukuyomiProject>
-    <Object MeshPath="Data/Meshes/mis/plate2.obj" Name="plate2" Type="mesh">
-        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.020000" remapRoughness="0"/>
-        <Translation>0.000000,0.000000,0.000000</Translation>
-        <Scale>1.000000,1.000000,1.000000</Scale>
-        <Rotation>0.000000,0.000000,0.000000</Rotation>
-    </Object>
     <Object Color="1.000000,1.000000,1.000000" ShadowLight="true" Name="dir_light" Type="dir_light">
         <Translation>0.000000,3.843231,6.942156</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,1.452525,-0.995276</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l2" Type="area_light">
-        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000"/>
+        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000" roughness="1.000000" metallic="0.000000"/>
         <Translation>-3.750000,0.000000,0.000000</Translation>
         <Scale>0.033300,0.033300,0.033300</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l4" Type="area_light">
-        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000"/>
-        <Translation>3.750000,0.000000,0.000000</Translation>
-        <Scale>0.900000,0.900000,0.900000</Scale>
-        <Rotation>0.000000,0.000000,0.000000</Rotation>
-    </Object>
-    <Object MeshPath="Data/Meshes/mis/plate4.obj" Name="plate4" Type="mesh">
-        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.100000" remapRoughness="0"/>
+    <Object MeshPath="Data/Meshes/mis/plate2.obj" Name="plate2" Type="mesh">
+        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.020000" remapRoughness="0" metallic="0.000000"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/mis/floor.obj" Name="wall" Type="mesh">
-        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000"/>
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000" roughness="0.800000" metallic="0.000000"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
-    <Object MeshPath="Data/Meshes/mis/plate1.obj" Name="plate1" Type="mesh">
-        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.005000" remapRoughness="0"/>
+    <Object MeshPath="Data/Meshes/mis/plate4.obj" Name="plate4" Type="mesh">
+        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.100000" remapRoughness="0" metallic="0.000000"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
+    </Object>
+    <Object MeshPath="Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l4" Type="area_light">
+        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000" roughness="1.000000" metallic="0.000000"/>
+        <Translation>3.750000,0.000000,0.000000</Translation>
+        <Scale>0.900000,0.900000,0.900000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l1" Type="area_light">
-        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000"/>
+        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000" roughness="1.000000" metallic="0.000000"/>
         <Translation>-1.250000,0.000000,0.000000</Translation>
         <Scale>0.100000,0.100000,0.100000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
+    <Object MeshPath="Data/Meshes/mis/plate1.obj" Name="plate1" Type="mesh">
+        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.005000" remapRoughness="0" metallic="0.000000"/>
+        <Translation>0.000000,0.000000,0.000000</Translation>
+        <Scale>1.000000,1.000000,1.000000</Scale>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
+    </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Color="2.000000,2.000000,2.000000" Name="l3" Type="area_light">
-        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000"/>
+        <Material type="Matte" kd="0.000000,0.000000,0.000000" sigma="0.000000" roughness="1.000000" metallic="0.000000"/>
         <Translation>1.250000,0.000000,0.000000</Translation>
         <Scale>0.300000,0.300000,0.300000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/mis/plate3.obj" Name="plate3" Type="mesh">
-        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.050000" remapRoughness="0"/>
+        <Material type="Plastic" kd="0.070000,0.090000,0.130000" ks="1.000000,1.000000,1.000000" roughness="0.050000" remapRoughness="0" metallic="0.000000"/>
         <Translation>0.000000,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
