@@ -214,107 +214,75 @@ float4 CustomPS(VertexOut pin,
 	uniform bool gAlphaClip,
 	uniform bool gFogEnabled) : SV_Target
 {
-	return float4(1.0, 0.0, 0.0, 1.0);
-	/*
+
+	float3 color = float3(0.0f, 0.0f, 0.0f);
+
 	// Interpolating normal can unnormalize it, so normalize it.
 	pin.NormalW = normalize(pin.NormalW);
 
-	// The toEye vector is used in lighting.
-	float3 toEye = gEyePosW - pin.PosW;
-
-	// Cache the distance to the eye from this surface point.
-	float distToEye = length(toEye);
+	float3 V = normalize(gEyePosW - pin.PosW);
 
 	// Normalize.
-	toEye /= distToEye;
+	V = normalize(V);
 
-	// Default to multiplicative identity.
-	float4 texColor = float4(1, 1, 1, 1);
+	float3 F0 = float3(0.04, 0.04, 0.04);
+	F0 = lerp(F0, gMaterial.albedo, gMaterial.metallic);
 
+	float3 L0 = float3(0.0, 0.0, 0.0);
+
+	float shadow = 1.0;
+	if (gUseShadowMap)
+		shadow = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
+
+	float ambient_weight = 1.0;
+	if (gUseSSAO)
+	{
+		pin.SSAOPosH /= pin.SSAOPosH.w;
+		ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
+	}
+
+	float3 ambient = gMaterial.albedo * 0.03 * ambient_weight;
+	
 	//
 	// Lighting.
 	//
 
-	float4 litColor = texColor;
 	if (gPointLightCount + gDirLightCount > 0)
 	{
-		// Start with a sum of zero. 
-		float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
-		float shadow = 1.0;
-		if (gUseShadowMap)
-		{
-			shadow = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
-		}
-
-		float ambient_weight = 1.0;
-		if (gUseSSAO)
-		{
-			pin.SSAOPosH /= pin.SSAOPosH.w;
-			ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
-		}
-
 		// Sum the light contribution from each light source.  
 		[unroll]
 		for (int i = 0; i < gDirLightCount; ++i)
 		{
-			float4 A, D, S;
-			ComputeDirectionalLight(gMaterial, gDirLights[i], pin.NormalW, toEye,
-				A, D, S);
-
-			ambient += A;
-			diffuse += shadow * D;
-			spec += shadow *S;
+			float3 lo = float3(0.0, 0.0, 0.0);
+			ComputeDirectionalLight(gMaterial, gDirLights[i], pin.NormalW, V, F0, lo);
+			color += shadow * lo;
 		}
 
 		[unroll]
 		for (int i = 0; i < gPointLightCount; i++)
 		{
-			float4 A, D, S;
-			ComputePointLight(gMaterial, gPointLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
-			ambient += A;
-			diffuse += shadow * D;
-			spec += shadow * S;
+			float3 lo = float3(0.0, 0.0, 0.0);
+			ComputePointLight(gMaterial, gPointLights[i], pin.PosW, pin.NormalW, V, F0, lo);
+			color += shadow * lo;
 		}
-		litColor = texColor * (ambient * ambient_weight + diffuse) + spec;
 	}
 
-
-	//
-	// Fogging
-	//
-
-	if (gFogEnabled)
-	{
-		float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
-
-		// Blend the fog color and the lit color.
-		litColor = lerp(litColor, gFogColor, fogLerp);
-	}
-
-	// Common to take alpha from diffuse material and texture.
-	litColor.a = gMaterial.Diffuse.a * texColor.a;
+	color += ambient;
 
 	if (enableHDR)
 	{
 		float exposure = max(0.0, HDRexposure);
-		litColor.r = 1.0 - exp(-litColor.r * exposure);
-		litColor.g = 1.0 - exp(-litColor.g * exposure);
-		litColor.b = 1.0 - exp(-litColor.b * exposure);
+		color.r = 1.0 - exp(-color.r * exposure);
+		color.g = 1.0 - exp(-color.g * exposure);
+		color.b = 1.0 - exp(-color.b * exposure);
 	}
-
 
 	if (gammaCorrection)
 	{
 		float gamma_ratio = 1.0 / 2.2;
-		litColor.r = pow(litColor.r, gamma_ratio);
-		litColor.g = pow(litColor.g, gamma_ratio);
-		litColor.b = pow(litColor.b, gamma_ratio);
+		color = pow(color, gamma_ratio);	
 	}
-	return litColor;
-	*/
+	return float4(color, 1.0);
 }
 
 technique11 DebugNormal
