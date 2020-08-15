@@ -7,9 +7,8 @@ public:
 		: Kd(Kd), Ks(Ks), roughness(roughness),  remapRoughness(remapRoughness) 
 	{}
 	void ComputeScatteringFunctions(IntersectInfo *it, bool allowMultipleLobes) const;
-	void exportToXML(tinyxml2::XMLElement* elm);
+	void exportToXML(tinyxml2::XMLElement* elm, RenderLightHelper::Material mat);
 	std::string toString() { return "Plastic"; }
-	RenderLightHelper::Material generateRenderMaterial();
 
 private:
 	// PlasticMaterial Private Data

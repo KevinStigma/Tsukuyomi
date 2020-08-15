@@ -9,7 +9,7 @@ XMFLOAT3 UniformSampleSphere(const XMFLOAT2 &u) {
 	return XMFLOAT3(r * std::cos(phi), r * std::sin(phi), z);
 }
 
-Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, PbrMat*pbr_mat):Mesh(name,file_path,t,s,r, al, pbr_mat)
+Sphere::Sphere(std::string name, std::string file_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, Object* al, RenderMats* rendermats):Mesh(name,file_path,t,s,r, al, rendermats)
 {
 	origin_radius = (boundingBox.top.x - boundingBox.bottom.x) * 0.5;
 }

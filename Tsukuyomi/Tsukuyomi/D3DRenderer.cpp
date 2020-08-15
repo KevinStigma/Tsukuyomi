@@ -215,49 +215,21 @@ void D3DRenderer::initLights()
 
 void D3DRenderer::initMaterials()
 {
-	float r = 0.73725f, g = 0.741176f, b = 0.74902f;
 	m_materials.resize(9);
-	m_materials[0].Ambient = XMFLOAT4(r*0.2f, g*0.2f, b*0.2f, 1.0f);
-	m_materials[0].Diffuse = XMFLOAT4(r*0.6f, g*0.6f, b*0.6f, 1.0f);
-	m_materials[0].Specular = XMFLOAT4(r*0.5f, g*0.5f, b*0.5f, 16.0f);
-
-	m_materials[1].Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_materials[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_materials[1].Specular = XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
-
-	m_materials[2].Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
-	m_materials[2].Diffuse = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-	m_materials[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
-
-	m_materials[3].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_materials[3].Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
-	m_materials[3].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
-
-	m_materials[4].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_materials[4].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.8f, 1.0f);
-	m_materials[4].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 32.0f);
-
-	m_materials[5].Ambient = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-	m_materials[5].Diffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	m_materials[5].Specular = XMFLOAT4(0.0f, 1.0f, 0.0f, 32.0f);
-
-	m_materials[6].Ambient = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
-	m_materials[6].Diffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	m_materials[6].Specular = XMFLOAT4(1.0f, 0.0f, 0.0f, 32.0f);
-
-	m_materials[7].Ambient = XMFLOAT4(0.0f, 0.0f, 0.8f, 1.0f);
-	m_materials[7].Diffuse = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-	m_materials[7].Specular = XMFLOAT4(0.0f, 0.0f, 1.0f, 32.0f);
-
-	m_materials[8].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_materials[8].Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	m_materials[8].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
+	m_materials[0].albedo = XMFLOAT3(0.73725f, 0.741176f, 0.74902f);
+	m_materials[1].albedo = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_materials[2].albedo = XMFLOAT3(0.0f, 0.8f, 0.0f);
+	m_materials[3].albedo = XMFLOAT3(0.8f, 0.0f, 0.0f);
+	m_materials[4].albedo = XMFLOAT3(0.0f, 0.0f, 0.8f);
+	m_materials[5].albedo = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	m_materials[6].albedo = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	m_materials[7].albedo = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_materials[8].albedo = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 void D3DRenderer::initScene()
 {
 	initLights();
-	initMaterials();
 	createRulerLlinesVertexBuffer();
 	createBoundingBoxBuffers();
 	createSelObjAxisBuffers();

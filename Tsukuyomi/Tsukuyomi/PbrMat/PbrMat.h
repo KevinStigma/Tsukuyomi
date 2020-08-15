@@ -10,6 +10,5 @@ public:
 		bool allowMultipleLobes) const = 0;
 	virtual ~PbrMat() {}
 	virtual std::string toString()=0;
-	virtual void exportToXML(tinyxml2::XMLElement* elm)=0;
-	virtual RenderLightHelper::Material generateRenderMaterial()=0;
+	virtual void exportToXML(tinyxml2::XMLElement* elm, RenderLightHelper::Material mat)=0;
 };

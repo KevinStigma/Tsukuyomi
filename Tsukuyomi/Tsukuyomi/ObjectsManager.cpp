@@ -27,7 +27,7 @@ void ObjectManager::clear()
 	bvhManager.destroyBoundingVolumeHieratches();
 }
 
-Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, PbrMat* pbr_mat)
+Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, RenderMats* mats)
 {
 	if (obj_path == "")
 		return nullptr;
@@ -37,9 +37,9 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 	int index = obj_path.rfind('/');
 	Mesh*mesh = nullptr;
 	if(obj_path.substr(index + 1, obj_path.size() - index) == "sphere.obj")
-		mesh = new Sphere(obj_name, obj_path, t, s, r, nullptr, pbr_mat);
+		mesh = new Sphere(obj_name, obj_path, t, s, r, nullptr, mats);
 	else
-		mesh = new Mesh(obj_name, obj_path, t, s, r, nullptr, pbr_mat);
+		mesh = new Mesh(obj_name, obj_path, t, s, r, nullptr, mats);
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count()-1);
@@ -95,12 +95,12 @@ Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLO
 	return light;
 }
 
-Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c, PbrMat*pbr_mat)
+Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t, XMFLOAT3 s, XMFLOAT3 r, XMFLOAT3 c, RenderMats* render_mats)
 {
 	std::string obj_name = name;
 	if (name == "" || objects.find(name) != objects.end())
 		obj_name = genNewObjectName();
-	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c, pbr_mat);
+	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c, render_mats);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
 	listview->addItem(QString(obj_name.c_str()));
 	QListWidgetItem* item = listview->item(listview->count() - 1);
@@ -201,12 +201,12 @@ void ObjectManager::renderAllObjects(ID3D11DeviceContext * context, D3DRenderer*
 	}
 }
 
-void ObjectManager::exportMaterial(PbrMat*mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc)
+void ObjectManager::exportMaterial(PbrMat* pbr_mat, RenderLightHelper::Material realtime_mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc)
 {
-	if (!mat)
+	if (!pbr_mat)
 		return;
 	tinyxml2::XMLElement*mat_element = doc.NewElement("Material");
-	mat->exportToXML(mat_element);
+	pbr_mat->exportToXML(mat_element, realtime_mat);
 	parent->InsertEndChild(mat_element);
 }
 
@@ -233,7 +233,7 @@ void ObjectManager::exportProject(std::string file_path)
 		{
 			type_str = "mesh";
 			obj_element->SetAttribute("MeshPath", ((Mesh*)obj)->getMeshPath().c_str());
-			exportMaterial(((Mesh*)obj)->getPbrMat(), obj_element, doc);
+			exportMaterial(((Mesh*)obj)->getPbrMat(), ((Mesh*)obj)->getRenderMaterial(), obj_element, doc);
 		}
 		else if (obj->getType() == CAM)
 		{
@@ -258,7 +258,8 @@ void ObjectManager::exportProject(std::string file_path)
 			type_str = "area_light";
 			obj_element->SetAttribute("MeshPath", ((AreaLight*)obj)->getMesh()->getMeshPath().c_str());
 			obj_element->SetAttribute("Color", ((DirectionalLight*)obj)->getColorText().c_str());
-			exportMaterial(((AreaLight*)obj)->getMesh()->getPbrMat(), obj_element, doc);
+			Mesh* mesh = ((AreaLight*)obj)->getMesh();
+			exportMaterial(mesh->getPbrMat(), mesh->getRenderMaterial(), obj_element, doc);
 		}
 		else
 			continue;
@@ -281,18 +282,36 @@ void ObjectManager::exportProject(std::string file_path)
 	std::cout << "Export " << file_path << " successfully!" << std::endl;
 }
 
-PbrMat* loadPbrMat(tinyxml2::XMLElement* mat_elm)
+std::pair<PbrMat*, RenderLightHelper::Material> loadPbrMat(tinyxml2::XMLElement* mat_elm)
 {
+	RenderLightHelper::Material material;
 	if (!mat_elm)
-		return nullptr;
+		return RenderMats(nullptr, material);
 	std::vector<std::string> strs;
+	
+	if (mat_elm->FindAttribute("kd"))
+	{
+		SplitString(std::string(mat_elm->Attribute("kd")), strs, ",");
+		material.albedo = XMFLOAT3(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
+	}
+
+	if (mat_elm->FindAttribute("roughness"))
+	{
+		material.roughness = stringToNum<float>(std::string(mat_elm->Attribute("roughness")));
+	}
+
+	if (mat_elm->FindAttribute("metallic"))
+	{
+		material.metallic = stringToNum<float>(std::string(mat_elm->Attribute("metallic")));
+	}
+	
+	PbrMat* pbr_mat;
 	if (std::string(mat_elm->Attribute("type")) == "Matte")
 	{
 		SplitString(std::string(mat_elm->Attribute("kd")), strs, ",");
 		Spectrum kd(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		float sigma = stringToNum<float>(std::string(mat_elm->Attribute("sigma")));
-		MatteMaterial* matte = new MatteMaterial(kd, sigma);
-		return matte;
+		pbr_mat = new MatteMaterial(kd, sigma);
 	}
 	if (std::string(mat_elm->Attribute("type")) == "Plastic")
 	{
@@ -302,10 +321,9 @@ PbrMat* loadPbrMat(tinyxml2::XMLElement* mat_elm)
 		SplitString(std::string(mat_elm->Attribute("ks")), strs, ",");
 		Spectrum ks(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		bool remap = stringToNum<int>(std::string(mat_elm->Attribute("remapRoughness")));
-		PlasticMaterial* plastic = new PlasticMaterial(kd, ks, rou, remap);
-		return plastic;
+		pbr_mat = new PlasticMaterial(kd, ks, rou, remap);
 	}
-	return nullptr;
+	return std::pair<PbrMat*, RenderLightHelper::Material>(pbr_mat, material);
 }
 
 void ObjectManager::updateFromProject(std::string file_path)
@@ -347,11 +365,11 @@ void ObjectManager::updateFromProject(std::string file_path)
 		SplitString(rot_str, strs, ",");
 		XMFLOAT3 rotation(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
 		
-		PbrMat* mat = loadPbrMat(mat_elm);
+		RenderMats materials = loadPbrMat(mat_elm);
 		if (type == "mesh")
 		{
 			std::string mesh_path = express->Attribute("MeshPath");
-			createNewObjectOfMesh(name, mesh_path, translation, scale, rotation, mat);
+			createNewObjectOfMesh(name, mesh_path, translation, scale, rotation, &materials);
 		}
 		else if (type == "cam")
 		{
@@ -383,7 +401,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 			std::string color_str = express->Attribute("Color");
 			SplitString(color_str, strs, ",");
 			XMFLOAT3 color(stringToNum<float>(strs[0]), stringToNum<float>(strs[1]), stringToNum<float>(strs[2]));
-			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color, mat);
+			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color, &materials);
 		}
 	}
 	bvhManager.generateBoundingVolumeHieratchies();

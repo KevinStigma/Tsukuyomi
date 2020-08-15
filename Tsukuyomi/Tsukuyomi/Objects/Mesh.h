@@ -9,10 +9,12 @@ class BxDF;
 class Primitive;
 class ShadowTransform;
 
+typedef std::pair<PbrMat*, RenderLightHelper::Material> RenderMats;
+
 class Mesh :public Object
 {
 public:
-	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr, PbrMat*pbr_mat=nullptr);
+	Mesh(std::string name, std::string file_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), Object* al=nullptr, RenderMats*render_mats=nullptr);
 	~Mesh();
 	void writeObj(const std::string& obj_path);
 	void loadObjMesh(const std::string & obj_path);
@@ -33,6 +35,7 @@ public:
 	virtual bool is_intersect(const Ray&ray, float& t, IntersectInfo& is_info);
 	void setMaterial(RenderLightHelper::Material new_mat) { mat = new_mat; }
 	PbrMat* getPbrMat() { return pbrMat; }
+	RenderLightHelper::Material getRenderMaterial() { return mat; }
 	virtual int getComponentNum();
 	IntersectInfo sample(XMFLOAT2 u, float& area)const;
 	virtual IntersectInfo sample(const IntersectInfo&ref,  XMFLOAT2 u, float*pdf)const;

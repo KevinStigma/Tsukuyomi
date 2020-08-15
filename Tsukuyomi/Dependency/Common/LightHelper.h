@@ -69,10 +69,9 @@ namespace RenderLightHelper
 	{
 		Material() { ZeroMemory(this, sizeof(this)); }
 
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular; // w = SpecPower
-		XMFLOAT4 Reflect;
+		XMFLOAT3 albedo = XMFLOAT3(0.5, 0.5, 0.5);
+		float roughness = 0.8;
+		float metallic = 0.0;
 	};
 }
 

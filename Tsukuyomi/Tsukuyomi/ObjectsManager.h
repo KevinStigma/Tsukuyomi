@@ -14,6 +14,7 @@
 #include "Accelerate/BVHManager.h"
 #include "PbrMat/PbrMat.h"
 
+
 class ObjectManager
 {
 public:
@@ -21,11 +22,11 @@ public:
 	~ObjectManager();
 	void clear();
 	void renderAllObjects(ID3D11DeviceContext * context, D3DRenderer* renderer);
-	Object* createNewObjectOfMesh(std::string name, std::string obj_path = "", XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), PbrMat*pbr_mat=nullptr);
+	Object* createNewObjectOfMesh(std::string name, std::string obj_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), RenderMats* mats = nullptr);
 	Object* createNewObjectOfCamera(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0));
 	Object* createNewObjectOfPointLight(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c=XMFLOAT3(1.0, 1.0, 1.0));
 	Object* createNewObjectOfDirectionalLight(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0));
-	Object* createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0), PbrMat*pbr_mat = nullptr);
+	Object* createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0), RenderMats* mats = nullptr);
 	Object* getObjectFromName(std::string name);
 	std::vector<Light*> getAllLights();
 	int getLightsCountParameter();
@@ -38,7 +39,7 @@ public:
 	Light* getCurSelShadowLight() { return curShadowLight; }
 	void exportProject(std::string file_path);
 	void outputSphereMesh();
-	void exportMaterial(PbrMat*mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc);
+	void exportMaterial(PbrMat* pbr_mat, RenderLightHelper::Material realtime_mat, tinyxml2::XMLElement* parent, tinyxml2::XMLDocument& doc);
 	void updateFromProject(std::string file_path);
 	std::vector<Object*> getAllObjects();
 	Camera* getRenderCamera();
