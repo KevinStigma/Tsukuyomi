@@ -190,9 +190,7 @@ float4 CustomPS(VertexOut pin,
 	if (enableHDR)
 	{
 		float exposure = max(0.0, HDRexposure);
-		color.r = 1.0 - exp(-color.r * exposure);
-		color.g = 1.0 - exp(-color.g * exposure);
-		color.b = 1.0 - exp(-color.b * exposure);
+		color = 1.0 - exp(-color * exposure);
 	}
 
 	if (gammaCorrection)
