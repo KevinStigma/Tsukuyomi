@@ -8,6 +8,6 @@
     <Object Color="1.000000,1.000000,1.000000" ShadowLight="false" Name="object0" Type="dir_light">
         <Translation>-4.455726,0.000000,0.000000</Translation>
         <Scale>1.000000,1.000000,1.000000</Scale>
-        <Rotation>-0.148052,-0.654183,-0.190046</Rotation>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
 </TsukuyomiProject>
