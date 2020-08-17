@@ -20,49 +20,23 @@ namespace RenderLightHelper
 
 	struct DirLight
 	{
-		DirLight() { ZeroMemory(this, sizeof(this)); }
+		DirLight() { ZeroMemory(this, sizeof(this));}
 
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular;
+		XMFLOAT3 Color;
+		float pad1;
 		XMFLOAT3 Direction;
-		float Pad; // Pad the last float so we can set an array of lights if we wanted.
+		float pad2; // Pad the last float so we can set an array of lights if we wanted.
 	};
 
 	struct PointLight
 	{
 		PointLight() { ZeroMemory(this, sizeof(this)); }
 
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular;
+		XMFLOAT3 Color;
+		float pad1;
 
 		XMFLOAT3 Position;
 		float Range = 100.0;
-
-		XMFLOAT3 Att = XMFLOAT3(0.1,0.6,0.3);
-		float pad;
-	};
-
-	struct SpotLight
-	{
-		SpotLight() { ZeroMemory(this, sizeof(this)); }
-
-		XMFLOAT4 Ambient;
-		XMFLOAT4 Diffuse;
-		XMFLOAT4 Specular;
-
-		// Packed into 4D vector: (Position, Range)
-		XMFLOAT3 Position;
-		float Range;
-
-		// Packed into 4D vector: (Direction, Spot)
-		XMFLOAT3 Direction;
-		float Spot;
-
-		// Packed into 4D vector: (Att, Pad)
-		XMFLOAT3 Att;
-		float Pad; // Pad the last float so we can set an array of lights if we wanted.
 	};
 
 	struct Material

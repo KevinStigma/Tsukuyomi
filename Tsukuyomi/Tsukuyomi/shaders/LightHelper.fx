@@ -2,24 +2,19 @@
 
 struct DirectionalLight
 {
-	float4 Ambient;
-	float4 Diffuse;
-	float4 Specular;
+	float3 Color;
+	float pad1;
 	float3 Direction;
-	float pad;
+	float pad2;
 };
 
 struct PointLight
 { 
-	float4 Ambient;
-	float4 Diffuse;
-	float4 Specular;
+	float3 Color;
+	float pad1;
 
 	float3 Position;
 	float Range;
-
-	float3 Att;
-	float pad;
 };
 
 struct SpotLight
@@ -49,7 +44,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight light, float3 N, flo
 {
 	float3 L = normalize(-light.Direction);
 	float3 H = normalize(V + L);
-	float3 radiance = light.Diffuse.rgb;
+	float3 radiance = light.Color.rgb;
 
 	// cook-torrance brdf
 	float NDF = DistributionGGX(N, H, mat.roughness);
@@ -84,7 +79,7 @@ void ComputePointLight(Material mat, PointLight light, float3 pos, float3 N, flo
 	float3 H = normalize(V + L);
 	
 	float attenuation = 1.0 / (distance * distance);
-	float3 radiance = light.Diffuse.rgb * attenuation;
+	float3 radiance = light.Color.rgb * attenuation;
 
 	// cook-torrance brdf
 	float NDF = DistributionGGX(N, H, mat.roughness);

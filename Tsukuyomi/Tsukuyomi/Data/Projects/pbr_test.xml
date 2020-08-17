@@ -12,7 +12,7 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere1" Type="mesh">
-        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.000000" metallic="0.000000"/>
+        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.0500000" metallic="0.000000"/>
         <Translation>-2.000000,2.000000,1.000000</Translation>
         <Scale>0.250000,0.250000,0.250000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -59,7 +59,7 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere6" Type="mesh">
-        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.000000" metallic="0.250000"/>
+        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.0500000" metallic="0.250000"/>
         <Translation>-2.000000,1.000000,1.000000</Translation>
         <Scale>0.250000,0.250000,0.250000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -77,7 +77,7 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere21" Type="mesh">
-        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.000000" metallic="1.000000"/>
+        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.050000" metallic="1.000000"/>
         <Translation>-2.000000,-2.000000,1.000000</Translation>
         <Scale>0.250000,0.250000,0.250000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -101,7 +101,7 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere11" Type="mesh">
-        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.000000" metallic="0.500000"/>
+        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.050000" metallic="0.500000"/>
         <Translation>-2.000000,0.000000,1.000000</Translation>
         <Scale>0.250000,0.250000,0.250000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>
@@ -131,7 +131,7 @@
         <Rotation>0.000000,0.000000,0.000000</Rotation>
     </Object>
     <Object MeshPath="Data/Meshes/sphere.obj" Name="sphere16" Type="mesh">
-        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.000000" metallic="0.750000"/>
+        <Material type="Matte" kd="0.988235,0.145098,0.054900" sigma="0.000000" roughness="0.050000" metallic="0.750000"/>
         <Translation>-2.000000,-1.000000,1.000000</Translation>
         <Scale>0.250000,0.250000,0.250000</Scale>
         <Rotation>0.000000,0.000000,0.000000</Rotation>

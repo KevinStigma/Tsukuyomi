@@ -197,19 +197,13 @@ bool D3DRenderer::resizeD3D(int width, int height)
 void D3DRenderer::initLights()
 {
 	m_dirLights.resize(3);
-	m_dirLights[0].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_dirLights[0].Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	m_dirLights[0].Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_dirLights[0].Color = XMFLOAT3(0.5f, 0.5f, 0.5f);
 	m_dirLights[0].Direction = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 
-	m_dirLights[1].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_dirLights[1].Diffuse = XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
-	m_dirLights[1].Specular = XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	m_dirLights[1].Color = XMFLOAT3(0.20f, 0.20f, 0.20f);
 	m_dirLights[1].Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 
-	m_dirLights[2].Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_dirLights[2].Diffuse = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_dirLights[2].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_dirLights[2].Color = XMFLOAT3(0.2f, 0.2f, 0.2f);
 	m_dirLights[2].Direction = XMFLOAT3(0.0f, -0.707f, -0.707f);
 }
 
@@ -265,26 +259,20 @@ void D3DRenderer::updateLightsForRenderingMeshes()
 		{
 			RenderLightHelper::DirLight dirLight;
 			dirLight.Direction = ((DirectionalLight*)light)->getWorldDir();
-			dirLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			dirLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
-			dirLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			dirLight.Color = XMFLOAT3(color.x, color.y, color.z);
 			dirLights.push_back(dirLight);
 		}
 		else if(light->getType() == POINT_LIGHT)
 		{
 			RenderLightHelper::PointLight pLight;
-			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			pLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
-			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			pLight.Color = XMFLOAT3(color.x, color.y, color.z);
 			pLight.Position = ((PointLight*)light)->getTranslation();
 			pointLights.push_back(pLight);
 		}
 		else if (light->getType() == AREA_LIGHT)
 		{
 			RenderLightHelper::PointLight pLight;
-			pLight.Ambient = XMFLOAT4(color.x*0.2, color.y*0.2, color.z*0.2, 1.0);
-			pLight.Diffuse = XMFLOAT4(color.x, color.y, color.z, 1.0);
-			pLight.Specular = XMFLOAT4(color.x*0.7, color.y*0.7, color.z*0.7, 1.0);
+			pLight.Color = XMFLOAT3(color.x, color.y, color.z);
 			pLight.Position = ((AreaLight*)light)->getMesh()->getWorldCenter();
 			pointLights.push_back(pLight);
 		}
@@ -311,7 +299,7 @@ void D3DRenderer::updateLightsForRenderingSelFlags()
 
 	RenderLightHelper::DirLight dirLight;
 	dirLight.Direction = XMFLOAT3(1.0, 1.0, 1.0);
-	dirLight.Diffuse = XMFLOAT4(2.0, 2.0, 2.0, 1.0);
+	dirLight.Color = XMFLOAT3(2.0, 2.0, 2.0);
 	dirLights.push_back(dirLight);
 
 	dirLight.Direction = XMFLOAT3(-1.0, -1.0, -1.0);
