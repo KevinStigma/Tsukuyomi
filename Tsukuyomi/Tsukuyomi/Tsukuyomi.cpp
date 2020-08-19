@@ -2,6 +2,7 @@
 #include "Globalsys.h"
 #include "D3DRenderer.h"
 #include "intersection.h"
+#include "EnvMap.h"
 #include "../OfflineRenderer/OfflineRenderUtility.h"
 #include <QFileDialog>
 #include <iostream>
@@ -53,6 +54,14 @@ void Tsukuyomi::on_actionLoad_Project_triggered()
 	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
 	object_mgr.updateFromProject(filename.toStdString());
 	ui.render_widget->getRenderer()->buildShadowTransform();
+}
+
+void Tsukuyomi::on_actionLoadEnvMap_triggered()
+{
+	QString filename = QFileDialog::getOpenFileName(this, tr("Load EnvMap"), "./Data/IBLs", "hdr files(*.hdr)", 0);
+	if (!filename.size())
+		return;
+	EnvironmentMap map(filename.toStdString());
 }
 
 void Tsukuyomi::on_actionSave_Project_triggered()

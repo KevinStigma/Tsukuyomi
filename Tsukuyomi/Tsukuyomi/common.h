@@ -12,7 +12,6 @@
 #include <limits>
 #include <stack>
 #include <DirectXMath.h>
-#include <stb_image.h>
 
 using namespace DirectX;
 typedef float Float;

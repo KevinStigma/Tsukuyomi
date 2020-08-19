@@ -890,6 +890,7 @@
      <string>Files</string>
     </property>
     <addaction name="actionLoad_Mesh"/>
+    <addaction name="actionLoadEnvMap"/>
     <addaction name="actionLoad_Project"/>
     <addaction name="actionSave_Project"/>
     <addaction name="actionClear_Scene"/>
@@ -1022,6 +1023,11 @@
     <string>ScreenShot</string>
    </property>
   </action>
+  <action name="actionLoadEnvMap">
+   <property name="text">
+    <string>Load EnvMap</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1045,7 +1051,7 @@
  </customwidgets>
  <resources>
   <include location="Tsukuyomi.qrc"/>
-  <include location="breeze.qrc"/>
+  <include location="Tsukuyomi.qrc"/>
  </resources>
  <connections/>
 </ui>

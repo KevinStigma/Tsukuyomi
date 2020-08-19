@@ -198,6 +198,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="D3DRenderer.h" />
     <ClInclude Include="Effects\Effects.h" />
+    <ClInclude Include="EnvMap.h" />
     <ClInclude Include="GeometryGenerator\GeometryGenerator.h" />
     <ClInclude Include="GlobalSys.h" />
     <ClInclude Include="Objects\Sphere.h" />

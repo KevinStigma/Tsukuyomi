@@ -383,6 +383,9 @@
     <ClInclude Include="SSAOMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnvMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\Basic.fx">
