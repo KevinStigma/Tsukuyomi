@@ -415,5 +415,8 @@
     <FxCompile Include="shaders\PBRHelper.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\EnvironmentMap.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

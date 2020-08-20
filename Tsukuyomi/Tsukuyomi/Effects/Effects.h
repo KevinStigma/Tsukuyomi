@@ -215,6 +215,26 @@ public:
 #pragma endregion
 
 
+#pragma region BlurSSAOEffect
+class EnvMapEffect : public Effect
+{
+public:
+	EnvMapEffect(ID3D11Device* device, const std::wstring& filename);
+	~EnvMapEffect();
+
+	/*
+	void SetTexelWidth(float w) { TexelWidth->SetFloat(w); }
+	void SetTexelHeight(float h) { TexelHeight->SetFloat(h); }
+	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
+	void SetInputImage(ID3D11ShaderResourceView* srv) { InputImage->SetResource(srv); }
+	*/
+	ID3DX11EffectTechnique* HorizontalBlurTech;
+
+	ID3DX11EffectShaderResourceVariable* EnvMap;
+};
+#pragma endregion
+
+
 #pragma region Effects
 class Effects
 {
@@ -226,6 +246,7 @@ public:
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
 	static BlurSSAOEffect* SSAOBlurFX;
+	static EnvMapEffect* EnvMapFX;
 	static DebugTexEffect* DebugTexFX;
 };
 #pragma endregion

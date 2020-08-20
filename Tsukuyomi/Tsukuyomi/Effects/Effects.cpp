@@ -160,6 +160,17 @@ BlurSSAOEffect::~BlurSSAOEffect()
 }
 #pragma endregion
 
+#pragma region EnvMapEffect
+EnvMapEffect::EnvMapEffect(ID3D11Device* device, const std::wstring& filename) :Effect(device, filename)
+{
+
+}
+
+EnvMapEffect::~EnvMapEffect()
+{
+
+}
+#pragma endregion
 
 #pragma region Effects
 
@@ -169,6 +180,7 @@ BuildSSAOMapEffect* Effects::BuildSSAOMapFX = 0;
 BlurSSAOEffect* Effects::SSAOBlurFX = 0;
 DebugTexEffect* Effects::DebugTexFX = 0;
 BuildNormalDepthMapEffect* Effects::BuildNormalDepthMapFX = 0;
+EnvMapEffect* Effects::EnvMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -178,6 +190,7 @@ void Effects::InitAll(ID3D11Device* device)
 	SSAOBlurFX = new BlurSSAOEffect(device, L"./shaders/SSAOBlur.fx");
 	DebugTexFX = new DebugTexEffect(device, L"./shaders/DebugTexture.fx");
 	BuildNormalDepthMapFX = new BuildNormalDepthMapEffect(device, L"./shaders/BuildNormalDepthMap.fx");
+	EnvMapFX = new EnvMapEffect(device, L"./shaders/EnvironmentMap.fx");
 }
 
 void Effects::DestroyAll()
@@ -188,5 +201,6 @@ void Effects::DestroyAll()
 	SAFE_DELETE(SSAOBlurFX);
 	SAFE_DELETE(DebugTexFX);
 	SAFE_DELETE(BuildNormalDepthMapFX);
+	SAFE_DELETE(EnvMapFX);
 }
 #pragma endregion
