@@ -137,6 +137,7 @@
     <ClCompile Include="common.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
     <ClCompile Include="Effects\Effects.cpp" />
+    <ClCompile Include="EnvMap.cpp" />
     <ClCompile Include="GeometryGenerator\GeometryGenerator.cpp" />
     <ClCompile Include="GlobalSys.cpp" />
     <ClCompile Include="intersection.cpp" />

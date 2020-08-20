@@ -10,6 +10,7 @@
 #include "Effects/Effects.h"
 #include "tiny_obj_loader.h"
 #include "Objects/Mesh.h"
+#include "EnvMap.h"
 #include "./GeometryGenerator/GeometryGenerator.h"
 
 using namespace DirectX::Colors;
@@ -410,6 +411,9 @@ void D3DRenderer::renderScene()
 		Effects::BasicFX->SetSSAOMap(ssaoMap->getSSAOMapSRV());
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
+	if (environmentMap)
+		environmentMap->renderEnvironmentMap(&m_camera);
+
 	renderSelObjFlag();
 
 	renderDebugTex();
@@ -418,6 +422,11 @@ void D3DRenderer::renderScene()
 	m_pSwapChain->Present(0, 0);
 }
 
+void D3DRenderer::setupEnvironmentMap(std::string path)
+{
+	SAFE_DELETE(environmentMap);
+	environmentMap = new EnvironmentMap(path, m_pd3dDevice, m_pImmediateContext);
+}
 
 void D3DRenderer::GragScreenShot()
 {	
@@ -1452,4 +1461,5 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pQuadIndexBuffer);
 	SAFE_DELETE(shadowMap);
 	SAFE_DELETE(ssaoMap);
+	SAFE_DELETE(environmentMap);
 }

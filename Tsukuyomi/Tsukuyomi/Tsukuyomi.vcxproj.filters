@@ -207,6 +207,9 @@
     <ClCompile Include="SSAOMap.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="EnvMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">

@@ -12,6 +12,7 @@
 #include "ShadowTransform.h"
 
 class Object;
+class EnvironmentMap;
 enum  RenderSelObjMode { NONE, COORD_AXIS, ROT_AXIS};
 
 class D3DRenderer
@@ -28,6 +29,7 @@ public:
 	void renderToShadowMap();
 	void renderSSAOMap();
 	void GragScreenShot();
+	void setupEnvironmentMap(std::string path);
 	ShadowMap* getShadowMap() { return shadowMap; }
 	SSAOMap* getSSAOMap() { return ssaoMap; }
 	Camera& getCamera() { return m_camera; }
@@ -101,6 +103,7 @@ protected:
 	ID3D11Buffer*           m_pCircleIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pDirLightVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pDirLightIndexBuffer = nullptr;
+	EnvironmentMap*         environmentMap = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
 	D3D11_VIEWPORT          m_screenViewport;
 	int						transAxisCylinderIndexCount;
