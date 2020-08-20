@@ -163,7 +163,12 @@ BlurSSAOEffect::~BlurSSAOEffect()
 #pragma region EnvMapEffect
 EnvMapEffect::EnvMapEffect(ID3D11Device* device, const std::wstring& filename) :Effect(device, filename)
 {
-
+	EnvMapTech = mFX->GetTechniqueByName("EnvMapTechnique");
+	Mat = mFX->GetVariableByName("gMaterial");
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	World = mFX->GetVariableByName("gWorld")->AsMatrix();
+	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	EnvMap = mFX->GetVariableByName("gEnvironmentMap")->AsShaderResource();
 }
 
 EnvMapEffect::~EnvMapEffect()

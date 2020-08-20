@@ -411,6 +411,8 @@ void D3DRenderer::renderScene()
 		Effects::BasicFX->SetSSAOMap(ssaoMap->getSSAOMapSRV());
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
+
+	EnvironmentMap* environmentMap = g_pGlobalSys->objectManager.getEnvironmentMap();
 	if (environmentMap)
 		environmentMap->renderEnvironmentMap(&m_camera);
 
@@ -420,12 +422,6 @@ void D3DRenderer::renderScene()
 
 	//Present the backbuffer to the screen
 	m_pSwapChain->Present(0, 0);
-}
-
-void D3DRenderer::setupEnvironmentMap(std::string path)
-{
-	SAFE_DELETE(environmentMap);
-	environmentMap = new EnvironmentMap(path, m_pd3dDevice, m_pImmediateContext);
 }
 
 void D3DRenderer::GragScreenShot()
@@ -1461,5 +1457,4 @@ void D3DRenderer::cleanup()
 	SAFE_RELEASE(m_pQuadIndexBuffer);
 	SAFE_DELETE(shadowMap);
 	SAFE_DELETE(ssaoMap);
-	SAFE_DELETE(environmentMap);
 }

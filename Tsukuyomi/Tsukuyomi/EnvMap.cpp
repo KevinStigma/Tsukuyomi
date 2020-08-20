@@ -5,17 +5,20 @@
 #include "Objects\Camera.h"
 #include <GeometryGenerator\GeometryGenerator.h>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
+#endif
 #include <stb_image.h>
 
 EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceContext* dc): device(d), context(dc)
 {
 	stbi_set_flip_vertically_on_load(true);
-	int width, height, nrComponents;
-	float *data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
+	int nrComponents;
+	data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
 	std::cout << sizeof(data) << " " << width << " " << height << std::endl;
 
 	createBuffers();
+	createEnvironmentMapSRV();
 
 	mat.albedo = XMFLOAT3(1.0, 1.0, 1.0);
 	mat.metallic = 0.0;
@@ -28,11 +31,39 @@ EnvironmentMap::~EnvironmentMap()
 	data = nullptr;
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
+	SAFE_RELEASE(environmentSRV);
+}
+
+void EnvironmentMap::createEnvironmentMapSRV()
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = width;
+	texDesc.Height = height;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initData = { 0 };
+	initData.SysMemPitch = width * sizeof(XMFLOAT3);
+
+	initData.pSysMem = data;
+
+	ID3D11Texture2D* tex = 0;
+	device->CreateTexture2D(&texDesc, &initData, &tex);
+
+	device->CreateShaderResourceView(tex, 0, &environmentSRV);
+	ReleaseCOM(tex);
 }
 
 void EnvironmentMap::renderEnvironmentMap(Camera* camera)
 {
-	BasicEffect*basicEffect = Effects::BasicFX;
+	EnvMapEffect* envMapEffect = Effects::EnvMapFX;
 
 	UINT stride = sizeof(Basic32);
 	UINT offset = 0;
@@ -41,28 +72,27 @@ void EnvironmentMap::renderEnvironmentMap(Camera* camera)
 	context->IASetInputLayout(InputLayouts::PosNorTex);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
+	ID3DX11EffectTechnique* activeTech = envMapEffect->EnvMapTech;
 
-	basicEffect->SetIsLight(true);
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = XMMatrixIdentity();
+	XMMATRIX worldMat = XMMatrixScaling(1000.0, 1000.0, 1000.0);
 	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 	XMMATRIX WVP = worldMat * camera->getViewMatrix() * camera->getProjMatrix();
 	XMMATRIX WVPT = WVP;
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(inv_world_mat);
-		basicEffect->SetTexTransform(inv_world_mat);
-		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(mat);
-		basicEffect->SetWorldViewProjTex(WVPT);
+		envMapEffect->SetWorld(worldMat);
+		envMapEffect->SetWorldInvTranspose(inv_world_mat);
+		envMapEffect->SetWorldViewProj(WVP);
+		envMapEffect->SetMaterial(mat);
+		envMapEffect->SetEnvMap(environmentSRV);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(sphereIndexCount, 0, 0);
 	}
+	context->RSSetState(0);
 }
 
 void EnvironmentMap::createBuffers()

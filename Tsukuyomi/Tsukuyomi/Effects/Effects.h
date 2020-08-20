@@ -49,11 +49,11 @@ public:
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f)                           { FogStart->SetFloat(f); }
 	void SetFogRange(float f)                           { FogRange->SetFloat(f); }
-	void SetDirLightCount(int c) { curDirLightCount->SetInt(c); }
-	void SetPointLightCount(int c) { curPointLightCount->SetInt(c); }
-	void SetGammaCorrect(int c) { gammaCorrect->SetInt(c); }
-	void SetEnableHDR(int c) { enableHDR->SetInt(c); }
-	void SetHDRExposure(float f) { HDRexposure->SetFloat(f); }
+	void SetDirLightCount(int c)						{ curDirLightCount->SetInt(c); }
+	void SetPointLightCount(int c)						{ curPointLightCount->SetInt(c); }
+	void SetGammaCorrect(int c)							{ gammaCorrect->SetInt(c); }
+	void SetEnableHDR(int c)							{ enableHDR->SetInt(c); }
+	void SetHDRExposure(float f)						{ HDRexposure->SetFloat(f); }
 
 	ID3DX11EffectTechnique* DebugNormalTech;
 	ID3DX11EffectTechnique* SimpleColorTech;
@@ -222,14 +222,17 @@ public:
 	EnvMapEffect(ID3D11Device* device, const std::wstring& filename);
 	~EnvMapEffect();
 
-	/*
-	void SetTexelWidth(float w) { TexelWidth->SetFloat(w); }
-	void SetTexelHeight(float h) { TexelHeight->SetFloat(h); }
-	void SetNormalDepthMap(ID3D11ShaderResourceView* srv) { NormalDepthMap->SetResource(srv); }
-	void SetInputImage(ID3D11ShaderResourceView* srv) { InputImage->SetResource(srv); }
-	*/
-	ID3DX11EffectTechnique* HorizontalBlurTech;
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetMaterial(const RenderLightHelper::Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(RenderLightHelper::Material)); }
+	void SetEnvMap(ID3D11ShaderResourceView* rv) { EnvMap->SetResource(rv); }
 
+	ID3DX11EffectVariable* Mat;
+	ID3DX11EffectTechnique* EnvMapTech;
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+	ID3DX11EffectMatrixVariable* World;
+	ID3DX11EffectMatrixVariable* WorldInvTranspose;
 	ID3DX11EffectShaderResourceVariable* EnvMap;
 };
 #pragma endregion

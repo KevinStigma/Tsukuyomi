@@ -14,6 +14,7 @@
 #include "Accelerate/BVHManager.h"
 #include "PbrMat/PbrMat.h"
 
+class EnvironmentMap;
 
 class ObjectManager
 {
@@ -28,6 +29,7 @@ public:
 	Object* createNewObjectOfDirectionalLight(std::string name, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0));
 	Object* createNewObjectOfAreaLight(std::string name, std::string mesh_path, XMFLOAT3 t = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 s = XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3 r = XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3 c = XMFLOAT3(1.0, 1.0, 1.0), RenderMats* mats = nullptr);
 	Object* getObjectFromName(std::string name);
+	void loadEnvMap(std::string path);
 	std::vector<Light*> getAllLights();
 	int getLightsCountParameter();
 	bool removeObject(std::string name);
@@ -44,6 +46,7 @@ public:
 	std::vector<Object*> getAllObjects();
 	Camera* getRenderCamera();
 	BVHManager* getBVHManager() { return &bvhManager; }
+	EnvironmentMap* getEnvironmentMap() { return environmentMap; }
 protected:
 	BVHManager bvhManager;
 	std::string genNewObjectName();
@@ -51,4 +54,5 @@ protected:
 	ObjectsListWidget* listview = nullptr;
 	Object* curSelObject = nullptr;
 	Light* curShadowLight = nullptr;
+	EnvironmentMap* environmentMap = nullptr;
 };

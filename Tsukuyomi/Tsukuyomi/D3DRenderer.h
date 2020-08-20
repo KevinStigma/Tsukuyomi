@@ -29,13 +29,13 @@ public:
 	void renderToShadowMap();
 	void renderSSAOMap();
 	void GragScreenShot();
-	void setupEnvironmentMap(std::string path);
 	ShadowMap* getShadowMap() { return shadowMap; }
 	SSAOMap* getSSAOMap() { return ssaoMap; }
 	Camera& getCamera() { return m_camera; }
 	std::vector<RenderLightHelper::DirLight> & getLights() { return m_dirLights; }
 	std::vector<RenderLightHelper::Material> & getMaterials() { return m_materials; }
 	ID3D11Device* getDevice() { return m_pd3dDevice; }
+	ID3D11DeviceContext* getContext() { return m_pImmediateContext; }
 	RenderSelObjMode getRenderSelObjMode() { return renderSelObjMode; }
 	void setRenderSelObjMode(RenderSelObjMode mode) { renderSelObjMode = mode; }
 	void rayAxisIntersectionDetect(float x_ratio, float y_ratio);
@@ -103,7 +103,6 @@ protected:
 	ID3D11Buffer*           m_pCircleIndexBuffer = nullptr;
 	ID3D11Buffer*			m_pDirLightVertexBuffer = nullptr;
 	ID3D11Buffer*           m_pDirLightIndexBuffer = nullptr;
-	EnvironmentMap*         environmentMap = nullptr;
 	RenderSelObjMode        renderSelObjMode = COORD_AXIS;
 	D3D11_VIEWPORT          m_screenViewport;
 	int						transAxisCylinderIndexCount;

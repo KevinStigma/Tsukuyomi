@@ -1,7 +1,10 @@
 #include "ObjectsManager.h"
 #include <iostream>
+#include "EnvMap.h"
+#include "GlobalSys.h"
 #include "PbrMat/Matte.h"
 #include "PbrMat/Plastic.h"
+#include "D3DRenderer.h"
 
 ObjectManager::ObjectManager()
 {
@@ -22,6 +25,8 @@ void ObjectManager::clear()
 	objects.clear();
 	if(listview)
 		listview->clear();
+
+	SAFE_DELETE(environmentMap);
 	curSelObject = nullptr;
 	curShadowLight = nullptr;
 	bvhManager.destroyBoundingVolumeHieratches();
@@ -139,6 +144,11 @@ Object* ObjectManager::getObjectFromName(std::string name)
 	if (objects.find(name) == objects.end())
 		return nullptr;
 	return objects[name];
+}
+
+void ObjectManager::loadEnvMap(std::string path)
+{
+	environmentMap = new EnvironmentMap(path, g_pGlobalSys->renderer->getDevice(), g_pGlobalSys->renderer->getContext());
 }
 
 void ObjectManager::setCurSelObject(std::string name)

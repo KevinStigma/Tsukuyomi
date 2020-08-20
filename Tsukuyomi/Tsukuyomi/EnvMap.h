@@ -14,14 +14,16 @@ public:
 	~EnvironmentMap();
 
 	void renderEnvironmentMap(Camera*);
-
+	ID3D11ShaderResourceView* environmentSRV = nullptr;
 protected:
 	void createBuffers();
+	void createEnvironmentMapSRV();
 	ID3D11Device*           device = nullptr;
 	ID3D11DeviceContext*    context = nullptr;
 	ID3D11Buffer*	        vertexBuffer = nullptr;
 	ID3D11Buffer*           indexBuffer = nullptr;
-	int width=0, heigth=0, sphereIndexCount=0;
+	
+	int width=0, height=0, sphereIndexCount=0;
 	float* data = nullptr;
 	RenderLightHelper::Material mat;
 };

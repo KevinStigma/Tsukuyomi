@@ -60,7 +60,8 @@ void Tsukuyomi::on_actionLoadEnvMap_triggered()
 	QString filename = QFileDialog::getOpenFileName(this, tr("Load EnvMap"), "./Data/IBLs", "hdr files(*.hdr)", 0);
 	if (!filename.size())
 		return;
-	ui.render_widget->getRenderer()->setupEnvironmentMap(filename.toStdString());
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	object_mgr.loadEnvMap(filename.toStdString());
 }
 
 void Tsukuyomi::on_actionSave_Project_triggered()
