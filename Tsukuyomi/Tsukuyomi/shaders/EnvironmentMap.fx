@@ -62,6 +62,10 @@ float4 PS(VertexOut pin) : SV_Target
 
 	float2 tex_coord = float2((theta + PI) / (2.0 * PI), (phi + PI * 0.5) / PI);
 	float3 color = gEnvironmentMap.Sample(samLinear, tex_coord, 0.0f).rgb;
+
+	color = color / (color + 1.0);
+	color = pow(color, 1.0 / 2.2);
+
 	return float4(color, 1.0);
 }
 

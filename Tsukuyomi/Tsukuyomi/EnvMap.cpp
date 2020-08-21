@@ -10,12 +10,17 @@
 #endif
 #include <stb_image.h>
 
+#ifndef STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#endif
+#include <stb_image_write.h>
+
 EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceContext* dc): device(d), context(dc)
 {
 	stbi_set_flip_vertically_on_load(true);
 	int nrComponents;
 	data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
-	std::cout << sizeof(data) << " " << width << " " << height << std::endl;
+	std::cout << width << " " << height << std::endl;
 
 	createBuffers();
 	createEnvironmentMapSRV();
@@ -23,6 +28,18 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 	mat.albedo = XMFLOAT3(1.0, 1.0, 1.0);
 	mat.metallic = 0.0;
 	mat.roughness = 1.0;
+
+	/*
+	float write_data[100][100][3];
+	for(int i = 0; i < 100; i++)
+		for (int j = 0; j < 100; j++)
+		{
+			write_data[i][j][0] = 0.25f;
+			write_data[i][j][1] = 0.25f;
+			write_data[i][j][2] = 0.25f;
+		}
+	stbi_write_hdr("./test.hdr", 100, 100, 3, &write_data[0][0][0]);
+	*/
 }
 
 EnvironmentMap::~EnvironmentMap()
