@@ -47,6 +47,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	DiffuseMap		  = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 	ShadowMap		  = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
 	SSAOMap           = mFX->GetVariableByName("gSSAOMap")->AsShaderResource();
+	IrradianceMap     = mFX->GetVariableByName("gIrradianceMap")->AsShaderResource();
+
 	ShadowTransform   = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
 	TexTransform	  = mFX->GetVariableByName("gTexTransform")->AsMatrix();
 	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "Effects\Effects.h"
 #include "Objects\Camera.h"
+#include <QFileInfo>
 #include <GeometryGenerator\GeometryGenerator.h>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -29,6 +30,9 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 	mat.metallic = 0.0;
 	mat.roughness = 1.0;
 
+	hdr_path = path;
+	ira_path = EnvironmentMap::genIrradianceMapPath(path);
+	createIrradianceMapSRV();
 	/*
 	float write_data[100][100][3];
 	for(int i = 0; i < 100; i++)
@@ -49,6 +53,7 @@ EnvironmentMap::~EnvironmentMap()
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
 	SAFE_RELEASE(environmentSRV);
+	SAFE_RELEASE(irradianceSRV);
 }
 
 void EnvironmentMap::createEnvironmentMapSRV()
@@ -76,6 +81,42 @@ void EnvironmentMap::createEnvironmentMapSRV()
 
 	device->CreateShaderResourceView(tex, 0, &environmentSRV);
 	ReleaseCOM(tex);
+}
+
+void EnvironmentMap::createIrradianceMapSRV()
+{
+	QFileInfo f(ira_path.c_str());
+	if (!f.isFile())
+		return;
+
+	int nrComponents;
+	int w, h;
+	float* d;
+	d = stbi_loadf(ira_path.c_str(), &w, &h, &nrComponents, 0);
+	
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = w;
+	texDesc.Height = h;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initData = { 0 };
+	initData.SysMemPitch = w * sizeof(XMFLOAT3);
+	initData.pSysMem = d;
+
+	ID3D11Texture2D* tex = 0;
+	device->CreateTexture2D(&texDesc, &initData, &tex);
+	device->CreateShaderResourceView(tex, 0, &irradianceSRV);
+	ReleaseCOM(tex);
+
+	stbi_image_free(d);
 }
 
 void EnvironmentMap::renderEnvironmentMap(Camera* camera)
@@ -150,4 +191,12 @@ void EnvironmentMap::createBuffers()
 	iinitData.pSysMem = &sphere_data.Indices[0];
 	if (FAILED(device->CreateBuffer(&ibd, &iinitData, &indexBuffer)))
 		return;
+}
+
+std::string EnvironmentMap::genIrradianceMapPath(std::string path)
+{
+	std::vector<std::string> irradiance_path;
+	int dot_index = path.rfind('.');
+	int underline_index = path.rfind('_');
+	return path.replace(path.begin() + underline_index +1 , path.begin() + dot_index, "Env");
 }

@@ -44,6 +44,7 @@ public:
 	void SetDiffuseMap(ID3D11ShaderResourceView* rv)		{ DiffuseMap->SetResource(rv); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex)		{ ShadowMap->SetResource(tex); }
 	void SetSSAOMap(ID3D11ShaderResourceView* sm)           { SSAOMap->SetResource(sm); }
+	void SetIrradianceMap(ID3D11ShaderResourceView* im)     { IrradianceMap->SetResource(im); }
 	void SetIsLight(bool v)									{ isLight->SetBool(v); }
 
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
@@ -85,6 +86,7 @@ public:
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;
 	ID3DX11EffectShaderResourceVariable* ShadowMap;
 	ID3DX11EffectShaderResourceVariable* SSAOMap;
+	ID3DX11EffectShaderResourceVariable* IrradianceMap;
 };
 #pragma endregion
 

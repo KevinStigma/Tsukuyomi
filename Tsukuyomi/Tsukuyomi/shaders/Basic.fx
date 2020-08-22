@@ -31,6 +31,7 @@ cbuffer cbPerObject
 Texture2D gDiffuseMap;
 Texture2D gShadowMap;
 Texture2D gSSAOMap;
+Texture2D gIrradianceMap;
 
 SamplerState samLinear
 {
@@ -153,7 +154,17 @@ float4 CustomPS(VertexOut pin,
 		ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
 	}
 
-	float3 ambient = gMaterial.albedo * 0.03 * ambient_weight;
+
+	float theta = atan2(pin.NormalW.z, pin.NormalW.x);
+	float phi = asin(pin.NormalW.y);
+
+	float3 ks = fresnelSchlickRoughness(max(dot(pin.NormalW, V), 0.0), F0, gMaterial.roughness);
+	float3 kd = 1.0 - ks;
+	float3 irradiance = gIrradianceMap.Sample(samLinear, float2((theta + PI) / (2.0 * PI), (phi + PI * 0.5) / PI), 0.0f).rgb;
+	float3 ambient = irradiance * gMaterial.albedo * kd * ambient_weight;
+
+	if(length(irradiance) < 1e-6)
+		ambient = gMaterial.albedo * 0.03 * ambient_weight;
 	
 	//
 	// Lighting.

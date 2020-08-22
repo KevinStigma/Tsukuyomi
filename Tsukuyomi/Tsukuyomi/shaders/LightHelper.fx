@@ -1,5 +1,7 @@
 #include "PBRHelper.fx"
 
+#define PI 3.14159265
+
 struct DirectionalLight
 {
 	float3 Color;
@@ -60,8 +62,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight light, float3 N, flo
 	float3 specular = numerator / max(denominator, 0.001);
 
 	float NdotL = max(dot(N, L), 0.0);
-	float pi = 3.14159265;
-	lo = (kD * mat.albedo / pi + specular) * radiance * NdotL;
+	lo = (kD * mat.albedo / PI + specular) * radiance * NdotL;
 }
 
 void ComputePointLight(Material mat, PointLight light, float3 pos, float3 N, float3 V, float3 F0,
@@ -94,9 +95,8 @@ void ComputePointLight(Material mat, PointLight light, float3 pos, float3 N, flo
 	float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
 	float3 specular = numerator / max(denominator, 0.001);
 
-	float pi = 3.14159265;
 	float NdotL = max(dot(N, L), 0.0);
-	lo = (kD * mat.albedo / pi + specular) * radiance * NdotL;
+	lo = (kD * mat.albedo / PI + specular) * radiance * NdotL;
 }
 
 

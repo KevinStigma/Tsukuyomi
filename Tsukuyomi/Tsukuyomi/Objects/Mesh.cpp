@@ -7,6 +7,7 @@
 #include "../Accelerate/Triangle.h"
 #include "../ShadowTransform.h"
 #include "../ShadowMap.h"
+#include "../EnvMap.h"
 #include "GlobalSys.h"
 #include <iostream>
 #include <fstream>
@@ -71,6 +72,9 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		activeTech = basicEffect->CustomLightTech;
 
 	basicEffect->SetIsLight(bool(area_light));
+
+	EnvironmentMap* env_map = g_pGlobalSys->objectManager.getEnvironmentMap();
+	basicEffect->SetIrradianceMap(env_map&&env_map->irradianceSRV? env_map->irradianceSRV : nullptr);
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
