@@ -159,7 +159,7 @@ float4 CustomPS(VertexOut pin,
 	float phi = asin(pin.NormalW.y);
 
 	float3 ks = fresnelSchlickRoughness(max(dot(pin.NormalW, V), 0.0), F0, gMaterial.roughness);
-	float3 kd = 1.0 - ks;
+	float3 kd = (1.0 - ks) * (1.0 - gMaterial.metallic);
 	float3 irradiance = gIrradianceMap.Sample(samLinear, float2((theta + PI) / (2.0 * PI), (phi + PI * 0.5) / PI), 0.0f).rgb;
 	float3 ambient = irradiance * gMaterial.albedo * kd * ambient_weight;
 
