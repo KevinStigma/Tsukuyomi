@@ -13,9 +13,9 @@ public:
 	EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceContext* dc);
 	~EnvironmentMap();
 
-	void createIrradianceMapSRV();
+	void createIrradianceMapResource(bool is_baking);
 	void renderEnvironmentMap(Camera*);
-	void bakeIrradiance();
+	void bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer);
 	ID3D11ShaderResourceView* environmentSRV2 = nullptr;
 	ID3D11ShaderResourceView* environmentSRV = nullptr;
 	ID3D11ShaderResourceView* irradianceSRV = nullptr;
@@ -25,7 +25,9 @@ protected:
 	void createEnvironmentMapSRV();
 	std::string             hdr_path;
 	std::string             ira_path;
+	D3D11_VIEWPORT          irradianceViewPort;
 	ID3D11Device*           device = nullptr;
+	ID3D11RenderTargetView* irradianceRTV = nullptr;
 	ID3D11DeviceContext*    context = nullptr;
 	ID3D11Buffer*	        vertexBuffer = nullptr;
 	ID3D11Buffer*           indexBuffer = nullptr;

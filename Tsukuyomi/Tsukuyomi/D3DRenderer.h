@@ -46,6 +46,7 @@ public:
 	void resetCameraTransform(Camera* cam);
 	void buildShadowTransform();
 	float computeFPS();
+	void bakeIrradiance();
 	XMMATRIX getTexTransformMat() { return XMLoadFloat4x4(&TexTransformMat); }
 	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	

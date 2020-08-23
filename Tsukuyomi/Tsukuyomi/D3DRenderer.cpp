@@ -648,6 +648,13 @@ float D3DRenderer::computeFPS()
 	return 1.0 / passed_secs;
 }
 
+void D3DRenderer::bakeIrradiance()
+{
+	EnvironmentMap* env_map = g_pGlobalSys->objectManager.getEnvironmentMap();
+	if (env_map)
+		env_map->bakeIrradiance(m_pQuadVertexBuffer, m_pQuadIndexBuffer);
+}
+
 void D3DRenderer::buildShadowTransform()
 {
 	// Only the first "main" light casts a shadow.

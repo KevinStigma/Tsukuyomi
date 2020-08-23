@@ -66,7 +66,7 @@ void Tsukuyomi::on_actionLoadEnvMap_triggered()
 
 void Tsukuyomi::on_actionBack_Irradiance_triggered()
 {
-	g_pGlobalSys->objectManager.bakeIrradianceMap();
+	g_pGlobalSys->renderer->bakeIrradiance();
 }
 
 void Tsukuyomi::on_actionSave_Project_triggered()

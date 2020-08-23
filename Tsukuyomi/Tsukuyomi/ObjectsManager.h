@@ -38,7 +38,6 @@ public:
 	Object* getCurSelObject() { return curSelObject; }
 	void setCurSelObject(std::string name);
 	void setCurShadowLight(Light* light);
-	void bakeIrradianceMap();
 	Light* getCurSelShadowLight() { return curShadowLight; }
 	void exportProject(std::string file_path);
 	void outputSphereMesh();

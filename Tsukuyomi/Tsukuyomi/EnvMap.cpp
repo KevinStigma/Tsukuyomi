@@ -32,7 +32,8 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 
 	hdr_path = path;
 	ira_path = EnvironmentMap::genIrradianceMapPath(path);
-	createIrradianceMapSRV();
+	createIrradianceMapResource(false);
+
 	/*
 	float write_data[100][100][3];
 	for(int i = 0; i < 100; i++)
@@ -54,6 +55,7 @@ EnvironmentMap::~EnvironmentMap()
 	SAFE_RELEASE(indexBuffer);
 	SAFE_RELEASE(environmentSRV);
 	SAFE_RELEASE(irradianceSRV);
+	SAFE_RELEASE(irradianceRTV);
 }
 
 void EnvironmentMap::createEnvironmentMapSRV()
@@ -101,20 +103,13 @@ void EnvironmentMap::createEnvironmentMapSRV()
 	texDesc2.MiscFlags = 0;
 	hr = device->CreateTexture2D(&texDesc2, &initData, &tt);
 	hr = device->CreateShaderResourceView(tt, 0, &environmentSRV2);
-
 }
 
-void EnvironmentMap::createIrradianceMapSRV()
+void EnvironmentMap::createIrradianceMapResource(bool is_baking)
 {
-	QFileInfo f(ira_path.c_str());
-	if (!f.isFile())
-		return;
+	float* d = nullptr;
+	int w = width / 10, h = height / 10;
 
-	int nrComponents;
-	int w, h;
-	float* d;
-	d = stbi_loadf(ira_path.c_str(), &w, &h, &nrComponents, 0);
-	
 	D3D11_TEXTURE2D_DESC texDesc;
 	texDesc.Width = w;
 	texDesc.Height = h;
@@ -123,21 +118,43 @@ void EnvironmentMap::createIrradianceMapSRV()
 	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA initData = { 0 };
-	initData.SysMemPitch = w * sizeof(XMFLOAT3);
-	initData.pSysMem = d;
-
 	ID3D11Texture2D* tex = 0;
-	device->CreateTexture2D(&texDesc, &initData, &tex);
-	device->CreateShaderResourceView(tex, 0, &irradianceSRV);
-	ReleaseCOM(tex);
+	if (!is_baking)
+	{
+		QFileInfo f(ira_path.c_str());
+		if (!f.isFile())
+			return;
+		int nrComponents;
+		d = stbi_loadf(ira_path.c_str(), &w, &h, &nrComponents, 0);
+		texDesc.Width = w;
+		texDesc.Height = h;
+		D3D11_SUBRESOURCE_DATA initData = { 0 };
+		initData.SysMemPitch = w * sizeof(XMFLOAT3);
+		initData.pSysMem = d;
+		device->CreateTexture2D(&texDesc, &initData, &tex);
+		device->CreateShaderResourceView(tex, 0, &irradianceSRV);
+		ReleaseCOM(tex);
+		stbi_image_free(d);
+	}
+	else
+	{
+		irradianceViewPort.TopLeftX = 0.0f;
+		irradianceViewPort.TopLeftY = 0.0f;
+		irradianceViewPort.Width = w;
+		irradianceViewPort.Height = h;
+		irradianceViewPort.MinDepth = 0.0f;
+		irradianceViewPort.MaxDepth = 1.0f;
 
-	stbi_image_free(d);
+		device->CreateTexture2D(&texDesc, 0, &tex);
+		device->CreateShaderResourceView(tex, 0, &irradianceSRV);
+		device->CreateRenderTargetView(tex, 0, &irradianceRTV);
+		ReleaseCOM(tex);
+	}
 }
 
 void EnvironmentMap::renderEnvironmentMap(Camera* camera)
@@ -174,11 +191,36 @@ void EnvironmentMap::renderEnvironmentMap(Camera* camera)
 	context->RSSetState(0);
 }
 
-void EnvironmentMap::bakeIrradiance()
+void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer)
 {
-	if (!environmentSRV)
+	if (irradianceSRV)
 		return;
 
+	createIrradianceMapResource(true);
+
+	ID3D11RenderTargetView* renderTargets[1] = { irradianceRTV };
+	context->OMSetRenderTargets(1, renderTargets, 0);
+	context->ClearRenderTargetView(irradianceRTV, reinterpret_cast<const float*>(&Colors::Black));
+	context->RSSetViewports(1, &irradianceViewPort);
+
+	ID3DX11EffectTechnique* tech;
+
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	context->IASetVertexBuffers(0, 1, &quadVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		tech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(6, 0, 0);
+	}
+	/*
 	ID3D11Resource* res = nullptr;
 	ID3D11Texture2D* tex = nullptr;
 	environmentSRV->GetResource(&res);
@@ -209,6 +251,7 @@ void EnvironmentMap::bakeIrradiance()
 	h = context->Map(tt, 0, D3D11_MAP_READ, 0, &mappedResource);
 	
 	std::cout << desc.Width<<" "<<desc.Height<< " " <<std::endl;
+	*/
 }
 
 void EnvironmentMap::createBuffers()
