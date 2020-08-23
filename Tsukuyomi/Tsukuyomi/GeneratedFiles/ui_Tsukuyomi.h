@@ -53,6 +53,7 @@ public:
     QAction *actionshowBVH;
     QAction *actionScreenShot;
     QAction *actionLoadEnvMap;
+    QAction *actionBack_Irradiance;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     ObjectsListWidget *objectsListView;
@@ -161,6 +162,8 @@ public:
         actionScreenShot->setObjectName(QStringLiteral("actionScreenShot"));
         actionLoadEnvMap = new QAction(TsukuyomiClass);
         actionLoadEnvMap->setObjectName(QStringLiteral("actionLoadEnvMap"));
+        actionBack_Irradiance = new QAction(TsukuyomiClass);
+        actionBack_Irradiance->setObjectName(QStringLiteral("actionBack_Irradiance"));
         centralWidget = new QWidget(TsukuyomiClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -415,6 +418,7 @@ public:
         menuLights->addAction(actionDirectionalLight);
         menuLights->addAction(actionAreaLight);
         menuRenderOption->addAction(actionScreenShot);
+        menuRenderOption->addAction(actionBack_Irradiance);
 
         retranslateUi(TsukuyomiClass);
 
@@ -445,6 +449,7 @@ public:
         actionshowBVH->setText(QApplication::translate("TsukuyomiClass", "showBVH", Q_NULLPTR));
         actionScreenShot->setText(QApplication::translate("TsukuyomiClass", "ScreenShot", Q_NULLPTR));
         actionLoadEnvMap->setText(QApplication::translate("TsukuyomiClass", "Load EnvMap", Q_NULLPTR));
+        actionBack_Irradiance->setText(QApplication::translate("TsukuyomiClass", "Back Irradiance", Q_NULLPTR));
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
         transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));

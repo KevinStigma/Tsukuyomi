@@ -66,7 +66,7 @@ void EnvironmentMap::createEnvironmentMapSRV()
 	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
-	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
@@ -79,8 +79,29 @@ void EnvironmentMap::createEnvironmentMapSRV()
 	ID3D11Texture2D* tex = 0;
 	device->CreateTexture2D(&texDesc, &initData, &tex);
 
-	device->CreateShaderResourceView(tex, 0, &environmentSRV);
+	HRESULT hr = device->CreateShaderResourceView(tex, 0, &environmentSRV);
 	ReleaseCOM(tex);
+
+
+	initData.SysMemPitch = width * sizeof(XMFLOAT3);
+
+	initData.pSysMem = data;
+
+	D3D11_TEXTURE2D_DESC texDesc2;
+	texDesc2.Width = width;
+	texDesc2.Height = height;
+	texDesc2.MipLevels = 1;
+	texDesc2.ArraySize = 1;
+	texDesc2.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc2.SampleDesc.Count = 1;
+	texDesc2.SampleDesc.Quality = 0;
+	texDesc2.Usage = D3D11_USAGE_STAGING;
+	texDesc2.BindFlags = 0;
+	texDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	texDesc2.MiscFlags = 0;
+	hr = device->CreateTexture2D(&texDesc2, &initData, &tt);
+	hr = device->CreateShaderResourceView(tt, 0, &environmentSRV2);
+
 }
 
 void EnvironmentMap::createIrradianceMapSRV()
@@ -151,6 +172,43 @@ void EnvironmentMap::renderEnvironmentMap(Camera* camera)
 		context->DrawIndexed(sphereIndexCount, 0, 0);
 	}
 	context->RSSetState(0);
+}
+
+void EnvironmentMap::bakeIrradiance()
+{
+	if (!environmentSRV)
+		return;
+
+	ID3D11Resource* res = nullptr;
+	ID3D11Texture2D* tex = nullptr;
+	environmentSRV->GetResource(&res);
+
+	res->QueryInterface(&tex);
+	D3D11_TEXTURE2D_DESC desc;
+	tex->GetDesc(&desc); //Correct data gets filled out
+	D3D11_RESOURCE_DIMENSION dim;
+	res->GetType(&dim); //value gets set as Texture2D which it should
+
+	D3D11_BOX srcBox;
+	srcBox.left = 0;
+	srcBox.right = 1;
+	srcBox.top = 0;
+	srcBox.bottom = 1;
+	srcBox.front = 0;
+	srcBox.back = 1;
+
+	context->CopyResource(res, tt);
+
+	//HRESULT h;
+	//D3D11_MAPPED_SUBRESOURCE msr;
+	//h = context->Map(tex, 0, D3D11_MAP_READ, 0, &msr);
+
+	
+	HRESULT h;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	h = context->Map(tt, 0, D3D11_MAP_READ, 0, &mappedResource);
+	
+	std::cout << desc.Width<<" "<<desc.Height<< " " <<std::endl;
 }
 
 void EnvironmentMap::createBuffers()

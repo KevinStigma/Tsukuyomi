@@ -916,6 +916,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionScreenShot"/>
+    <addaction name="actionBack_Irradiance"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
@@ -1026,6 +1027,11 @@
   <action name="actionLoadEnvMap">
    <property name="text">
     <string>Load EnvMap</string>
+   </property>
+  </action>
+  <action name="actionBack_Irradiance">
+   <property name="text">
+    <string>Back Irradiance</string>
    </property>
   </action>
  </widget>

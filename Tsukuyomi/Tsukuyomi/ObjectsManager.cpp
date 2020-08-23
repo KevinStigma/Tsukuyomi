@@ -226,6 +226,14 @@ void ObjectManager::outputSphereMesh()
 	s->outputSphereMesh();
 }
 
+void ObjectManager::bakeIrradianceMap()
+{
+	if (environmentMap)
+	{
+		environmentMap->bakeIrradiance();
+	}
+}
+
 void ObjectManager::exportProject(std::string file_path)
 {
 	using namespace tinyxml2;

@@ -64,6 +64,11 @@ void Tsukuyomi::on_actionLoadEnvMap_triggered()
 	object_mgr.loadEnvMap(filename.toStdString());
 }
 
+void Tsukuyomi::on_actionBack_Irradiance_triggered()
+{
+	g_pGlobalSys->objectManager.bakeIrradianceMap();
+}
+
 void Tsukuyomi::on_actionSave_Project_triggered()
 {
 	QString name = QFileDialog::getSaveFileName(this, tr("Export Project"), "./Data/Projects", "xml files(*.xml)", 0);

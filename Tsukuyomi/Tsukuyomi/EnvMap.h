@@ -15,6 +15,8 @@ public:
 
 	void createIrradianceMapSRV();
 	void renderEnvironmentMap(Camera*);
+	void bakeIrradiance();
+	ID3D11ShaderResourceView* environmentSRV2 = nullptr;
 	ID3D11ShaderResourceView* environmentSRV = nullptr;
 	ID3D11ShaderResourceView* irradianceSRV = nullptr;
 protected:
@@ -27,6 +29,7 @@ protected:
 	ID3D11DeviceContext*    context = nullptr;
 	ID3D11Buffer*	        vertexBuffer = nullptr;
 	ID3D11Buffer*           indexBuffer = nullptr;
+	ID3D11Texture2D*        tt = nullptr;
 	
 	int width=0, height=0, sphereIndexCount=0;
 	float* data = nullptr;
