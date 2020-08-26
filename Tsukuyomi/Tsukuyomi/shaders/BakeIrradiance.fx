@@ -1,11 +1,5 @@
 #define PI 3.14159265
 
-cbuffer cbPerObject
-{
-	float4x4 gWorld;
-	float4x4 gWorldViewProj;
-}; 
-
 Texture2D gEnvironmentMap;
 
 SamplerState samLinear
@@ -33,7 +27,7 @@ VertexOut VS(VertexIn vin)
 	VertexOut vout;
 
 	// Transform to homogeneous clip space.
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.PosH = float4(vin.PosL.x, vin.PosL.y, 1.0, 1.0f);
 
 	// Pass onto pixel shader.
 	vout.Tex = vin.Tex;

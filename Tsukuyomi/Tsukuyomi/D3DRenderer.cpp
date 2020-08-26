@@ -480,6 +480,8 @@ void D3DRenderer::renderDebugTex()
 		debugTexEffect->SetDebugTex(ssaoMap->getSSAOMapSRV());
 	else if (g_pGlobalSys->objectManager.getCurSelShadowLight())
 		debugTexEffect->SetDebugTex(shadowMap->DepthMapSRV());
+	else
+		debugTexEffect->SetDebugTex(g_pGlobalSys->objectManager.getEnvironmentMap()->irradianceSRV);
 
 	ID3DX11EffectTechnique* activeTech = debugTexEffect->DebugTexTech;
 	D3DX11_TECHNIQUE_DESC techDesc;

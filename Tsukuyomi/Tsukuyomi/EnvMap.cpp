@@ -115,11 +115,11 @@ void EnvironmentMap::createIrradianceMapResource(bool is_baking)
 	texDesc.Height = h;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 
@@ -129,6 +129,8 @@ void EnvironmentMap::createIrradianceMapResource(bool is_baking)
 		QFileInfo f(ira_path.c_str());
 		if (!f.isFile())
 			return;
+		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		int nrComponents;
 		d = stbi_loadf(ira_path.c_str(), &w, &h, &nrComponents, 0);
 		texDesc.Width = w;
@@ -196,6 +198,8 @@ void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer
 	if (irradianceSRV)
 		return;
 
+	BakeIrradianceEffect* bakeEffect = Effects::BakeIrradianceFX;
+
 	createIrradianceMapResource(true);
 
 	ID3D11RenderTargetView* renderTargets[1] = { irradianceRTV };
@@ -203,7 +207,7 @@ void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer
 	context->ClearRenderTargetView(irradianceRTV, reinterpret_cast<const float*>(&Colors::Black));
 	context->RSSetViewports(1, &irradianceViewPort);
 
-	ID3DX11EffectTechnique* tech;
+	ID3DX11EffectTechnique* tech = bakeEffect->BakeIrradianceTech;
 
 	UINT stride = sizeof(Basic32);
 	UINT offset = 0;
@@ -212,6 +216,8 @@ void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	context->IASetVertexBuffers(0, 1, &quadVertexBuffer, &stride, &offset);
 	context->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	bakeEffect->SetEnvironmentMap(environmentSRV);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);

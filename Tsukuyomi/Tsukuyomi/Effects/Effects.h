@@ -217,7 +217,7 @@ public:
 #pragma endregion
 
 
-#pragma region BlurSSAOEffect
+#pragma region EnvMapEffect
 class EnvMapEffect : public Effect
 {
 public:
@@ -240,6 +240,21 @@ public:
 #pragma endregion
 
 
+#pragma region BakeIrradianceEffect
+class BakeIrradianceEffect : public Effect
+{
+public:
+	BakeIrradianceEffect(ID3D11Device* device, const std::wstring& filename);
+	~BakeIrradianceEffect();
+
+	void SetEnvironmentMap(ID3D11ShaderResourceView* srv) { environmentMap->SetResource(srv); }
+
+	ID3DX11EffectTechnique* BakeIrradianceTech;
+	ID3DX11EffectShaderResourceVariable* environmentMap;
+};
+#pragma endregion
+
+
 #pragma region Effects
 class Effects
 {
@@ -250,6 +265,7 @@ public:
 	static BuildNormalDepthMapEffect* BuildNormalDepthMapFX;
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
+	static BakeIrradianceEffect* BakeIrradianceFX;
 	static BlurSSAOEffect* SSAOBlurFX;
 	static EnvMapEffect* EnvMapFX;
 	static DebugTexEffect* DebugTexFX;
