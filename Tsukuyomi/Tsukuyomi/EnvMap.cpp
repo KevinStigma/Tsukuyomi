@@ -33,18 +33,6 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 	hdr_path = path;
 	ira_path = EnvironmentMap::genIrradianceMapPath(path);
 	createIrradianceMapResource(false);
-
-	/*
-	float write_data[100][100][3];
-	for(int i = 0; i < 100; i++)
-		for (int j = 0; j < 100; j++)
-		{
-			write_data[i][j][0] = 0.25f;
-			write_data[i][j][1] = 0.25f;
-			write_data[i][j][2] = 0.25f;
-		}
-	stbi_write_hdr("./test.hdr", 100, 100, 3, &write_data[0][0][0]);
-	*/
 }
 
 EnvironmentMap::~EnvironmentMap()
@@ -88,34 +76,19 @@ void EnvironmentMap::createEnvironmentMapSRV()
 	initData.SysMemPitch = width * sizeof(XMFLOAT3);
 
 	initData.pSysMem = data;
-
-	D3D11_TEXTURE2D_DESC texDesc2;
-	texDesc2.Width = width;
-	texDesc2.Height = height;
-	texDesc2.MipLevels = 1;
-	texDesc2.ArraySize = 1;
-	texDesc2.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	texDesc2.SampleDesc.Count = 1;
-	texDesc2.SampleDesc.Quality = 0;
-	texDesc2.Usage = D3D11_USAGE_STAGING;
-	texDesc2.BindFlags = 0;
-	texDesc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	texDesc2.MiscFlags = 0;
-	hr = device->CreateTexture2D(&texDesc2, &initData, &tt);
-	hr = device->CreateShaderResourceView(tt, 0, &environmentSRV2);
 }
 
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)
 {
 	float* d = nullptr;
-	int w = width / 10, h = height / 10;
+	int w = width, h = height;
 
 	D3D11_TEXTURE2D_DESC texDesc;
 	texDesc.Width = w;
 	texDesc.Height = h;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -226,38 +199,49 @@ void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer
 		tech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(6, 0, 0);
 	}
-	/*
+}
+
+void EnvironmentMap::exportIrradianceMap()
+{
 	ID3D11Resource* res = nullptr;
 	ID3D11Texture2D* tex = nullptr;
-	environmentSRV->GetResource(&res);
+
+	irradianceSRV->GetResource(&res);
 
 	res->QueryInterface(&tex);
 	D3D11_TEXTURE2D_DESC desc;
-	tex->GetDesc(&desc); //Correct data gets filled out
-	D3D11_RESOURCE_DIMENSION dim;
-	res->GetType(&dim); //value gets set as Texture2D which it should
+	tex->GetDesc(&desc); 
 
-	D3D11_BOX srcBox;
-	srcBox.left = 0;
-	srcBox.right = 1;
-	srcBox.top = 0;
-	srcBox.bottom = 1;
-	srcBox.front = 0;
-	srcBox.back = 1;
+	ID3D11Texture2D* copy_tex;
+	desc.Usage = D3D11_USAGE_STAGING;
+	desc.BindFlags = 0;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	device->CreateTexture2D(&desc, 0, &copy_tex);
+	context->CopyResource(copy_tex, res);
 
-	context->CopyResource(res, tt);
-
-	//HRESULT h;
-	//D3D11_MAPPED_SUBRESOURCE msr;
-	//h = context->Map(tex, 0, D3D11_MAP_READ, 0, &msr);
-
-	
-	HRESULT h;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	h = context->Map(tt, 0, D3D11_MAP_READ, 0, &mappedResource);
+	context->Map(copy_tex, 0, D3D11_MAP_READ, 0, &mappedResource);
 	
-	std::cout << desc.Width<<" "<<desc.Height<< " " <<std::endl;
-	*/
+	int index;
+	float*img_data = new float[desc.Width * desc.Height * 3];
+	char* begin_data = reinterpret_cast<char*>(mappedResource.pData);
+	for(int i=0;i< desc.Height;i++)
+		for (int j = 0; j < desc.Width; j++)
+		{
+			int y = desc.Height -1 - i;
+			index = y * desc.Width + j;
+			img_data[index * 3] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16);
+			img_data[index * 3 + 1] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 4);
+			img_data[index * 3 + 2] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 8);
+		}
+
+	context->Unmap(copy_tex, 0);
+	
+	stbi_write_hdr(ira_path.c_str(), desc.Width, desc.Height, 3, img_data);
+	SAFE_DELETE(img_data);
+	SAFE_RELEASE(res);
+	SAFE_RELEASE(tex);
+	SAFE_RELEASE(copy_tex);
 }
 
 void EnvironmentMap::createBuffers()
