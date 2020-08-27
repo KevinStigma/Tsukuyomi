@@ -21,7 +21,6 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 	stbi_set_flip_vertically_on_load(true);
 	int nrComponents;
 	data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
-	std::cout << width << " " << height << std::endl;
 
 	createBuffers();
 	createEnvironmentMapSRV();
@@ -81,7 +80,7 @@ void EnvironmentMap::createEnvironmentMapSRV()
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)
 {
 	float* d = nullptr;
-	int w = width, h = height;
+	int w = width * 0.1, h = height * 0.1;
 
 	D3D11_TEXTURE2D_DESC texDesc;
 	texDesc.Width = w;
