@@ -42,6 +42,11 @@ struct Material
 	float  metallic;
 };
 
+float2 getSphericalMapTexCoord(float phi, float theta)
+{
+	return float2((theta + PI) / (2.0 * PI), (phi + PI * 0.5) / PI);
+}
+
 void ComputeDirectionalLight(Material mat, DirectionalLight light, float3 N, float3 V, float3 F0, out float3 lo)
 {
 	float3 L = normalize(-light.Direction);

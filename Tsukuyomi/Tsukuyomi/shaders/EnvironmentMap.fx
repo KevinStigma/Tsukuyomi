@@ -60,7 +60,7 @@ float4 PS(VertexOut pin) : SV_Target
 	float theta = atan2(vec.z, vec.x);
 	float phi = asin(vec.y);
 
-	float2 tex_coord = float2((theta + PI) / (2.0 * PI), (phi + PI * 0.5) / PI);
+	float2 tex_coord = getSphericalMapTexCoord(phi, theta);
 	float3 color = gEnvironmentMap.Sample(samLinear, tex_coord, 0.0f).rgb;
 
 	color = color / (color + 1.0);
