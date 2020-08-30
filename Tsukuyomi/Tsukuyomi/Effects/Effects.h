@@ -254,6 +254,22 @@ public:
 };
 #pragma endregion
 
+#pragma region BakePreFilterEnvMapEffect
+class BakePreFilterEnvMapEffect : public Effect
+{
+public:
+	BakePreFilterEnvMapEffect(ID3D11Device* device, const std::wstring& filename);
+	~BakePreFilterEnvMapEffect();
+
+	void SetEnvironmentMap(ID3D11ShaderResourceView* srv) { environmentMap->SetResource(srv); }
+	void SetRoughness(float r) { roughness->SetFloat(r); }
+
+	ID3DX11EffectScalarVariable* roughness;
+	ID3DX11EffectTechnique* BakePreFileterEnvMapTech;
+	ID3DX11EffectShaderResourceVariable* environmentMap;
+};
+#pragma endregion
+
 
 #pragma region Effects
 class Effects
@@ -266,6 +282,7 @@ public:
 	static BuildShadowMapEffect* BuildShadowMapFX;
 	static BuildSSAOMapEffect* BuildSSAOMapFX;
 	static BakeIrradianceEffect* BakeIrradianceFX;
+	static BakePreFilterEnvMapEffect* BakePreFilterMapFX;
 	static BlurSSAOEffect* SSAOBlurFX;
 	static EnvMapEffect* EnvMapFX;
 	static DebugTexEffect* DebugTexFX;

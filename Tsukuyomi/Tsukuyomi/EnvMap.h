@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <string>
 #include <iostream>
 #include <windows.h>
@@ -16,7 +17,9 @@ public:
 	void createIrradianceMapResource(bool is_baking);
 	void renderEnvironmentMap(Camera*);
 	void bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer);
+	void bakePreFilterMap(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer);
 	void exportIrradianceMap();
+	void exportPreFilterEnvMaps();
 	ID3D11ShaderResourceView* environmentSRV2 = nullptr;
 	ID3D11ShaderResourceView* environmentSRV = nullptr;
 	ID3D11ShaderResourceView* irradianceSRV = nullptr;
@@ -24,16 +27,19 @@ protected:
 	static std::string genIrradianceMapPath(std::string);
 	void createBuffers();
 	void createEnvironmentMapSRV();
+	void createPreFilterMaps();
 	std::string             hdr_path;
 	std::string             ira_path;
 	D3D11_VIEWPORT          irradianceViewPort;
 	ID3D11Device*           device = nullptr;
 	ID3D11RenderTargetView* irradianceRTV = nullptr;
+	std::vector<std::pair<ID3D11ShaderResourceView*, ID3D11RenderTargetView*>> bakedPreFilterMaps;
 	ID3D11DeviceContext*    context = nullptr;
 	ID3D11Buffer*	        vertexBuffer = nullptr;
 	ID3D11Buffer*           indexBuffer = nullptr;
 	
 	int width=0, height=0, sphereIndexCount=0;
+	int max_mipmap_levels = 5;
 	float* data = nullptr;
 	RenderLightHelper::Material mat;
 };

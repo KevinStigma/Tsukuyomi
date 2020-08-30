@@ -43,6 +43,13 @@ EnvironmentMap::~EnvironmentMap()
 	SAFE_RELEASE(environmentSRV);
 	SAFE_RELEASE(irradianceSRV);
 	SAFE_RELEASE(irradianceRTV);
+	for (int i = 0; i < bakedPreFilterMaps.size(); i++)
+	{
+		SAFE_RELEASE(bakedPreFilterMaps[i].first);
+		SAFE_RELEASE(bakedPreFilterMaps[i].second);
+	}
+	bakedPreFilterMaps.clear();
+
 }
 
 void EnvironmentMap::createEnvironmentMapSRV()
@@ -71,10 +78,37 @@ void EnvironmentMap::createEnvironmentMapSRV()
 	HRESULT hr = device->CreateShaderResourceView(tex, 0, &environmentSRV);
 	ReleaseCOM(tex);
 
-
 	initData.SysMemPitch = width * sizeof(XMFLOAT3);
-
 	initData.pSysMem = data;
+}
+
+void EnvironmentMap::createPreFilterMaps()
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = 512;
+	texDesc.Height = 512;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+	
+	ID3D11Texture2D* tex = 0;
+	bakedPreFilterMaps.resize(max_mipmap_levels);
+
+	for(int i=0; i<max_mipmap_levels; i++)
+	{
+		texDesc.Width /= 2;
+		texDesc.Height /= 2;
+		device->CreateTexture2D(&texDesc, 0, &tex);
+		device->CreateShaderResourceView(tex, 0, &bakedPreFilterMaps[i].first);
+		device->CreateRenderTargetView(tex, 0, &bakedPreFilterMaps[i].second);
+		SAFE_RELEASE(tex);
+	}
 }
 
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)
@@ -200,6 +234,50 @@ void EnvironmentMap::bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer
 	}
 }
 
+void EnvironmentMap::bakePreFilterMap(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer)
+{
+	createPreFilterMaps();
+
+	for (int i = 0; i < max_mipmap_levels; i++)
+	{
+		BakePreFilterEnvMapEffect* bakeEffect = Effects::BakePreFilterMapFX;
+
+		ID3D11RenderTargetView* renderTargets[1] = { bakedPreFilterMaps[i].second };
+		context->OMSetRenderTargets(1, renderTargets, 0);
+		context->ClearRenderTargetView(bakedPreFilterMaps[i].second, reinterpret_cast<const float*>(&Colors::Black));
+		context->RSSetViewports(1, &irradianceViewPort);
+
+		ID3DX11EffectTechnique* tech = bakeEffect->BakePreFileterEnvMapTech;
+
+		UINT stride = sizeof(Basic32);
+		UINT offset = 0;
+
+		context->IASetInputLayout(InputLayouts::PosNorTex);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context->IASetVertexBuffers(0, 1, &quadVertexBuffer, &stride, &offset);
+		context->IASetIndexBuffer(quadIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		bakeEffect->SetEnvironmentMap(environmentSRV);
+		bakeEffect->SetRoughness((float)i / (float)(max_mipmap_levels - 1));
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		tech->GetDesc(&techDesc);
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			tech->GetPassByIndex(p)->Apply(0, context);
+			context->DrawIndexed(6, 0, 0);
+		}
+	}
+
+	exportPreFilterEnvMaps();
+	for (int i = 0; i < bakedPreFilterMaps.size(); i++)
+	{
+		SAFE_RELEASE(bakedPreFilterMaps[i].first);
+		SAFE_RELEASE(bakedPreFilterMaps[i].second);
+	}
+	bakedPreFilterMaps.clear();
+}
+
 void EnvironmentMap::exportIrradianceMap()
 {
 	ID3D11Resource* res = nullptr;
@@ -241,6 +319,11 @@ void EnvironmentMap::exportIrradianceMap()
 	SAFE_RELEASE(res);
 	SAFE_RELEASE(tex);
 	SAFE_RELEASE(copy_tex);
+}
+
+void EnvironmentMap::exportPreFilterEnvMaps()
+{
+
 }
 
 void EnvironmentMap::createBuffers()

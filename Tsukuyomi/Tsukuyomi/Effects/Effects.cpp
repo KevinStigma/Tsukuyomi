@@ -193,6 +193,20 @@ BakeIrradianceEffect::~BakeIrradianceEffect()
 }
 #pragma endregion
 
+#pragma region BakePreFilterEnvMapEffect
+BakePreFilterEnvMapEffect::BakePreFilterEnvMapEffect(ID3D11Device* device, const std::wstring& filename) :Effect(device, filename)
+{
+	BakePreFileterEnvMapTech = mFX->GetTechniqueByName("BakePreFileterEnvMapTechnique");
+	environmentMap = mFX->GetVariableByName("gEnvironmentMap")->AsShaderResource();
+	roughness = mFX->GetVariableByName("gRoughness")->AsScalar();
+}
+
+BakePreFilterEnvMapEffect::~BakePreFilterEnvMapEffect()
+{
+
+}
+#pragma endregion
+
 #pragma region Effects
 
 BasicEffect* Effects::BasicFX = 0;
@@ -203,6 +217,7 @@ DebugTexEffect* Effects::DebugTexFX = 0;
 BuildNormalDepthMapEffect* Effects::BuildNormalDepthMapFX = 0;
 EnvMapEffect* Effects::EnvMapFX = 0;
 BakeIrradianceEffect* Effects::BakeIrradianceFX = 0;
+BakePreFilterEnvMapEffect* Effects::BakePreFilterMapFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -214,6 +229,7 @@ void Effects::InitAll(ID3D11Device* device)
 	BuildNormalDepthMapFX = new BuildNormalDepthMapEffect(device, L"./shaders/BuildNormalDepthMap.fx");
 	EnvMapFX = new EnvMapEffect(device, L"./shaders/EnvironmentMap.fx");
 	BakeIrradianceFX = new BakeIrradianceEffect(device, L"./shaders/BakeIrradiance.fx");
+	BakePreFilterMapFX = new BakePreFilterEnvMapEffect(device, L"./shaders/BakePreFilterEnvMap.fx");
 }
 
 void Effects::DestroyAll()
@@ -226,5 +242,6 @@ void Effects::DestroyAll()
 	SAFE_DELETE(BuildNormalDepthMapFX);
 	SAFE_DELETE(EnvMapFX);
 	SAFE_DELETE(BakeIrradianceFX);
+	SAFE_DELETE(BakePreFilterMapFX);
 }
 #pragma endregion

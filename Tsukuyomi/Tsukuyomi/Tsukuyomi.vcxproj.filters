@@ -421,5 +421,8 @@
     <FxCompile Include="shaders\BakeIrradiance.fx">
       <Filter>shaders</Filter>
     </FxCompile>
+    <FxCompile Include="shaders\BakePreFilterEnvMap.fx">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

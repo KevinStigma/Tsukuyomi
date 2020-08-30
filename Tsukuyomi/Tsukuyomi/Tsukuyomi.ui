@@ -882,7 +882,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -917,6 +917,7 @@
     </property>
     <addaction name="actionScreenShot"/>
     <addaction name="actionBack_Irradiance"/>
+    <addaction name="actionBake_PreFilterEnvMpas"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menuObjects"/>
@@ -1032,6 +1033,11 @@
   <action name="actionBack_Irradiance">
    <property name="text">
     <string>Back Irradiance</string>
+   </property>
+  </action>
+  <action name="actionBake_PreFilterEnvMpas">
+   <property name="text">
+    <string>Bake PreFilterEnvMaps</string>
    </property>
   </action>
  </widget>

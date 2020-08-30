@@ -69,6 +69,11 @@ void Tsukuyomi::on_actionBack_Irradiance_triggered()
 	g_pGlobalSys->renderer->bakeIrradiance();
 }
 
+void Tsukuyomi::on_actionBake_PreFilterEnvMpas_triggered()
+{
+
+}
+
 void Tsukuyomi::on_actionSave_Project_triggered()
 {
 	QString name = QFileDialog::getSaveFileName(this, tr("Export Project"), "./Data/Projects", "xml files(*.xml)", 0);

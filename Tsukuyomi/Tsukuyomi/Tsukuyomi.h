@@ -20,6 +20,7 @@ public slots:
 	void on_actionLoad_Project_triggered();
 	void on_actionLoadEnvMap_triggered();
 	void on_actionBack_Irradiance_triggered();
+	void on_actionBake_PreFilterEnvMpas_triggered();
 	void on_actionSave_Project_triggered();
 	void on_actionClear_Scene_triggered();
 	void on_actionScreenShot_triggered();
