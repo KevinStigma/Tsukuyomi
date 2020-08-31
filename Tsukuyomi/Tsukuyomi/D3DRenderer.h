@@ -47,6 +47,7 @@ public:
 	void buildShadowTransform();
 	float computeFPS();
 	void bakeIrradiance();
+	void bakePreFilterMaps();
 	XMMATRIX getTexTransformMat() { return XMLoadFloat4x4(&TexTransformMat); }
 	ShadowTransform getShadowMapTransform() { return m_shadowTransform; }
 	

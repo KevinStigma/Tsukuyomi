@@ -43,13 +43,7 @@ EnvironmentMap::~EnvironmentMap()
 	SAFE_RELEASE(environmentSRV);
 	SAFE_RELEASE(irradianceSRV);
 	SAFE_RELEASE(irradianceRTV);
-	for (int i = 0; i < bakedPreFilterMaps.size(); i++)
-	{
-		SAFE_RELEASE(bakedPreFilterMaps[i].first);
-		SAFE_RELEASE(bakedPreFilterMaps[i].second);
-	}
-	bakedPreFilterMaps.clear();
-
+	clearBakedPreFilterMaps();
 }
 
 void EnvironmentMap::createEnvironmentMapSRV()
@@ -89,7 +83,7 @@ void EnvironmentMap::createPreFilterMaps()
 	texDesc.Height = 512;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
-	texDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -109,6 +103,23 @@ void EnvironmentMap::createPreFilterMaps()
 		device->CreateRenderTargetView(tex, 0, &bakedPreFilterMaps[i].second);
 		SAFE_RELEASE(tex);
 	}
+
+	preFilterMapsViewPort.TopLeftX = 0.0f;
+	preFilterMapsViewPort.TopLeftY = 0.0f;
+	preFilterMapsViewPort.Width = texDesc.Width;
+	preFilterMapsViewPort.Height = texDesc.Height;
+	preFilterMapsViewPort.MinDepth = 0.0f;
+	preFilterMapsViewPort.MaxDepth = 1.0f;
+}
+
+void EnvironmentMap::clearBakedPreFilterMaps()
+{
+	for (int i = 0; i < bakedPreFilterMaps.size(); i++)
+	{
+		SAFE_RELEASE(bakedPreFilterMaps[i].first);
+		SAFE_RELEASE(bakedPreFilterMaps[i].second);
+	}
+	bakedPreFilterMaps.clear();
 }
 
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)
@@ -238,14 +249,27 @@ void EnvironmentMap::bakePreFilterMap(ID3D11Buffer* quadVertexBuffer, ID3D11Buff
 {
 	createPreFilterMaps();
 
+	ID3D11Resource* res = nullptr;
+	ID3D11Texture2D* tex = nullptr;
+
 	for (int i = 0; i < max_mipmap_levels; i++)
 	{
 		BakePreFilterEnvMapEffect* bakeEffect = Effects::BakePreFilterMapFX;
 
+		auto preFilterSRV = bakedPreFilterMaps[i].first;
+		preFilterSRV->GetResource(&res);
+
+		res->QueryInterface(&tex);
+		D3D11_TEXTURE2D_DESC desc;
+		tex->GetDesc(&desc);
+
+		preFilterMapsViewPort.Width = desc.Width;
+		preFilterMapsViewPort.Height = desc.Height;
+
 		ID3D11RenderTargetView* renderTargets[1] = { bakedPreFilterMaps[i].second };
 		context->OMSetRenderTargets(1, renderTargets, 0);
 		context->ClearRenderTargetView(bakedPreFilterMaps[i].second, reinterpret_cast<const float*>(&Colors::Black));
-		context->RSSetViewports(1, &irradianceViewPort);
+		context->RSSetViewports(1, &preFilterMapsViewPort);
 
 		ID3DX11EffectTechnique* tech = bakeEffect->BakePreFileterEnvMapTech;
 
@@ -268,14 +292,8 @@ void EnvironmentMap::bakePreFilterMap(ID3D11Buffer* quadVertexBuffer, ID3D11Buff
 			context->DrawIndexed(6, 0, 0);
 		}
 	}
-
 	exportPreFilterEnvMaps();
-	for (int i = 0; i < bakedPreFilterMaps.size(); i++)
-	{
-		SAFE_RELEASE(bakedPreFilterMaps[i].first);
-		SAFE_RELEASE(bakedPreFilterMaps[i].second);
-	}
-	bakedPreFilterMaps.clear();
+	clearBakedPreFilterMaps();
 }
 
 void EnvironmentMap::exportIrradianceMap()
@@ -314,7 +332,9 @@ void EnvironmentMap::exportIrradianceMap()
 
 	context->Unmap(copy_tex, 0);
 	
-	stbi_write_hdr(ira_path.c_str(), desc.Width, desc.Height, 3, img_data);
+	int r = stbi_write_hdr(ira_path.c_str(), desc.Width, desc.Height, 3, img_data);
+	if(r)
+		std::cout << "export irradiance map:" << ira_path << std::endl;
 	SAFE_DELETE(img_data);
 	SAFE_RELEASE(res);
 	SAFE_RELEASE(tex);
@@ -323,7 +343,53 @@ void EnvironmentMap::exportIrradianceMap()
 
 void EnvironmentMap::exportPreFilterEnvMaps()
 {
+	ID3D11Resource* res = nullptr;
+	ID3D11Texture2D* tex = nullptr;
+	std::string path = "";
 
+	for (int i = 0; i < max_mipmap_levels; i++)
+	{
+		auto preFilterSRV = bakedPreFilterMaps[i].first;
+		preFilterSRV->GetResource(&res);
+
+		res->QueryInterface(&tex);
+		D3D11_TEXTURE2D_DESC desc;
+		tex->GetDesc(&desc);
+
+		ID3D11Texture2D* copy_tex;
+		desc.Usage = D3D11_USAGE_STAGING;
+		desc.BindFlags = 0;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		device->CreateTexture2D(&desc, 0, &copy_tex);
+		context->CopyResource(copy_tex, res);
+
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		context->Map(copy_tex, 0, D3D11_MAP_READ, 0, &mappedResource);
+
+		int index;
+		float*img_data = new float[desc.Width * desc.Height * 3];
+		char* begin_data = reinterpret_cast<char*>(mappedResource.pData);
+		for (int i = 0; i < desc.Height; i++)
+			for (int j = 0; j < desc.Width; j++)
+			{
+				int y = desc.Height - 1 - i;
+				index = y * desc.Width + j;
+				img_data[index * 3] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16);
+				img_data[index * 3 + 1] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 4);
+				img_data[index * 3 + 2] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 8);
+			}
+
+		context->Unmap(copy_tex, 0);
+		path = "./Data/PreFilterEnvMaps/" + std::to_string(i) + ".hdr";
+		int r = stbi_write_hdr(path.c_str(), desc.Width, desc.Height, 3, img_data);
+
+		if (r)
+			std::cout << "export pre filter environment map:" << path << std::endl;
+
+		SAFE_DELETE(img_data);
+		SAFE_RELEASE(tex);
+		SAFE_RELEASE(copy_tex);
+	}
 }
 
 void EnvironmentMap::createBuffers()

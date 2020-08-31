@@ -71,7 +71,7 @@ void Tsukuyomi::on_actionBack_Irradiance_triggered()
 
 void Tsukuyomi::on_actionBake_PreFilterEnvMpas_triggered()
 {
-
+	g_pGlobalSys->renderer->bakePreFilterMaps();
 }
 
 void Tsukuyomi::on_actionSave_Project_triggered()

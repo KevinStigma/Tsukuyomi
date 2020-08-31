@@ -481,7 +481,7 @@ void D3DRenderer::renderDebugTex()
 	else if (g_pGlobalSys->objectManager.getCurSelShadowLight())
 		debugTexEffect->SetDebugTex(shadowMap->DepthMapSRV());
 	else
-		debugTexEffect->SetDebugTex(g_pGlobalSys->objectManager.getEnvironmentMap()->irradianceSRV);
+		debugTexEffect->SetDebugTex(g_pGlobalSys->objectManager.getEnvironmentMap()->bakedPreFilterMaps[0].first);
 
 	ID3DX11EffectTechnique* activeTech = debugTexEffect->DebugTexTech;
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -658,6 +658,13 @@ void D3DRenderer::bakeIrradiance()
 		env_map->bakeIrradiance(m_pQuadVertexBuffer, m_pQuadIndexBuffer);
 		env_map->exportIrradianceMap();
 	}
+}
+
+void D3DRenderer::bakePreFilterMaps()
+{
+	EnvironmentMap* env_map = g_pGlobalSys->objectManager.getEnvironmentMap();
+	if (env_map)
+		env_map->bakePreFilterMap(m_pQuadVertexBuffer, m_pQuadIndexBuffer);
 }
 
 void D3DRenderer::buildShadowTransform()
