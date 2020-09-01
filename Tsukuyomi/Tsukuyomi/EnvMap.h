@@ -21,6 +21,7 @@ public:
 	void bakePreFilterMap(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer);
 	void exportIrradianceMap();
 	void exportPreFilterEnvMaps();
+	std::string getEnvrionmentMap() { return hdr_path; }
 	ID3D11ShaderResourceView* environmentSRV2 = nullptr;
 	ID3D11ShaderResourceView* environmentSRV = nullptr;
 	ID3D11ShaderResourceView* irradianceSRV = nullptr;

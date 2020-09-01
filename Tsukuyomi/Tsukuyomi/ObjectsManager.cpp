@@ -148,6 +148,8 @@ Object* ObjectManager::getObjectFromName(std::string name)
 
 void ObjectManager::loadEnvMap(std::string path)
 {
+	if (!path.size())
+		return;
 	environmentMap = new EnvironmentMap(path, g_pGlobalSys->renderer->getDevice(), g_pGlobalSys->renderer->getContext());
 }
 
@@ -231,6 +233,7 @@ void ObjectManager::exportProject(std::string file_path)
 	using namespace tinyxml2;
 	tinyxml2::XMLDocument doc;
 	XMLElement* parent = doc.NewElement("TsukuyomiProject");
+	parent->SetAttribute("EnvMap", environmentMap? environmentMap->getEnvrionmentMap().c_str():"");
 	doc.InsertFirstChild(parent);
 	for (auto iter = objects.begin(); iter != objects.end(); iter++)
 	{
@@ -343,6 +346,11 @@ void ObjectManager::updateFromProject(std::string file_path)
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(file_path.c_str());
 	XMLElement* parent = doc.FirstChildElement("TsukuyomiProject");
+
+	std::string env_map_path = "";
+	if(parent->FindAttribute("EnvMap"))
+		env_map_path = parent->Attribute("EnvMap");
+
 	XMLElement * obj_node = parent->FirstChildElement();
 	std::vector<std::string> strs;
 	for (XMLElement*express = obj_node; express; express = express->NextSiblingElement())
@@ -414,6 +422,7 @@ void ObjectManager::updateFromProject(std::string file_path)
 			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color, &materials);
 		}
 	}
+	loadEnvMap(env_map_path);
 	bvhManager.generateBoundingVolumeHieratchies();
 }
 

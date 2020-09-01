@@ -72,11 +72,6 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 		activeTech = basicEffect->CustomLightTech;
 
 	basicEffect->SetIsLight(bool(area_light));
-
-	EnvironmentMap* env_map = g_pGlobalSys->objectManager.getEnvironmentMap();
-	basicEffect->SetIrradianceMap(env_map&&env_map->irradianceSRV? env_map->irradianceSRV : nullptr);
-	basicEffect->SetBrdfLutMap(env_map&&env_map->brdfLUTSRV ? env_map->brdfLUTSRV : nullptr);
-	basicEffect->SetPreFilterEnvMap(env_map&&env_map->preFileterSRV ? env_map->preFileterSRV : nullptr);
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 

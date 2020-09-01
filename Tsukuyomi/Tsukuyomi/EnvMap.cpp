@@ -4,6 +4,8 @@
 #include "Effects\Effects.h"
 #include "Objects\Camera.h"
 #include <QFileInfo>
+#include <qdir.h>
+#include <qcoreapplication.h>
 #include <DDSTextureLoader.h>
 #include <GeometryGenerator\GeometryGenerator.h>
 
@@ -19,6 +21,8 @@
 
 EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceContext* dc): device(d), context(dc)
 {
+	QDir f(QDir::currentPath());
+	hdr_path =  f.relativeFilePath(path.c_str()).toStdString();
 	stbi_set_flip_vertically_on_load(true);
 	int nrComponents;
 	data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
@@ -30,7 +34,6 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 	mat.metallic = 0.0;
 	mat.roughness = 1.0;
 
-	hdr_path = path;
 	ira_path = EnvironmentMap::genIrradianceMapPath(path);
 	pre_filter_path = EnvironmentMap::genPreFilterMapPath(path);
 	createIrradianceMapResource(false);
