@@ -409,6 +409,13 @@ void D3DRenderer::renderScene()
 		Effects::BasicFX->SetShadowMap(shadowMap->DepthMapSRV());
 	if (g_pGlobalSys->render_paras.enableSSAO)
 		Effects::BasicFX->SetSSAOMap(ssaoMap->getSSAOMapSRV());
+
+	EnvironmentMap* env_map = g_pGlobalSys->objectManager.getEnvironmentMap();
+
+	Effects::BasicFX->SetIrradianceMap(env_map&&env_map->irradianceSRV ? env_map->irradianceSRV : nullptr);
+	Effects::BasicFX->SetBrdfLutMap(env_map&&env_map->brdfLUTSRV ? env_map->brdfLUTSRV : nullptr);
+	Effects::BasicFX->SetPreFilterEnvMap(env_map&&env_map->preFileterSRV ? env_map->preFileterSRV : nullptr);
+
 	g_pGlobalSys->objectManager.renderAllObjects(m_pImmediateContext, this);
 
 
@@ -480,8 +487,8 @@ void D3DRenderer::renderDebugTex()
 		debugTexEffect->SetDebugTex(ssaoMap->getSSAOMapSRV());
 	else if (g_pGlobalSys->objectManager.getCurSelShadowLight())
 		debugTexEffect->SetDebugTex(shadowMap->DepthMapSRV());
-	else
-		debugTexEffect->SetDebugTex(g_pGlobalSys->objectManager.getEnvironmentMap()->bakedPreFilterMaps[0].first);
+	else if (g_pGlobalSys->objectManager.getEnvironmentMap())
+		debugTexEffect->SetDebugTex(g_pGlobalSys->objectManager.getEnvironmentMap()->environmentSRV);
 
 	ID3DX11EffectTechnique* activeTech = debugTexEffect->DebugTexTech;
 	D3DX11_TECHNIQUE_DESC techDesc;

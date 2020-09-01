@@ -167,7 +167,7 @@ float4 CustomPS(VertexOut pin,
 	float3 diffuse = irradiance * gMaterial.albedo;
 
 	const float MAX_REFLECTION_LOD = 4.0;
-	float3 prefilteredColor = gPrefilterEnvMap.Sample(samLinear, getSphericalMapTexCoordFromVec(R), 0.0).rgb;
+	float3 prefilteredColor = gPrefilterEnvMap.SampleLevel(samLinear, getSphericalMapTexCoordFromVec(R), MAX_REFLECTION_LOD * gMaterial.roughness).rgb;
 	float2 brdf = gBrdfLutMap.Sample(samLinear, float2(max(dot(pin.NormalW, V), 0.0), gMaterial.roughness), 0.0f).rg;
 	float3 specular = prefilteredColor * (ks * brdf.x + brdf.y);
 

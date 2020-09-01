@@ -38,7 +38,7 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-	float3 color = gDebugTex.SampleLevel(samLinear, pin.Tex.xy, 0.0f).rgb;
+	float3 color = gDebugTex.SampleLevel(samLinear, pin.Tex.xy, 0.0).rgb;
 	return float4(color, 1.0);
 }
 

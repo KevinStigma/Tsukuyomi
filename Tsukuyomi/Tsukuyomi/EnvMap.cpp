@@ -400,8 +400,7 @@ void EnvironmentMap::exportPreFilterEnvMaps()
 		for (int i = 0; i < desc.Height; i++)
 			for (int j = 0; j < desc.Width; j++)
 			{
-				int y = desc.Height - 1 - i;
-				index = y * desc.Width + j;
+				index = i * desc.Width + j;
 				img_data[index * 3] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16);
 				img_data[index * 3 + 1] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 4);
 				img_data[index * 3 + 2] = *reinterpret_cast<float*>(begin_data + i * mappedResource.RowPitch + j * 16 + 8);
