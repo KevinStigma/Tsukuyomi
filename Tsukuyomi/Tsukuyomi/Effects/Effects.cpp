@@ -48,6 +48,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	ShadowMap		  = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
 	SSAOMap           = mFX->GetVariableByName("gSSAOMap")->AsShaderResource();
 	IrradianceMap     = mFX->GetVariableByName("gIrradianceMap")->AsShaderResource();
+	PrefilterEnvMap   = mFX->GetVariableByName("gPrefilterEnvMap")->AsShaderResource();
+	BrdfLutMap        = mFX->GetVariableByName("gBrdfLutMap")->AsShaderResource();
 
 	ShadowTransform   = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
 	TexTransform	  = mFX->GetVariableByName("gTexTransform")->AsMatrix();

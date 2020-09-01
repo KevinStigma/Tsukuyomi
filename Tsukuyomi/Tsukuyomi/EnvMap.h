@@ -14,6 +14,7 @@ public:
 	EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceContext* dc);
 	~EnvironmentMap();
 
+	void createPreFilterEnvironmentMapResource();
 	void createIrradianceMapResource(bool is_baking);
 	void renderEnvironmentMap(Camera*);
 	void bakeIrradiance(ID3D11Buffer* quadVertexBuffer, ID3D11Buffer* quadIndexBuffer);
@@ -23,9 +24,12 @@ public:
 	ID3D11ShaderResourceView* environmentSRV2 = nullptr;
 	ID3D11ShaderResourceView* environmentSRV = nullptr;
 	ID3D11ShaderResourceView* irradianceSRV = nullptr;
+	ID3D11ShaderResourceView* preFileterSRV = nullptr;
+	ID3D11ShaderResourceView* brdfLUTSRV = nullptr;
 	std::vector<std::pair<ID3D11ShaderResourceView*, ID3D11RenderTargetView*>> bakedPreFilterMaps;
 protected:
 	static std::string genIrradianceMapPath(std::string);
+	static std::string genPreFilterMapPath(std::string);
 	void createBuffers();
 	void createEnvironmentMapSRV();
 	void createPreFilterMaps();
@@ -33,6 +37,7 @@ protected:
 
 	std::string             hdr_path;
 	std::string             ira_path;
+	std::string             pre_filter_path;
 	D3D11_VIEWPORT          irradianceViewPort;
 	D3D11_VIEWPORT          preFilterMapsViewPort;
 	ID3D11Device*           device = nullptr;

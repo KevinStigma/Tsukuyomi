@@ -32,6 +32,8 @@ Texture2D gDiffuseMap;
 Texture2D gShadowMap;
 Texture2D gSSAOMap;
 Texture2D gIrradianceMap;
+Texture2D gPrefilterEnvMap;
+Texture2D gBrdfLutMap;
 
 SamplerState samLinear
 {
@@ -138,6 +140,8 @@ float4 CustomPS(VertexOut pin,
 	// Normalize.
 	V = normalize(V);
 
+	float3 R = normalize(reflect(-V, pin.NormalW));
+
 	float3 F0 = float3(0.04, 0.04, 0.04);
 	F0 = lerp(F0, gMaterial.albedo, gMaterial.metallic);
 
@@ -154,14 +158,20 @@ float4 CustomPS(VertexOut pin,
 		ambient_weight = gSSAOMap.Sample(samLinear, pin.SSAOPosH.xy, 0.0f).r;
 	}
 
-
 	float theta = atan2(pin.NormalW.z, pin.NormalW.x);
 	float phi = asin(pin.NormalW.y);
 
 	float3 ks = fresnelSchlickRoughness(max(dot(pin.NormalW, V), 0.0), F0, gMaterial.roughness);
 	float3 kd = (1.0 - ks) * (1.0 - gMaterial.metallic);
 	float3 irradiance = gIrradianceMap.Sample(samLinear, getSphericalMapTexCoord(phi, theta), 0.0f).rgb;
-	float3 ambient = irradiance * gMaterial.albedo * kd * ambient_weight;
+	float3 diffuse = irradiance * gMaterial.albedo;
+
+	const float MAX_REFLECTION_LOD = 4.0;
+	float3 prefilteredColor = gPrefilterEnvMap.Sample(samLinear, getSphericalMapTexCoordFromVec(R), 0.0).rgb;
+	float2 brdf = gBrdfLutMap.Sample(samLinear, float2(max(dot(pin.NormalW, V), 0.0), gMaterial.roughness), 0.0f).rg;
+	float3 specular = prefilteredColor * (ks * brdf.x + brdf.y);
+
+	float3 ambient = (kd * diffuse + specular)* ambient_weight;
 
 	if(length(irradiance) < 1e-6)
 		ambient = gMaterial.albedo * 0.03 * ambient_weight;

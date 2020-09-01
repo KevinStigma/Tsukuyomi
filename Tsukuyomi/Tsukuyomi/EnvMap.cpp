@@ -4,6 +4,7 @@
 #include "Effects\Effects.h"
 #include "Objects\Camera.h"
 #include <QFileInfo>
+#include <DDSTextureLoader.h>
 #include <GeometryGenerator\GeometryGenerator.h>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -31,7 +32,11 @@ EnvironmentMap::EnvironmentMap(std::string path, ID3D11Device* d, ID3D11DeviceCo
 
 	hdr_path = path;
 	ira_path = EnvironmentMap::genIrradianceMapPath(path);
+	pre_filter_path = EnvironmentMap::genPreFilterMapPath(path);
 	createIrradianceMapResource(false);
+	createPreFilterEnvironmentMapResource();
+
+	CreateDDSTextureFromFile(device, L"./Data/ibl_brdf_lut.dds", nullptr, &brdfLUTSRV);
 }
 
 EnvironmentMap::~EnvironmentMap()
@@ -43,6 +48,8 @@ EnvironmentMap::~EnvironmentMap()
 	SAFE_RELEASE(environmentSRV);
 	SAFE_RELEASE(irradianceSRV);
 	SAFE_RELEASE(irradianceRTV);
+	SAFE_RELEASE(preFileterSRV);
+	SAFE_RELEASE(brdfLUTSRV);
 	clearBakedPreFilterMaps();
 }
 
@@ -120,6 +127,27 @@ void EnvironmentMap::clearBakedPreFilterMaps()
 		SAFE_RELEASE(bakedPreFilterMaps[i].second);
 	}
 	bakedPreFilterMaps.clear();
+}
+
+void EnvironmentMap::createPreFilterEnvironmentMapResource()
+{
+	QFileInfo f(pre_filter_path.c_str());
+	if (!f.isFile())
+		return;
+
+	wchar_t * w_file_name = new wchar_t[pre_filter_path.size() + 2];
+	wmemset(w_file_name, 0, pre_filter_path.size() + 2);
+	MultiByteToWideChar(CP_ACP, 0, pre_filter_path.c_str(), pre_filter_path.size(), w_file_name, pre_filter_path.size());
+
+	auto hr = CreateDDSTextureFromFile(device, w_file_name, nullptr, &preFileterSRV);
+	SAFE_DELETE(w_file_name);
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr, L"create pre filter map failed!", L"error", MB_OK);
+		return;
+	}
+
+
 }
 
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)
@@ -438,4 +466,13 @@ std::string EnvironmentMap::genIrradianceMapPath(std::string path)
 	int dot_index = path.rfind('.');
 	int underline_index = path.rfind('_');
 	return path.replace(path.begin() + underline_index +1 , path.begin() + dot_index, "Env");
+}
+
+std::string EnvironmentMap::genPreFilterMapPath(std::string path)
+{
+	std::vector<std::string> prefilter_path;
+	int dot_index = path.rfind('.');
+	int underline_index = path.rfind('_');
+	path = path.replace(path.begin() + dot_index, path.end(), ".dds");
+	return path.replace(path.begin() + underline_index + 1, path.begin() + dot_index, "PreFilter");
 }

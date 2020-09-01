@@ -45,6 +45,8 @@ public:
 	void SetShadowMap(ID3D11ShaderResourceView* tex)		{ ShadowMap->SetResource(tex); }
 	void SetSSAOMap(ID3D11ShaderResourceView* sm)           { SSAOMap->SetResource(sm); }
 	void SetIrradianceMap(ID3D11ShaderResourceView* im)     { IrradianceMap->SetResource(im); }
+	void SetPreFilterEnvMap(ID3D11ShaderResourceView* im)   { PrefilterEnvMap->SetResource(im); }
+	void SetBrdfLutMap(ID3D11ShaderResourceView* im)        { BrdfLutMap->SetResource(im); }
 	void SetIsLight(bool v)									{ isLight->SetBool(v); }
 
 	void SetFogColor(const FXMVECTOR v)                 { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
@@ -87,6 +89,8 @@ public:
 	ID3DX11EffectShaderResourceVariable* ShadowMap;
 	ID3DX11EffectShaderResourceVariable* SSAOMap;
 	ID3DX11EffectShaderResourceVariable* IrradianceMap;
+	ID3DX11EffectShaderResourceVariable* PrefilterEnvMap;
+	ID3DX11EffectShaderResourceVariable* BrdfLutMap;
 };
 #pragma endregion
 
