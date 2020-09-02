@@ -1,6 +1,7 @@
 #include "common.h"
 #include "time.h"
 #include "string.h"
+#include <Windows.h>
 
 char table[] = { '1','2','3','4','5','6','7','8','9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
@@ -64,4 +65,32 @@ std::string generateRandomId(int len)
 float generateRandomFloat()
 {
 	return rand() / double(RAND_MAX);
+}
+
+std::wstring string2wstring(std::string str)
+{
+	std::wstring result;
+	int len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), NULL, 0);
+	TCHAR* buffer = new TCHAR[len + 1];
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), buffer, len);
+	buffer[len] = '\0';  
+
+	result.append(buffer);
+	delete[] buffer;
+	return result;
+}
+
+std::string wstring2string(std::wstring wstr)
+{
+	std::string result;
+	
+	int len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), NULL, 0, NULL, NULL);
+	char* buffer = new char[len + 1];
+	
+	WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), buffer, len, NULL, NULL);
+	buffer[len] = '\0';
+	
+	result.append(buffer);
+	delete[] buffer;
+	return result;
 }

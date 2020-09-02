@@ -138,19 +138,14 @@ void EnvironmentMap::createPreFilterEnvironmentMapResource()
 	if (!f.isFile())
 		return;
 
-	wchar_t * w_file_name = new wchar_t[pre_filter_path.size() + 2];
-	wmemset(w_file_name, 0, pre_filter_path.size() + 2);
-	MultiByteToWideChar(CP_ACP, 0, pre_filter_path.c_str(), pre_filter_path.size(), w_file_name, pre_filter_path.size());
-
-	auto hr = CreateDDSTextureFromFile(device, w_file_name, nullptr, &preFileterSRV);
-	SAFE_DELETE(w_file_name);
+	std::wstring w_file_name = string2wstring(pre_filter_path);
+	auto hr = CreateDDSTextureFromFile(device, w_file_name.c_str(), nullptr, &preFileterSRV);
+	
 	if (FAILED(hr))
 	{
 		MessageBox(nullptr, L"create pre filter map failed!", L"error", MB_OK);
 		return;
 	}
-
-
 }
 
 void EnvironmentMap::createIrradianceMapResource(bool is_baking)

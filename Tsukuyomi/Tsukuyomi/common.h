@@ -23,6 +23,8 @@ extern XMFLOAT4 transEulerAnglesToQuaternions(XMFLOAT3 angles);
 extern XMFLOAT3 transQuaternionsToEulerAngles(XMFLOAT4 quat);
 extern std::string generateRandomId(int len=12);
 extern float generateRandomFloat();
+extern std::wstring string2wstring(std::string str);
+extern std::string wstring2string(std::wstring wstr);
 
 template <class Type>
 Type stringToNum(const std::string& str)
