@@ -11,10 +11,8 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 {
 	ui.setupUi(this);
 	g_pGlobalSys = new GlobalSys;
-	g_pGlobalSys->objectManager.setListView(ui.objectsListView);
+	g_pGlobalSys->objectManager.setTreeWidget(ui.objsTreeWidget);
 	ui.propertyWidget->init();
-	ui.objectsListView->setPropertyWidget(ui.propertyWidget);
-	g_pGlobalSys->objectsList = ui.objectsListView;
 	g_pGlobalSys->renderWidget = ui.render_widget;
 	g_pGlobalSys->moveSpeedSlider = ui.moveSpeedSlider;
 	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
@@ -25,9 +23,6 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 
 Tsukuyomi::~Tsukuyomi()
 {
-	g_pGlobalSys->objectManager.setListView(nullptr);
-	ui.objectsListView->setPropertyWidget(nullptr);
-	g_pGlobalSys->objectsList = nullptr;
 	g_pGlobalSys->renderWidget = nullptr;
 	g_pGlobalSys->moveSpeedSlider = nullptr;
 	g_pGlobalSys->objectPropertyWidget = nullptr;
@@ -267,8 +262,9 @@ void Tsukuyomi::on_targetCamButton_clicked()
 
 void Tsukuyomi::on_resetViewButton_clicked()
 {
-	if (ui.objectsListView->isEditing)
+	/*if (ui.objectsListView->isEditing)
 		return;
+		*/
 	Camera& camera = ui.render_widget->getRenderer()->getCamera();
 	camera.init();
 }

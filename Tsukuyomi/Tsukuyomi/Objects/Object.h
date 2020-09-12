@@ -66,8 +66,9 @@ public:
 	std::string getTranslationText();
 	std::string getScaleText();
 	std::string getRotationText();
+	std::unordered_map<std::string, Object*> getChilds() { return childs; }
 	Object* getParent() { return parent; }
-	void setParent(Object* p) { parent = p; }
+	void setParent(Object* p);
 	virtual const BoundingBox & getBoundingBox() { return boundingBox; }
 	virtual void genereateWorldMatrix();
 	XMMATRIX getWorldMatrix() { return world_mat; }
@@ -84,6 +85,7 @@ public:
 	bool is_intersect_bounding_box(const Ray&ray);
 protected:
 	Object* parent = nullptr;
+	std::unordered_map<std::string, Object*> childs;
 	std::string name;
 	ObjectType type;
 	BoundingBox boundingBox;

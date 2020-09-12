@@ -27,9 +27,9 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QWidget>
 #include "objectpropertywidget.h"
-#include "objectslistwidget.h"
 #include "renderwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ public:
     QAction *actionBake_PreFilterEnvMpas;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
-    ObjectsListWidget *objectsListView;
+    QTreeWidget *objsTreeWidget;
     RenderWidget *render_widget;
     QTabWidget *tabWidget;
     QWidget *tab_3;
@@ -173,17 +173,17 @@ public:
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        objectsListView = new ObjectsListWidget(centralWidget);
-        objectsListView->setObjectName(QStringLiteral("objectsListView"));
+        objsTreeWidget = new QTreeWidget(centralWidget);
+        objsTreeWidget->setObjectName(QStringLiteral("objsTreeWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(objectsListView->sizePolicy().hasHeightForWidth());
-        objectsListView->setSizePolicy(sizePolicy1);
-        objectsListView->setMinimumSize(QSize(160, 0));
-        objectsListView->setMaximumSize(QSize(200, 16777215));
+        sizePolicy1.setHeightForWidth(objsTreeWidget->sizePolicy().hasHeightForWidth());
+        objsTreeWidget->setSizePolicy(sizePolicy1);
+        objsTreeWidget->setLineWidth(1);
+        objsTreeWidget->setColumnCount(1);
 
-        horizontalLayout->addWidget(objectsListView);
+        horizontalLayout->addWidget(objsTreeWidget);
 
         render_widget = new RenderWidget(centralWidget);
         render_widget->setObjectName(QStringLiteral("render_widget"));
@@ -389,7 +389,7 @@ public:
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1200, 26));
+        menuBar->setGeometry(QRect(0, 0, 1200, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menuObjects = new QMenu(menuBar);
@@ -455,6 +455,8 @@ public:
         actionLoadEnvMap->setText(QApplication::translate("TsukuyomiClass", "Load EnvMap", Q_NULLPTR));
         actionBack_Irradiance->setText(QApplication::translate("TsukuyomiClass", "Back Irradiance", Q_NULLPTR));
         actionBake_PreFilterEnvMpas->setText(QApplication::translate("TsukuyomiClass", "Bake PreFilterEnvMaps", Q_NULLPTR));
+        QTreeWidgetItem *___qtreewidgetitem = objsTreeWidget->headerItem();
+        ___qtreewidgetitem->setText(0, QApplication::translate("TsukuyomiClass", "scene", Q_NULLPTR));
         label_4->setText(QApplication::translate("TsukuyomiClass", "Move speed", Q_NULLPTR));
         transButton->setText(QApplication::translate("TsukuyomiClass", "Trans", Q_NULLPTR));
         rotButton->setText(QApplication::translate("TsukuyomiClass", "Rot", Q_NULLPTR));

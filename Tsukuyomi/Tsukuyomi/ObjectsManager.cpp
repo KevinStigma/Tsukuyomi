@@ -46,9 +46,6 @@ Object* ObjectManager::createNewObjectOfMesh(std::string name, std::string obj_p
 	else
 		mesh = new Mesh(obj_name, obj_path, t, s, r, nullptr, mats);
 	objects.insert(std::pair<std::string, Object*>(obj_name, mesh));
-	listview->addItem(QString(obj_name.c_str()));
-	QListWidgetItem* item = listview->item(listview->count()-1);
-	listview->setCurrentItem(item);
 	return mesh;
 }
 
@@ -59,9 +56,6 @@ Object* ObjectManager::createNewObjectOfCamera(std::string name, XMFLOAT3 t, XMF
 		obj_name = genNewObjectName();
 	Camera* cam = new Camera(obj_name, t, s, r);
 	objects.insert(std::pair<std::string, Object*>(obj_name, cam));
-	listview->addItem(QString(obj_name.c_str()));
-	QListWidgetItem* item = listview->item(listview->count() - 1);
-	listview->setCurrentItem(item);
 	return cam;
 }
 
@@ -72,9 +66,6 @@ Object* ObjectManager::createNewObjectOfPointLight(std::string name, XMFLOAT3 t,
 		obj_name = genNewObjectName();
 	PointLight* light = new PointLight(obj_name, t, s, r, c);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
-	listview->addItem(QString(obj_name.c_str()));
-	QListWidgetItem* item = listview->item(listview->count() - 1);
-	listview->setCurrentItem(item);
 	return light;
 }
 
@@ -94,9 +85,6 @@ Object* ObjectManager::createNewObjectOfDirectionalLight(std::string name, XMFLO
 		obj_name = genNewObjectName();
 	DirectionalLight* light = new DirectionalLight(obj_name, t, s, r, c);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
-	listview->addItem(QString(obj_name.c_str()));
-	QListWidgetItem* item = listview->item(listview->count() - 1);
-	listview->setCurrentItem(item);
 	return light;
 }
 
@@ -107,9 +95,6 @@ Object* ObjectManager::createNewObjectOfAreaLight(std::string name, std::string 
 		obj_name = genNewObjectName();
 	AreaLight* light = new AreaLight(obj_name, mesh_path, t, s, r, c, render_mats);
 	objects.insert(std::pair<std::string, Object*>(obj_name, light));
-	listview->addItem(QString(obj_name.c_str()));
-	QListWidgetItem* item = listview->item(listview->count() - 1);
-	listview->setCurrentItem(item);
 	return light;
 }
 
@@ -441,9 +426,42 @@ void ObjectManager::updateFromProject(std::string file_path)
 			}
 		}
 	}
-
+	updateTreeWidget();
 	loadEnvMap(env_map_path);
 	bvhManager.generateBoundingVolumeHieratchies();
+}
+
+void ObjectManager::updateTreeWidget()
+{
+	treeWidget->clear();
+	QList<QTreeWidgetItem *> items;
+	for (auto iter = objects.begin(); iter != objects.end(); iter++)
+	{
+		Object* obj = iter->second;
+		QTreeWidgetItem* root_item = addTreeFromRoot(nullptr, obj);
+		items.append(root_item);
+		treeWidget->insertTopLevelItems(0, items);
+	}
+}
+
+QTreeWidgetItem* ObjectManager::addTreeFromRoot(QTreeWidgetItem*p, Object* root)
+{
+	QTreeWidgetItem *item = nullptr;
+	if (p)
+	{
+		item = new QTreeWidgetItem(p, QStringList(QString(root->getName().c_str())));
+		p->addChild(item);
+	}
+	else
+		item = new QTreeWidgetItem(treeWidget, QStringList(QString(root->getName().c_str())));
+	
+	auto childs = root->getChilds();
+	for (auto iter = childs.begin(); iter != childs.end(); iter++)
+	{
+		Object* obj = iter->second;
+		QTreeWidgetItem * child_item = addTreeFromRoot(item, obj);
+	}
+	return item;
 }
 
 Camera* ObjectManager::getRenderCamera()

@@ -1,6 +1,7 @@
 #pragma once
 #include <set>
 #include <QListWidget>
+#include <qtreewidget.h>
 #include <unordered_map>
 #include "Objects/Object.h"
 #include "Objects/Mesh.h"
@@ -35,6 +36,7 @@ public:
 	bool removeObject(std::string name);
 	bool changeObjectName(std::string old_name, std::string new_name);
 	void setListView(ObjectsListWidget* qlistview) { listview = qlistview; }
+	void setTreeWidget(QTreeWidget* widget) { treeWidget = widget; }
 	Object* getCurSelObject() { return curSelObject; }
 	void setCurSelObject(std::string name);
 	void setCurShadowLight(Light* light);
@@ -48,10 +50,13 @@ public:
 	BVHManager* getBVHManager() { return &bvhManager; }
 	EnvironmentMap* getEnvironmentMap() { return environmentMap; }
 protected:
+	void updateTreeWidget();
+	QTreeWidgetItem* addTreeFromRoot(QTreeWidgetItem*p, Object* root);
 	BVHManager bvhManager;
 	std::string genNewObjectName();
 	std::unordered_map<std::string, Object*> objects;
 	ObjectsListWidget* listview = nullptr;
+	QTreeWidget* treeWidget = nullptr;
 	Object* curSelObject = nullptr;
 	Light* curShadowLight = nullptr;
 	EnvironmentMap* environmentMap = nullptr;

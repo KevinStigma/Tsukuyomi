@@ -170,6 +170,18 @@ std::string Object::getRotationText()
 	return std::to_string(rotation.x) + "," + std::to_string(rotation.y) + "," + std::to_string(rotation.z);
 }
 
+void Object::setParent(Object* p)
+{
+	if (parent == p)
+		return;
+	if (parent)
+		if (parent->childs.find(name) != childs.end())
+			parent->childs.erase(name);
+	parent = p;
+	if(p)
+		p->childs.insert(std::pair<std::string, Object*>(name, this));
+}
+
 void Object::genereateWorldMatrix()
 {
 	trans_mat = XMMatrixTranslation(translation.x, translation.y, translation.z);

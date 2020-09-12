@@ -33,25 +33,24 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="ObjectsListWidget" name="objectsListView">
+     <widget class="QTreeWidget" name="objsTreeWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>160</width>
-        <height>0</height>
-       </size>
+      <property name="lineWidth">
+       <number>1</number>
       </property>
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
+      <property name="columnCount">
+       <number>1</number>
       </property>
+      <column>
+       <property name="text">
+        <string>scene</string>
+       </property>
+      </column>
      </widget>
     </item>
     <item>
@@ -882,7 +881,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -1048,11 +1047,6 @@
    <extends>QWidget</extends>
    <header>renderwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ObjectsListWidget</class>
-   <extends>QListWidget</extends>
-   <header>objectslistwidget.h</header>
   </customwidget>
   <customwidget>
    <class>ObjectPropertyWidget</class>
