@@ -66,12 +66,15 @@ public:
 	std::string getTranslationText();
 	std::string getScaleText();
 	std::string getRotationText();
+	Object* getParent() { return parent; }
+	void setParent(Object* p) { parent = p; }
 	virtual const BoundingBox & getBoundingBox() { return boundingBox; }
 	virtual void genereateWorldMatrix();
 	XMMATRIX getWorldMatrix() { return world_mat; }
 	XMMATRIX getRotMatrix() { return rot_mat; }
 	XMMATRIX getTransMatrix() { return trans_mat; }
 	XMMATRIX getScaleMatrix() { return scale_mat; }
+	XMMATRIX getGlobalWorldMatrix();
 	XMFLOAT3 getTranslation()const { return translation; }
 	XMFLOAT3 getRotation()const { return rotation; }
 	XMFLOAT3 getScale()const { return scale; }
@@ -80,6 +83,7 @@ public:
 	virtual void setTranslation(XMFLOAT3 t);
 	bool is_intersect_bounding_box(const Ray&ray);
 protected:
+	Object* parent = nullptr;
 	std::string name;
 	ObjectType type;
 	BoundingBox boundingBox;

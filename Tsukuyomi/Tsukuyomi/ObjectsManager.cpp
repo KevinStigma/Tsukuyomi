@@ -278,6 +278,10 @@ void ObjectManager::exportProject(std::string file_path)
 			continue;
 		obj_element->SetAttribute("Name", obj->getName().c_str());
 		obj_element->SetAttribute("Type", type_str.c_str());
+
+		Object* p = obj->getParent();
+		obj_element->SetAttribute("Parent", p ? p->getName().c_str() : "");
+
 		XMLElement*trans_element = doc.NewElement("Translation");
 		XMLElement*scale_element = doc.NewElement("Scale");
 		XMLElement*rot_element = doc.NewElement("Rotation");
@@ -411,7 +415,6 @@ void ObjectManager::updateFromProject(std::string file_path)
 				if (std::string(express->Attribute("ShadowLight")) == "true")
 					setCurShadowLight((Light*)light);
 			}
-
 		}
 		else if (type == "area_light")
 		{
@@ -422,6 +425,23 @@ void ObjectManager::updateFromProject(std::string file_path)
 			createNewObjectOfAreaLight(name, mesh_path ,translation, scale, rotation, color, &materials);
 		}
 	}
+
+	for (XMLElement*express = obj_node; express; express = express->NextSiblingElement())
+	{
+		if (express->FindAttribute("Parent"))
+		{
+			std::string name = express->Attribute("Name");
+			std::string parent_name = express->Attribute("Parent");
+			if (parent_name.size())
+			{
+				Object* parent = getObjectFromName(parent_name);
+				Object* obj = getObjectFromName(name);
+				if(parent && obj)
+					obj->setParent(parent);
+			}
+		}
+	}
+
 	loadEnvMap(env_map_path);
 	bvhManager.generateBoundingVolumeHieratchies();
 }

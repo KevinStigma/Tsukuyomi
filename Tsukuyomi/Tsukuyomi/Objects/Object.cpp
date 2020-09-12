@@ -180,6 +180,15 @@ void Object::genereateWorldMatrix()
 	world_mat = scale_mat * rot_mat * trans_mat;
 }
 
+XMMATRIX Object::getGlobalWorldMatrix()
+{
+	XMMATRIX parent_matrix = XMMatrixIdentity();
+	if (parent)
+		parent_matrix = parent->getGlobalWorldMatrix();
+
+	return parent_matrix * getWorldMatrix();
+}
+
 bool Object::is_intersect_bounding_box(const Ray&ray)
 {
 	XMMATRIX world_mat = getWorldMatrix();
