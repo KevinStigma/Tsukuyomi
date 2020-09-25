@@ -192,7 +192,7 @@ void Object::genereateWorldMatrix()
 	world_mat = scale_mat * rot_mat * trans_mat;
 }
 
-XMMATRIX Object::getGlobalWorldMatrix()
+XMMATRIX Object::getGlobalWorldMatrix()const
 {
 	XMMATRIX parent_matrix = XMMatrixIdentity();
 	if (parent)

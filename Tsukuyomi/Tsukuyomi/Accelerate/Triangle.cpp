@@ -6,7 +6,7 @@ void Triangle::generateBoundingBox()
 	v[0] = XMLoadFloat3(&a);
 	v[1] = XMLoadFloat3(&b);
 	v[2] = XMLoadFloat3(&c);
-	XMMATRIX world_mat = parent->getWorldMatrix();
+	XMMATRIX world_mat = parent->getGlobalWorldMatrix();
 	for (int i = 0; i < 3; i++)
 	{
 		v[i] = XMVector3TransformCoord(v[i], world_mat);
@@ -51,7 +51,7 @@ bool Triangle::is_intersect(const Ray& ray, float&t, IntersectInfo& it)
 	n[0] = XMLoadFloat3(&na);
 	n[1] = XMLoadFloat3(&nb);
 	n[2] = XMLoadFloat3(&nc);
-	XMMATRIX world_mat = parent->getWorldMatrix();
+	XMMATRIX world_mat = parent->getGlobalWorldMatrix();
 	for (int i = 0; i < 3; i++)
 	{
 		v[i] = XMVector3TransformCoord(v[i], world_mat);

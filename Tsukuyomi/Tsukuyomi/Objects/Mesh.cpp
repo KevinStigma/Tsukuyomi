@@ -76,7 +76,7 @@ void Mesh::render(ID3D11DeviceContext * context, D3DRenderer* renderer)
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = getWorldMatrix();
+	XMMATRIX worldMat = getGlobalWorldMatrix();
 	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));	
 	XMMATRIX WVP = worldMat * camera.getViewMatrix() * camera.getProjMatrix();
 	XMMATRIX WVPT = WVP * renderer->getTexTransformMat();
@@ -116,7 +116,7 @@ void Mesh::renderNormalDepthMap(ID3D11DeviceContext * context, D3DRenderer* rend
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = getWorldMatrix();
+	XMMATRIX worldMat = getGlobalWorldMatrix();
 	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 	XMMATRIX view_mat = camera.getViewMatrix();
 	XMMATRIX proj_mat = camera.getProjMatrix();
@@ -154,7 +154,7 @@ void Mesh::renderToShadowMap(ID3D11DeviceContext * context, D3DRenderer* rendere
 	activeTech->GetDesc(&techDesc);
 
 	XMVECTOR v;
-	XMMATRIX worldMat = getWorldMatrix();
+	XMMATRIX worldMat = getGlobalWorldMatrix();
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
 	XMMATRIX view_mat = XMLoadFloat4x4(&sm_trans->lightViewTransMat);
 	XMMATRIX proj_mat = XMLoadFloat4x4(&sm_trans->lightProjTransMat);
@@ -427,8 +427,7 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 	int index[3];
 	XMFLOAT3 vertices[3];
 	XMVECTOR normals[3];
-	XMMATRIX world_mat = getWorldMatrix();
-	XMMATRIX rot_mat = getRotMatrix();
+	XMMATRIX world_mat = getGlobalWorldMatrix();
 	for (int i = 0; i < face_num; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -438,9 +437,9 @@ bool Mesh::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 				shape.mesh.positions[index[j] * 3 + 1],
 				shape.mesh.positions[index[j] * 3 + 2], 1.0), world_mat));
 
-			normals[j] = XMVector3TransformNormal(XMVectorSet(shape.mesh.normals[index[j] * 3],
+			normals[j] = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(shape.mesh.normals[index[j] * 3],
 				shape.mesh.normals[index[j] * 3 + 1],
-				shape.mesh.normals[index[j] * 3 + 2], 0.0), rot_mat);
+				shape.mesh.normals[index[j] * 3 + 2], 0.0), world_mat));
 		}
 		if (ray.is_intersect_triangle(vertices[0], vertices[1], vertices[2], t, beta, gama))
 		{
@@ -483,7 +482,7 @@ XMFLOAT2 Mesh::getTriangleTexCoord(int index)const
 
 XMFLOAT3 Mesh::getWorldCenter()
 {
-	XMMATRIX mat = getBoundingBox().getTransMatrix() * getTransMatrix();
+	XMMATRIX mat = getBoundingBox().getTransMatrix() * getGlobalWorldMatrix();
 	XMVECTOR v = XMVector3TransformCoord(XMVectorSet(0.0, 0.0, 0.0, 1.0), mat);
 	XMFLOAT3 world_pos;
 	XMStoreFloat3(&world_pos, v);

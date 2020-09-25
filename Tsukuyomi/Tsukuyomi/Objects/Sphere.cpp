@@ -36,7 +36,7 @@ void CoordinateSystem(const XMFLOAT3 &v1, XMFLOAT3 *v2,
 
 IntersectInfo Sphere::sample(const IntersectInfo&ref, XMFLOAT2 u, float*pdf)const
 {
-	XMFLOAT3 center = translation;
+	XMFLOAT3 center = getWorldCenter();
 
 	// Sample uniformly on sphere if $\pt{}$ is inside it
 	float radius = Radius();
@@ -118,7 +118,7 @@ IntersectInfo Sphere::sample(const IntersectInfo&ref, XMFLOAT2 u, float*pdf)cons
 
 bool Sphere::is_intersect(const Ray&ray, float& t, IntersectInfo& is_info)
 {
-	XMFLOAT3 center = getTranslation();
+	XMFLOAT3 center = getWorldCenter();
 	if (ray.is_intersect_sphere(center, Radius(), t))
 	{
 		float phiMax = MathHelper::Pi * 2.0;
@@ -147,7 +147,7 @@ float UniformConePdf(float cosThetaMax) {
 
 float Sphere::Pdf(const IntersectInfo & ref, const XMFLOAT3& wi)
 {
-	XMFLOAT3 pCenter = translation;;
+	XMFLOAT3 pCenter = getWorldCenter();;
 	// Return uniform PDF if point is inside sphere
 	float radius = Radius();
 	float distance_val = MathHelper::DistanceSquared(ref.pos, pCenter);
@@ -158,6 +158,19 @@ float Sphere::Pdf(const IntersectInfo & ref, const XMFLOAT3& wi)
 	float sinThetaMax2 = radius * radius / distance_val;
 	float cosThetaMax = std::sqrt(std::max(0.0f, 1 - sinThetaMax2));
 	return UniformConePdf(cosThetaMax);
+}
+
+XMFLOAT3 Sphere::getWorldCenter()const
+{
+	XMFLOAT3 center;
+	XMStoreFloat3(&center, XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), getGlobalWorldMatrix()));
+	return center;
+}
+
+float Sphere::Radius()const
+{
+	XMMATRIX world_mat = getGlobalWorldMatrix();
+	return origin_radius * XMVectorGetX(XMVector3Length(XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0), world_mat)));
 }
 
 void Sphere::outputSphereMesh()

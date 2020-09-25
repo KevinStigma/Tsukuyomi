@@ -438,6 +438,8 @@ void ObjectManager::updateTreeWidget()
 	for (auto iter = objects.begin(); iter != objects.end(); iter++)
 	{
 		Object* obj = iter->second;
+		if (obj->getParent())
+			continue;
 		QTreeWidgetItem* root_item = addTreeFromRoot(nullptr, obj);
 		items.append(root_item);
 		treeWidget->insertTopLevelItems(0, items);
