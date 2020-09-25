@@ -1,0 +1,19 @@
+<TsukuyomiProject EnvMap="">
+    <Object MeshPath="Data/Meshes/sphere.obj" Name="object0" Type="mesh" Parent="">
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000" roughness="0.800000" metallic="0.000000"/>
+        <Translation>1.000000,0.000000,0.000000</Translation>
+        <Scale>0.5,0.5,0.5</Scale>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
+    </Object>
+	<Object MeshPath="Data/Meshes/sphere.obj" Name="object2" Type="mesh" Parent="object0">
+        <Material type="Matte" kd="0.725000,0.710000,0.680000" sigma="0.000000" roughness="0.800000" metallic="0.000000"/>
+        <Translation>2.000000,0.000000,0.000000</Translation>
+        <Scale>1.0,1.0,1.0</Scale>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
+    </Object>
+    <Object Color="1.000000,1.000000,1.000000" ShadowLight="false" Name="object1" Type="dir_light" Parent="">
+        <Translation>0.000000,0.000000,0.000000</Translation>
+        <Scale>1.000000,1.000000,1.000000</Scale>
+        <Rotation>0.000000,0.000000,0.000000</Rotation>
+    </Object>
+</TsukuyomiProject>
