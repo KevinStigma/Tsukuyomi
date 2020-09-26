@@ -13,8 +13,7 @@ DirectionalLight::~DirectionalLight()
 
 XMFLOAT3 DirectionalLight::getWorldDir()
 {
-	XMMATRIX rot_mat = getLocalRotMatrix();
-	XMVECTOR vec = XMVector3TransformNormal(XMVectorSet(defualt_dir.x, defualt_dir.y, defualt_dir.z, 0.0), rot_mat);
+	XMVECTOR vec = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(defualt_dir.x, defualt_dir.y, defualt_dir.z, 0.0), getGlobalWorldMatrix()));
 	XMFLOAT3 world_dir;
 	XMStoreFloat3(&world_dir, vec);
 	return world_dir;

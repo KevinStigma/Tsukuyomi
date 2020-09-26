@@ -276,9 +276,7 @@ void Tsukuyomi::on_setShadowLightButton_clicked()
 	ui.render_widget->getRenderer()->buildShadowTransform();
 }
 
-void Tsukuyomi::on_objsTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void Tsukuyomi::on_objsTreeWidget_itemClicked(QTreeWidgetItem *current, int index)
 {
-	if (!previous)
-		return;
 	g_pGlobalSys->objectManager.setCurSelObject(current->text(0).toStdString());
 }

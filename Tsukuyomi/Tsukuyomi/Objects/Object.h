@@ -76,6 +76,7 @@ public:
 	XMMATRIX getLocalTransMatrix() { return trans_mat; }
 	XMMATRIX getLocalScaleMatrix() { return scale_mat; }
 	XMMATRIX getGlobalWorldMatrix()const;
+	XMMATRIX getParentGlobalWorldMatrix()const;
 	XMFLOAT3 getTranslation()const { return translation; }
 	XMFLOAT3 getRotation()const { return rotation; }
 	XMFLOAT3 getScale()const { return scale; }

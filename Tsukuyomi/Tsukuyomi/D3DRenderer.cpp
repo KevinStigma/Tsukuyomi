@@ -841,10 +841,11 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 	activeTech->GetDesc(&techDesc);
 	
 	XMMATRIX global_world_mat = obj->getGlobalWorldMatrix();
+	XMMATRIX trans_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
-		XMMATRIX world_matrix = global_world_mat;
+		XMMATRIX world_matrix = trans_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -852,7 +853,7 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(60, 0, 0);
 
-		world_matrix = XMMatrixRotationY(MathHelper::Pi * 0.5) * global_world_mat;
+		world_matrix = XMMatrixRotationY(MathHelper::Pi * 0.5) * trans_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -860,7 +861,7 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(60, 0, 0);
 
-		world_matrix = XMMatrixRotationX(MathHelper::Pi * 0.5) * global_world_mat;
+		world_matrix = XMMatrixRotationX(MathHelper::Pi * 0.5) * trans_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -886,10 +887,19 @@ void D3DRenderer::renderDirectionalLight(Object* obj)
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 
+	XMMATRIX global_world_mat = obj->getGlobalWorldMatrix();
+	XMMATRIX trans_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
+
+	XMVECTOR default_vec = XMVectorSet(1, 0, 0, 0.0);
+	XMVECTOR world_dir = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0.0), global_world_mat));
+	XMVECTOR axis = XMVector3Normalize(XMVector3Cross(default_vec, world_dir));
+	float radian = acosf(XMVectorGetX(XMVector3Dot(default_vec, world_dir)));
+	XMMATRIX rot_mat = radian == 0.0 ? XMMatrixIdentity() : XMMatrixRotationAxis(axis, radian);
+
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
-		XMMATRIX world_matrix = obj->getLocalRotMatrix() * obj->getGlobalWorldMatrix();
+		XMMATRIX world_matrix = rot_mat * trans_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());

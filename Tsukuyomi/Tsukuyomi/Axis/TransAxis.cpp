@@ -13,7 +13,20 @@ XMMATRIX TransAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 	assert(axis_type >= 0 && axis_type <= 2);
 	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
-	return scale_mat * axisTrans*obj->getBoundingBox().getTransMatrix() * obj->getGlobalWorldMatrix();
+
+	XMMATRIX global_world_mat = obj->getGlobalWorldMatrix();
+	XMMATRIX trans_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
+	
+	XMMATRIX parent_global_world_mat = obj->getParentGlobalWorldMatrix();
+	XMVECTOR default_vec = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
+	XMVECTOR world_dir = XMVector3Normalize(XMVector3TransformNormal(default_vec, parent_global_world_mat));
+	XMMATRIX rot_mat = XMMatrixIdentity();
+	XMVECTOR axis = XMVector3Normalize(XMVector3Cross(default_vec, world_dir));
+	float radian = acosf(XMVectorGetX(XMVector3Dot(default_vec, world_dir)));
+	if(radian != 0.0)
+		rot_mat = XMMatrixRotationAxis(axis, radian);
+
+	return scale_mat * axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix() * trans_mat;
 }
 
 XMMATRIX TransAxis::getAxisLocalTransform(AXIS axis_type)
