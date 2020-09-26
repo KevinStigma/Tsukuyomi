@@ -275,3 +275,10 @@ void Tsukuyomi::on_setShadowLightButton_clicked()
 	g_pGlobalSys->objectManager.setCurShadowLight(dynamic_cast<Light*>(sel_obj));
 	ui.render_widget->getRenderer()->buildShadowTransform();
 }
+
+void Tsukuyomi::on_objsTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (!previous)
+		return;
+	g_pGlobalSys->objectManager.setCurSelObject(current->text(0).toStdString());
+}

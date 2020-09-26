@@ -89,7 +89,7 @@ XMMATRIX Camera::getFrustumMatrix()
 	float frustum_height = frustumDepth * tanf(fov * 0.5f);
 	float frustum_width = frustum_height * aspectRatio;
 	XMMATRIX scale_mat = XMMatrixScaling(frustum_width, frustum_height, 1.0f);
-	return XMMatrixMultiply(scale_mat, world_mat);
+	return XMMatrixMultiply(scale_mat, getGlobalWorldMatrix());
 }
 
 void Camera::lookAt(XMFLOAT3 pos, XMFLOAT3 target, XMFLOAT3 worldUp)

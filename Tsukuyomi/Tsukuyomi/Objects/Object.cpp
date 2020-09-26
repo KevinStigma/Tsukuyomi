@@ -198,11 +198,11 @@ XMMATRIX Object::getGlobalWorldMatrix()const
 	if (parent)
 		parent_matrix = parent->getGlobalWorldMatrix();
 
-	return parent_matrix * getWorldMatrix();
+	return getLocalWorldMatrix() * parent_matrix;
 }
 
 bool Object::is_intersect_bounding_box(const Ray&ray)
 {
-	XMMATRIX world_mat = getWorldMatrix();
+	XMMATRIX world_mat = getGlobalWorldMatrix();
 	return boundingBox.isIntersect(ray, world_mat);
 }

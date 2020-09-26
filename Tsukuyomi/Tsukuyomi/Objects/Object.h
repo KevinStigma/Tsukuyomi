@@ -71,10 +71,10 @@ public:
 	void setParent(Object* p);
 	virtual const BoundingBox & getBoundingBox() { return boundingBox; }
 	virtual void genereateWorldMatrix();
-	XMMATRIX getWorldMatrix()const { return world_mat; }
-	XMMATRIX getRotMatrix() { return rot_mat; }
-	XMMATRIX getTransMatrix() { return trans_mat; }
-	XMMATRIX getScaleMatrix() { return scale_mat; }
+	XMMATRIX getLocalWorldMatrix()const { return world_mat; }
+	XMMATRIX getLocalRotMatrix() { return rot_mat; }
+	XMMATRIX getLocalTransMatrix() { return trans_mat; }
+	XMMATRIX getLocalScaleMatrix() { return scale_mat; }
 	XMMATRIX getGlobalWorldMatrix()const;
 	XMFLOAT3 getTranslation()const { return translation; }
 	XMFLOAT3 getRotation()const { return rotation; }

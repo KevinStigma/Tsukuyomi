@@ -840,10 +840,11 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 	
+	XMMATRIX global_world_mat = obj->getGlobalWorldMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
-		XMMATRIX world_matrix = obj->getTransMatrix();
+		XMMATRIX world_matrix = global_world_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -851,7 +852,7 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(60, 0, 0);
 
-		world_matrix = XMMatrixRotationY(MathHelper::Pi * 0.5) * obj->getTransMatrix();
+		world_matrix = XMMatrixRotationY(MathHelper::Pi * 0.5) * global_world_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -859,7 +860,7 @@ void D3DRenderer::renderWireFrameSphere(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(60, 0, 0);
 
-		world_matrix = XMMatrixRotationX(MathHelper::Pi * 0.5) * obj->getTransMatrix();
+		world_matrix = XMMatrixRotationX(MathHelper::Pi * 0.5) * global_world_mat;
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -888,7 +889,7 @@ void D3DRenderer::renderDirectionalLight(Object* obj)
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;
-		XMMATRIX world_matrix = obj->getRotMatrix() * obj->getTransMatrix();
+		XMMATRIX world_matrix = obj->getLocalRotMatrix() * obj->getGlobalWorldMatrix();
 		WVP = world_matrix * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(world_matrix);
 		basicEffect->SetTexTransform(XMMatrixIdentity());
@@ -937,7 +938,7 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
-		worldMat = worldMat = transAxis.computeWorldMatrix(obj, AXIS::Z);
+		worldMat = transAxis.computeWorldMatrix(obj, AXIS::Z);
 		inv_world_mat = XMMatrixInverse(&v, worldMat);
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
@@ -1420,7 +1421,7 @@ void D3DRenderer::renderBoundingBox(Object* object)
 	float yl = bb.top.y - bb.bottom.y;
 	float zl = bb.top.z - bb.bottom.z;
 	XMFLOAT3 c = bb.getCenter();
-	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->getWorldMatrix();
+	XMMATRIX world_matrix = XMMatrixScaling(xl, yl, zl) * XMMatrixTranslation(c.x, c.y, c.z) * object->getGlobalWorldMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		XMMATRIX WVP;

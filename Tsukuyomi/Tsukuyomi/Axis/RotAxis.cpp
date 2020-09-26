@@ -14,7 +14,7 @@ XMMATRIX RotAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 {
 	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
-	return scale_mat * axisTrans * obj->getRotMatrix() * obj->getBoundingBox().getTransMatrix() * obj->getTransMatrix();
+	return scale_mat * axisTrans * obj->getLocalRotMatrix() * obj->getBoundingBox().getTransMatrix() * obj->getGlobalWorldMatrix();
 }
 
 XMMATRIX RotAxis::getAxisLocalTransform(AXIS axis_type)
@@ -32,7 +32,7 @@ int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj, float &t)
 	if (!obj)
 		return -1;
 	float diff_radius = large_radius - small_radius;
-	XMMATRIX rot_mat = obj->getRotMatrix();
+	XMMATRIX rot_mat = obj->getLocalRotMatrix();
 	XMMATRIX local_trans_mat = XMMatrixTranslation(0.0f, -diff_radius * scale, 0.0f);
 	XMVECTOR v;
 	float min_t = -1.0;
@@ -40,7 +40,7 @@ int RotAxis::rayIntersectDectect(const Ray& ray, Object* obj, float &t)
 	for (int i = 0; i < 3; i++)
 	{
 		XMMATRIX axisTrans = getAxisLocalTransform(AXIS(i));
-		XMMATRIX world_mat = axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix()* obj->getTransMatrix();
+		XMMATRIX world_mat = axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix()* obj->getGlobalWorldMatrix();
 		XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
 		Ray trans_ray = ray.transform(inv_world_mat);
 		float t1 = rayCircleIntersection(trans_ray, large_radius * scale);
@@ -88,7 +88,7 @@ void RotAxis::rotateSelObj(const Camera& cam, XMFLOAT2 cur_normalized_pos, XMFLO
 	XMVECTOR inter_pt2 = XMVectorSet(intersection_pt.x + vec.x, intersection_pt.y + vec.y, intersection_pt.z + vec.z, 1.0);
 
 	XMMATRIX axisTrans = getAxisLocalTransform(curSelAxis);
-	XMMATRIX world_mat = axisTrans * obj->getRotMatrix() * obj->getTransMatrix();
+	XMMATRIX world_mat = axisTrans * obj->getLocalRotMatrix() * obj->getGlobalWorldMatrix();
 	XMVECTOR v;
 	XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
 	inter_pt1 = XMVector3TransformCoord(inter_pt1, inv_world_mat);
@@ -104,10 +104,10 @@ void RotAxis::rotateSelObj(const Camera& cam, XMFLOAT2 cur_normalized_pos, XMFLO
 	if (last_radian < 0.0)
 		last_radian += MathHelper::Pi;
 
-	XMVECTOR rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), axisTrans * obj->getRotMatrix());
+	XMVECTOR rot_axis = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), axisTrans * obj->getLocalRotMatrix());
 
 	XMFLOAT4X4 new_rot_mat;
-	XMStoreFloat4x4(&new_rot_mat, obj->getRotMatrix() * XMMatrixRotationAxis(rot_axis, (cur_radian - last_radian) * 8.0f));
+	XMStoreFloat4x4(&new_rot_mat, obj->getLocalRotMatrix() * XMMatrixRotationAxis(rot_axis, (cur_radian - last_radian) * 8.0f));
 	XMFLOAT3 rot = MathHelper::transRotationMatrixToEulerAngles(new_rot_mat);
 	obj->setRotation(rot);
 }
@@ -122,8 +122,8 @@ XMFLOAT2 RotAxis::getAxisDirectionProj(const Camera& cam, Object*sel_obj, AXIS a
 	XMMATRIX axis_trans = getAxisLocalTransform(axis_type);
 	XMVECTOR local_dir1 = XMVectorSubtract(p1, p2);
 	XMVECTOR local_dir2 = XMVectorSubtract(p3, p4);
-	XMVECTOR proj_dir1 = XMVector3TransformNormal(local_dir1, axis_trans* sel_obj->getRotMatrix() * sel_obj->getTransMatrix() * cam.getViewProjMatrix());
-	XMVECTOR proj_dir2 = XMVector3TransformNormal(local_dir2, axis_trans* sel_obj->getRotMatrix() * sel_obj->getTransMatrix() * cam.getViewProjMatrix());
+	XMVECTOR proj_dir1 = XMVector3TransformNormal(local_dir1, axis_trans* sel_obj->getLocalRotMatrix() * sel_obj->getLocalTransMatrix() * cam.getViewProjMatrix());
+	XMVECTOR proj_dir2 = XMVector3TransformNormal(local_dir2, axis_trans* sel_obj->getLocalRotMatrix() * sel_obj->getLocalTransMatrix() * cam.getViewProjMatrix());
 
 	XMFLOAT2 normalized_dir;
 	XMVECTOR long_dir;
