@@ -97,7 +97,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 			if (renderer->getRenderSelObjMode() == RenderSelObjMode::COORD_AXIS)
 			{
 				renderer->translateSelObj(XMFLOAT2(cur_normalized_pos.x - last_normalized_pos.x, cur_normalized_pos.y - last_normalized_pos.y));
-				g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
+				//g_pGlobalSys->objectPropertyWidget->updateObjectTranslation(g_pGlobalSys->objectManager.getCurSelObject());
 			}
 			else if (renderer->getRenderSelObjMode() == RenderSelObjMode::ROT_AXIS)
 			{

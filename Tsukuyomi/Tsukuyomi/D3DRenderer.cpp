@@ -526,7 +526,7 @@ void D3DRenderer::rayAxisIntersectionDetect(float x_ratio, float y_ratio)
 			AXIS lastSelAxis = curSelAxis;
 			curSelAxis = AXIS(transAxis.rayIntersectDectect(ray, obj));
 			if (lastSelAxis == AXIS::NO && curSelAxis != AXIS::NO)
-				transAxis.computeAxisDirectionProj(m_camera, curSelAxis);
+				transAxis.computeAxisDirectionProj(obj, m_camera, curSelAxis);
 		}
 		else if (renderSelObjMode == RenderSelObjMode::ROT_AXIS)
 		{

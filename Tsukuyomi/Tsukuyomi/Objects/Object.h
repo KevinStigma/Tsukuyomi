@@ -77,6 +77,7 @@ public:
 	XMMATRIX getLocalScaleMatrix() { return scale_mat; }
 	XMMATRIX getGlobalWorldMatrix()const;
 	XMMATRIX getParentGlobalWorldMatrix()const;
+	std::pair<XMMATRIX, XMMATRIX> computeGlobalRotTransMatrix(XMFLOAT3 local_vec)const;
 	XMFLOAT3 getTranslation()const { return translation; }
 	XMFLOAT3 getRotation()const { return rotation; }
 	XMFLOAT3 getScale()const { return scale; }

@@ -14,17 +14,11 @@ XMMATRIX TransAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 	XMMATRIX scale_mat = XMMatrixScaling(scale, scale, scale);
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
 
-	XMMATRIX global_world_mat = obj->getGlobalWorldMatrix();
-	XMMATRIX trans_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
-	
-	XMMATRIX parent_global_world_mat = obj->getParentGlobalWorldMatrix();
-	XMVECTOR default_vec = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
-	XMVECTOR world_dir = XMVector3Normalize(XMVector3TransformNormal(default_vec, parent_global_world_mat));
-	XMMATRIX rot_mat = XMMatrixIdentity();
-	XMVECTOR axis = XMVector3Normalize(XMVector3Cross(default_vec, world_dir));
-	float radian = acosf(XMVectorGetX(XMVector3Dot(default_vec, world_dir)));
-	if(radian != 0.0)
-		rot_mat = XMMatrixRotationAxis(axis, radian);
+	XMFLOAT3 v;
+	XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
+	std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
+	XMMATRIX rot_mat = mat_pair.first;
+	XMMATRIX trans_mat = mat_pair.second;
 
 	return scale_mat * axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix() * trans_mat;
 }
@@ -56,14 +50,20 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 {
 	if(!obj)
 		return -1;
-	XMVECTOR v;
+
+	XMFLOAT3 v;
 	float min_t = -1.0;
 	int axis_index = -1;
 	for (int i = 0; i < 3; i++)
 	{
 		XMMATRIX axisTrans = getAxisLocalTransform(AXIS(i));
-		XMMATRIX world_mat = axisTrans * obj->getBoundingBox().getTransMatrix()* obj->getGlobalWorldMatrix();
-		XMMATRIX inv_world_mat = XMMatrixInverse(&v, world_mat);
+		XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
+		std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
+		XMMATRIX rot_mat = mat_pair.first;
+		XMMATRIX trans_mat = mat_pair.second;
+
+		XMMATRIX world_mat = axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix()* trans_mat;
+		XMMATRIX inv_world_mat = XMMatrixInverse(&XMVectorZero(), world_mat);
 		Ray trans_ray = ray.transform(inv_world_mat);
 		float t = rayCylinderIntersection(trans_ray, cylinder_radius * scale, cylinder_length * scale);
 		if (t > 0.0 && (t < min_t||min_t<0.0))
@@ -75,7 +75,7 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 	return axis_index;
 }
 
-void TransAxis::computeAxisDirectionProj(const Camera& cam, AXIS axis_type)
+void TransAxis::computeAxisDirectionProj(const Object*obj, const Camera& cam, AXIS axis_type)
 {
 	if (axis_type == AXIS::NO)
 	{
@@ -84,7 +84,14 @@ void TransAxis::computeAxisDirectionProj(const Camera& cam, AXIS axis_type)
 	}
 	XMVECTOR local_dir = XMVectorSet(0.0f, cylinder_length * scale, 0.0f, 0.0f);
 	XMMATRIX axis_trans = getAxisLocalTransform(axis_type);
-	XMVECTOR proj_dir = XMVector3TransformNormal(local_dir, axis_trans*cam.getViewProjMatrix());
+
+	XMFLOAT3 v;
+	XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axis_trans));
+	std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
+	XMMATRIX rot_mat = mat_pair.first;
+	XMMATRIX trans_mat = mat_pair.second;
+
+	XMVECTOR proj_dir = XMVector3TransformNormal(local_dir, axis_trans* rot_mat * cam.getViewProjMatrix());
 	if (XMVectorGetX(XMVector2Length(proj_dir)) < 1e-6)
 	{
 		curSelAxisProjDir = XMFLOAT2(0.0, 0.0);
