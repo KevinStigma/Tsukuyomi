@@ -744,58 +744,6 @@ void D3DRenderer::renderRulerLlines()
 	}
 }
 
-void D3DRenderer::renderRotAxis(Object* obj)
-{
-	BasicEffect*basicEffect = Effects::BasicFX;
-	UINT stride = sizeof(Basic32);
-	UINT offset = 0;
-	ID3D11DeviceContext* context = m_pImmediateContext;
-	context->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	context->IASetVertexBuffers(0, 1, &m_pAxisVertexBuffer, &stride, &offset);
-	context->IASetIndexBuffer(m_pAxisIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	context->IASetInputLayout(InputLayouts::PosNorTex);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
-	D3DX11_TECHNIQUE_DESC techDesc;
-	activeTech->GetDesc(&techDesc);
-
-	XMVECTOR v;
-	XMMATRIX worldMat = rotAxis.computeWorldMatrix(obj, AXIS::X);
-	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
-	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
-
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 6 : 3]);
-		activeTech->GetPassByIndex(p)->Apply(0, context);
-		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
-
-		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Y);
-		inv_world_mat = XMMatrixInverse(&v, worldMat);
-		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
-		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 5 : 2]);
-		activeTech->GetPassByIndex(p)->Apply(0, context);
-		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
-
-		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Z);
-		inv_world_mat = XMMatrixInverse(&v, worldMat);
-		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
-		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
-		basicEffect->SetWorldViewProj(WVP);
-		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
-		activeTech->GetPassByIndex(p)->Apply(0, context);
-		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
-	}
-}
-
 void D3DRenderer::renderFrustum(FXMMATRIX trans_mat)
 {
 	BasicEffect*basicEffect = Effects::BasicFX;
@@ -927,37 +875,89 @@ void D3DRenderer::renderCoordAxis(Object* obj)
 
 	XMVECTOR v = XMVectorZero();
 	XMMATRIX worldMat = transAxis.computeWorldMatrix(obj, AXIS::X);
-	XMMATRIX inv_world_mat = XMMatrixInverse(&v, worldMat);
+	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 6 : 3]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
 		worldMat = transAxis.computeWorldMatrix(obj, AXIS::Y);
-		inv_world_mat = XMMatrixInverse(&v, worldMat);
+		inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 5 : 2]);
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
 
 		worldMat = transAxis.computeWorldMatrix(obj, AXIS::Z);
-		inv_world_mat = XMMatrixInverse(&v, worldMat);
+		inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
 		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
 		basicEffect->SetWorld(worldMat);
-		basicEffect->SetWorldInvTranspose(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
 		basicEffect->SetWorldViewProj(WVP);
 		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
 
 		activeTech->GetPassByIndex(p)->Apply(0, context);
 		context->DrawIndexed(transAxisIndexCount, 0, 0);
+	}
+}
+
+void D3DRenderer::renderRotAxis(Object* obj)
+{
+	BasicEffect*basicEffect = Effects::BasicFX;
+	UINT stride = sizeof(Basic32);
+	UINT offset = 0;
+	ID3D11DeviceContext* context = m_pImmediateContext;
+	context->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	context->IASetVertexBuffers(0, 1, &m_pAxisVertexBuffer, &stride, &offset);
+	context->IASetIndexBuffer(m_pAxisIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	context->IASetInputLayout(InputLayouts::PosNorTex);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	ID3DX11EffectTechnique* activeTech = basicEffect->CustomLightTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	XMVECTOR v;
+	XMMATRIX worldMat = rotAxis.computeWorldMatrix(obj, AXIS::X);
+	XMMATRIX inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
+	XMMATRIX WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::X ? 6 : 3]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
+
+		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Y);
+		inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
+		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Y ? 5 : 2]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
+
+		worldMat = rotAxis.computeWorldMatrix(obj, AXIS::Z);
+		inv_world_mat = XMMatrixTranspose(XMMatrixInverse(&v, worldMat));
+		WVP = worldMat * m_camera.getViewMatrix() * m_camera.getProjMatrix();
+		basicEffect->SetWorld(worldMat);
+		basicEffect->SetWorldInvTranspose(inv_world_mat);
+		basicEffect->SetWorldViewProj(WVP);
+		basicEffect->SetMaterial(m_materials[curSelAxis == AXIS::Z ? 7 : 4]);
+		activeTech->GetPassByIndex(p)->Apply(0, context);
+		context->DrawIndexed(rotAxisIndexCount, rotAxisIndexBegin, axisVertexCount);
 	}
 }
 

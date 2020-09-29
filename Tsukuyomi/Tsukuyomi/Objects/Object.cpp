@@ -199,20 +199,10 @@ XMMATRIX Object::getParentGlobalWorldMatrix()const
 	return parent->getGlobalWorldMatrix();
 }
 
-std::pair<XMMATRIX, XMMATRIX> Object::computeGlobalRotTransMatrix(XMFLOAT3 local_vec)const
+XMMATRIX Object::computeGlobalTranslationMatrix()const
 {
 	XMMATRIX global_world_mat = getGlobalWorldMatrix();
-	XMMATRIX trans_mat = XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
-
-	XMMATRIX parent_global_world_mat = getParentGlobalWorldMatrix();
-	XMVECTOR default_vec = XMVector3Normalize(XMVectorSet(local_vec.x, local_vec.y, local_vec.z, 0.0));
-	XMVECTOR world_dir = XMVector3Normalize(XMVector3TransformNormal(default_vec, parent_global_world_mat));
-	XMMATRIX rot_mat = XMMatrixIdentity();
-	XMVECTOR axis = XMVector3Normalize(XMVector3Cross(default_vec, world_dir));
-	float radian = acosf(XMVectorGetX(XMVector3Dot(default_vec, world_dir)));
-	if (radian != 0.0)
-		rot_mat = XMMatrixRotationAxis(axis, radian);
-	return std::pair<XMMATRIX, XMMATRIX>(rot_mat, trans_mat);
+	return XMMatrixTranslationFromVector(XMVector3TransformCoord(XMVectorSet(0, 0, 0, 1), global_world_mat));
 }
 
 XMMATRIX Object::getGlobalWorldMatrix()const

@@ -15,12 +15,11 @@ XMMATRIX TransAxis::computeWorldMatrix(Object * obj, AXIS axis_type)
 	XMMATRIX axisTrans = getAxisLocalTransform(axis_type);
 
 	XMFLOAT3 v;
-	XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
-	std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
-	XMMATRIX rot_mat = mat_pair.first;
-	XMMATRIX trans_mat = mat_pair.second;
+	XMStoreFloat3(&v, XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans)));
+	XMMATRIX rot_mat = MathHelper::extractRotMatrixFromVector(v, obj->getParentGlobalWorldMatrix());
+	XMMATRIX trans_mat = obj->computeGlobalTranslationMatrix();
 
-	return scale_mat * axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix() * trans_mat;
+	return scale_mat * axisTrans * rot_mat  * obj->getBoundingBox().getTransMatrix() * trans_mat;
 }
 
 XMMATRIX TransAxis::getAxisLocalTransform(AXIS axis_type)
@@ -57,10 +56,9 @@ int TransAxis::rayIntersectDectect(const Ray& ray, Object* obj)
 	for (int i = 0; i < 3; i++)
 	{
 		XMMATRIX axisTrans = getAxisLocalTransform(AXIS(i));
-		XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans));
-		std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
-		XMMATRIX rot_mat = mat_pair.first;
-		XMMATRIX trans_mat = mat_pair.second;
+		XMStoreFloat3(&v, XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axisTrans)));
+		XMMATRIX rot_mat = MathHelper::extractRotMatrixFromVector(v, obj->getParentGlobalWorldMatrix());
+		XMMATRIX trans_mat = obj->computeGlobalTranslationMatrix();
 
 		XMMATRIX world_mat = axisTrans * rot_mat * obj->getBoundingBox().getTransMatrix()* trans_mat;
 		XMMATRIX inv_world_mat = XMMatrixInverse(&XMVectorZero(), world_mat);
@@ -86,10 +84,9 @@ void TransAxis::computeAxisDirectionProj(const Object*obj, const Camera& cam, AX
 	XMMATRIX axis_trans = getAxisLocalTransform(axis_type);
 
 	XMFLOAT3 v;
-	XMStoreFloat3(&v, XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axis_trans));
-	std::pair<XMMATRIX, XMMATRIX> mat_pair = obj->computeGlobalRotTransMatrix(v);
-	XMMATRIX rot_mat = mat_pair.first;
-	XMMATRIX trans_mat = mat_pair.second;
+	XMStoreFloat3(&v, XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0, 1, 0, 0.0), axis_trans)));
+	XMMATRIX rot_mat = MathHelper::extractRotMatrixFromVector(v, obj->getParentGlobalWorldMatrix());
+	XMMATRIX trans_mat = obj->computeGlobalTranslationMatrix();
 
 	XMVECTOR proj_dir = XMVector3TransformNormal(local_dir, axis_trans* rot_mat * cam.getViewProjMatrix());
 	if (XMVectorGetX(XMVector2Length(proj_dir)) < 1e-6)

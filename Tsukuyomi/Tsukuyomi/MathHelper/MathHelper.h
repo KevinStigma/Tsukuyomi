@@ -248,6 +248,18 @@ public:
 		return s;
 	}
 
+	static XMMATRIX extractRotMatrixFromVector(XMFLOAT3 v, XMMATRIX trans_mat)
+	{
+		XMVECTOR default_vec = XMVector3Normalize(XMVectorSet(v.x, v.y, v.z, 0.0));
+		XMVECTOR world_dir = XMVector3Normalize(XMVector3TransformNormal(default_vec, trans_mat));
+		XMMATRIX rot_mat = XMMatrixIdentity();
+		XMVECTOR axis = XMVector3Normalize(XMVector3Cross(default_vec, world_dir));
+		float radian = acosf(XMVectorGetX(XMVector3Dot(default_vec, world_dir)));
+		if (radian != 0.0)
+			rot_mat = XMMatrixRotationAxis(axis, radian);
+		return rot_mat;
+	}
+
 };
 
 struct Ray

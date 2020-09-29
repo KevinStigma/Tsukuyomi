@@ -102,7 +102,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *mouse_event)
 			else if (renderer->getRenderSelObjMode() == RenderSelObjMode::ROT_AXIS)
 			{
 				renderer->rotateSelObj(cur_normalized_pos, last_normalized_pos);
-				g_pGlobalSys->objectPropertyWidget->updateObjectRotation(g_pGlobalSys->objectManager.getCurSelObject());
+				//g_pGlobalSys->objectPropertyWidget->updateObjectRotation(g_pGlobalSys->objectManager.getCurSelObject());
 			}
 
 			if(g_pGlobalSys->objectManager.getCurSelObject() == g_pGlobalSys->objectManager.getCurSelShadowLight())

@@ -13,6 +13,7 @@ ObjectManager::ObjectManager()
 
 ObjectManager::~ObjectManager()
 {
+	treeWidget = nullptr;
 	clear();
 }
 
@@ -23,6 +24,9 @@ void ObjectManager::clear()
 		SAFE_DELETE(iter.second);
 	}
 	objects.clear();
+	if (treeWidget)
+		treeWidget->clear();
+
 	if(listview)
 		listview->clear();
 
