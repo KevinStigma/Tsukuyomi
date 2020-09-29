@@ -27,6 +27,8 @@ public slots:
 	void on_actionExit_triggered();
 	void on_actionCamera_triggered();
 	void on_objsTreeWidget_itemClicked(QTreeWidgetItem *current, int column);
+	void on_objsTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+	void on_objsTreeWidget_itemChanged(QTreeWidgetItem *item, int column);
 	void on_actionPointLight_triggered();
 	void on_actionDirectionalLight_triggered();
 	void on_actionAreaLight_triggered();

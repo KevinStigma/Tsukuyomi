@@ -280,3 +280,28 @@ void Tsukuyomi::on_objsTreeWidget_itemClicked(QTreeWidgetItem *current, int inde
 {
 	g_pGlobalSys->objectManager.setCurSelObject(current->text(0).toStdString());
 }
+
+void Tsukuyomi::on_objsTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+	if (column == 0)
+	{
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		g_pGlobalSys->objectManager.curEditingObj = g_pGlobalSys->objectManager.getObjectFromName(item->text(column).toStdString());
+	}
+}
+
+void Tsukuyomi::on_objsTreeWidget_itemChanged(QTreeWidgetItem *item, int column)
+{
+	ObjectManager& object_mgr = g_pGlobalSys->objectManager;
+	if (column != 0 || !object_mgr.curEditingObj)
+		return;
+
+	std::string new_name = item->text(column).toStdString();
+	std::string cur_name = object_mgr.curEditingObj->getName();
+	if (new_name == cur_name)
+		return;
+
+	if (!object_mgr.changeObjectName(cur_name, new_name))
+		item->setText(column, cur_name.c_str());
+	object_mgr.curEditingObj = nullptr;
+}

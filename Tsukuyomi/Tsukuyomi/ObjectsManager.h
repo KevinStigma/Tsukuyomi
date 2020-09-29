@@ -49,6 +49,9 @@ public:
 	Camera* getRenderCamera();
 	BVHManager* getBVHManager() { return &bvhManager; }
 	EnvironmentMap* getEnvironmentMap() { return environmentMap; }
+
+	Object* curEditingObj = nullptr;
+
 protected:
 	void updateTreeWidget();
 	QTreeWidgetItem* addTreeFromRoot(QTreeWidgetItem*p, Object* root);

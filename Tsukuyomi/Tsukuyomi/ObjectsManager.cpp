@@ -33,6 +33,7 @@ void ObjectManager::clear()
 	SAFE_DELETE(environmentMap);
 	curSelObject = nullptr;
 	curShadowLight = nullptr;
+	curEditingObj = nullptr;
 	bvhManager.destroyBoundingVolumeHieratches();
 }
 
