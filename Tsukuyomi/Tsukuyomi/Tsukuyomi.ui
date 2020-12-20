@@ -33,7 +33,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTreeWidget" name="objsTreeWidget">
+     <widget class="MyQTreeWidget" name="objsTreeWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -881,7 +881,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -1053,6 +1053,11 @@
    <extends>QWidget</extends>
    <header>objectpropertywidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MyQTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>myqtreewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -144,6 +144,7 @@
     <ClCompile Include="intersect_info.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathHelper\MathHelper.cpp" />
+    <ClCompile Include="MyQTreeWidget.cpp" />
     <ClCompile Include="ObjectPropertyWidget.cpp" />
     <ClCompile Include="ObjectsListWidget.cpp" />
     <ClCompile Include="ObjectsManager.cpp" />
@@ -202,6 +203,10 @@
     <ClInclude Include="EnvMap.h" />
     <ClInclude Include="GeometryGenerator\GeometryGenerator.h" />
     <ClInclude Include="GlobalSys.h" />
+    <QtMoc Include="MyQTreeWidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DAnimation;$(QTDIR)\include\Qt3DExtras;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\Qt3DLogic;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="Objects\Sphere.h" />
     <ClInclude Include="PbrMat\BSDF.h" />
     <ClInclude Include="PbrMat\Matte.h" />

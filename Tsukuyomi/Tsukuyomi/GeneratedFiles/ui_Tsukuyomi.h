@@ -27,8 +27,8 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QWidget>
+#include "myqtreewidget.h"
 #include "objectpropertywidget.h"
 #include "renderwidget.h"
 
@@ -57,7 +57,7 @@ public:
     QAction *actionBake_PreFilterEnvMpas;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
-    QTreeWidget *objsTreeWidget;
+    MyQTreeWidget *objsTreeWidget;
     RenderWidget *render_widget;
     QTabWidget *tabWidget;
     QWidget *tab_3;
@@ -173,7 +173,7 @@ public:
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        objsTreeWidget = new QTreeWidget(centralWidget);
+        objsTreeWidget = new MyQTreeWidget(centralWidget);
         objsTreeWidget->setObjectName(QString::fromUtf8("objsTreeWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -402,7 +402,7 @@ public:
         TsukuyomiClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TsukuyomiClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1200, 23));
+        menuBar->setGeometry(QRect(0, 0, 1200, 26));
         menu = new QMenu(menuBar);
         menu->setObjectName(QString::fromUtf8("menu"));
         menuObjects = new QMenu(menuBar);

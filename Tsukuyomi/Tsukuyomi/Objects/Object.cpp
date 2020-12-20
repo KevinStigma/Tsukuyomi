@@ -182,6 +182,28 @@ void Object::setParent(Object* p)
 		p->childs.insert(std::pair<std::string, Object*>(name, this));
 }
 
+void Object::changeNewParent(Object* new_parent)
+{
+	if (new_parent == parent)
+		return;
+	XMMATRIX global_world_matrix = getGlobalWorldMatrix();
+	XMMATRIX parent_global_matrix = new_parent? new_parent->getGlobalWorldMatrix(): XMMatrixIdentity();
+	XMVECTOR v;
+	XMMATRIX local_world_matrix = global_world_matrix * XMMatrixInverse(&v, parent_global_matrix);
+
+	XMVECTOR out_scale, out_rot, out_translation;
+	XMMatrixDecompose(&out_scale, &out_rot, &out_translation, local_world_matrix);
+
+	translation = XMFLOAT3(XMVectorGetX(out_translation), XMVectorGetY(out_translation), XMVectorGetZ(out_translation));
+	scale = XMFLOAT3(XMVectorGetX(out_scale), XMVectorGetY(out_scale), XMVectorGetZ(out_scale));
+
+	XMFLOAT4X4 rot_mat;
+	XMStoreFloat4x4(&rot_mat, XMMatrixRotationQuaternion(out_rot));
+	rotation = MathHelper::transRotationMatrixToEulerAngles(rot_mat);
+	genereateWorldMatrix();
+	parent = new_parent;
+}
+
 void Object::genereateWorldMatrix()
 {
 	trans_mat = XMMatrixTranslation(translation.x, translation.y, translation.z);

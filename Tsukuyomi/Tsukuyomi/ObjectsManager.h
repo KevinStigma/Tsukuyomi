@@ -49,7 +49,6 @@ public:
 	Camera* getRenderCamera();
 	BVHManager* getBVHManager() { return &bvhManager; }
 	EnvironmentMap* getEnvironmentMap() { return environmentMap; }
-
 	Object* curEditingObj = nullptr;
 
 protected:

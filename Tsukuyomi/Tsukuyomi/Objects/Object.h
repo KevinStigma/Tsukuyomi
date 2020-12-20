@@ -69,6 +69,7 @@ public:
 	std::unordered_map<std::string, Object*> getChilds() { return childs; }
 	Object* getParent() { return parent; }
 	void setParent(Object* p);
+	void changeNewParent(Object* parent);
 	virtual const BoundingBox & getBoundingBox() { return boundingBox; }
 	virtual void genereateWorldMatrix();
 	XMMATRIX getLocalWorldMatrix()const { return world_mat; }

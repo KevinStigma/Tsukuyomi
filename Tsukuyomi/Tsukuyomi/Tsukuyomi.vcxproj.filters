@@ -210,6 +210,9 @@
     <ClCompile Include="EnvMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MyQTreeWidget.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Tsukuyomi.h">
@@ -222,6 +225,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ObjectPropertyWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="MyQTreeWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
