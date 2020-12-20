@@ -13,6 +13,12 @@ Tsukuyomi::Tsukuyomi(QWidget *parent)
 	g_pGlobalSys = new GlobalSys;
 	g_pGlobalSys->objectManager.setTreeWidget(ui.objsTreeWidget);
 	ui.propertyWidget->init();
+	ui.objsTreeWidget->setDragEnabled(true);
+	ui.objsTreeWidget->setAcceptDrops(true);
+	ui.objsTreeWidget->setDragDropMode(QAbstractItemView::InternalMove);
+	ui.objsTreeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui.objsTreeWidget->setDropIndicatorShown(true);
+
 	g_pGlobalSys->renderWidget = ui.render_widget;
 	g_pGlobalSys->moveSpeedSlider = ui.moveSpeedSlider;
 	g_pGlobalSys->objectPropertyWidget = ui.propertyWidget;
